@@ -1,36 +1,56 @@
 import { Image, View, Text, Animated, FlatList, Dimensions, StyleSheet } from 'react-native';
-import React, { useEffect, useRef } from 'react';
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useRef, useState } from 'react';
+import { db } from '../firebase.config'
 import { icons } from '@/constants';
 import standard from '@/theme';
+import TrendingItem from './TrendingItem';
 
 const { width } = Dimensions.get('window');
 
-const Trendings = () => {
-    const translateX = useRef(new Animated.Value(0)).current;
-    const categorias = [
-        { id: 1, nome: "#Lorem", cor: "text-purple" },
-        { id: 2, nome: "#Lorem", cor: "text-red" },
-        { id: 3, nome: "#Lorem", cor: "text-orange" },
-        { id: 4, nome: "#Lorem", cor: "text-green" },
-        { id: 5, nome: "#Lorem", cor: "text-blue" },
-    ];
+interface Tag {
+    id: string,
+    name: string,
+    newsCount: number,
+    color: string,
+}
 
+const Trendings: React.FC = () => {
+    const [tags, setTags] = useState<Tag[]>([]); // Tipagem correta para o estado
+    const translateX = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        const itemWidth = 150;
-        const totalWidth = categorias.length * itemWidth;
+        const fetchTags = async () => {
+            try {
+                const response = await getDocs(collection(db, "tags")); // Pega documentos da coleção 'tags'
+                const tags = response.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                })) as Tag[]; 
+                tags.sort((a, b) => b.newsCount - a.newsCount);
+                setTags(tags); 
+            } catch (error) {
+                console.error("Erro ao buscar as tags: ", error);
+            }
+        };
 
+        fetchTags();
+    }, []);
+
+    useEffect(() => {
+        const totalWidth = tags.length * 150;
         const startAnimation = () => {
-            translateX.setValue(0);
-
-            Animated.timing(translateX, {
-                toValue: -totalWidth / 2,
-                duration: 13000,
-                useNativeDriver: true,
-            }).start(() => {
+            if (totalWidth > 0) {
                 translateX.setValue(0);
-                startAnimation();
-            });
+                Animated.timing(translateX, {
+                    toValue: -totalWidth+500,
+                    duration: 13000,
+                    useNativeDriver: true,
+                }).start(() => {
+                    translateX.setValue(0);
+                    startAnimation();
+                });
+            }
         };
 
         startAnimation();
@@ -38,19 +58,7 @@ const Trendings = () => {
         return () => {
             translateX.stopAnimation();
         };
-    }, [translateX, categorias]);
-
-
-    const renderItem = ({ item }) => (
-        <Text
-            key={item.id}
-            style={styles.trendingItemText}
-        >
-            {item.nome}
-        </Text>
-    );
-
-
+    }, [translateX, tags]);
 
     return (
         <View style={styles.container}>
@@ -62,12 +70,12 @@ const Trendings = () => {
                 />
                 <Text style={styles.labelText}>Em alta</Text>
                 <View style={styles.overflowTransformation}>
-                    <Animated.View style={[{ transform: [{ translateX }] }, styles.animatedTrendingText]}>
+                    <Animated.View style={[{ transform: [{ translateX }], width: tags.length*150}, styles.animatedTrendingText]}>
                         <FlatList
-                            data={categorias}
+                            data={tags}
                             horizontal
                             keyExtractor={(item) => item.id.toString()}
-                            renderItem={renderItem}
+                            renderItem={({ item }) => <TrendingItem item={item}/> }
                             scrollEnabled={false}
                             showsHorizontalScrollIndicator={false}
                         />
@@ -78,11 +86,10 @@ const Trendings = () => {
     );
 };
 
-
 const styles = StyleSheet.create({
     container: {
-        padding: 4,
-        borderRadius: 12,
+        // padding: 1,
+        // borderRadius: 12,
     },
     innerContainer: {
         flexDirection: 'row', 
@@ -96,27 +103,15 @@ const styles = StyleSheet.create({
         marginLeft: 4, 
         marginRight: 8, 
         fontSize: width * 0.05, 
-        fontFamily: standard.fonts.regular, 
+        fontFamily: standard.fonts.semiBold, 
         color: 'black',
     },
     overflowTransformation:{
         overflow: 'hidden'
     },
     animatedTrendingText:{
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
-    trendingItemText: {
-        paddingHorizontal: width * 0.009, 
-        fontSize: width * 0.05,
-        fontFamily: standard.fonts.regular,
-        color: 'red',
-    }
-
-
-
-
-
-
-})
+});
 
 export default Trendings;

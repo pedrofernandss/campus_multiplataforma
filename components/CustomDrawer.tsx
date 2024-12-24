@@ -6,6 +6,7 @@ import { db } from '../firebase.config'
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import CustomDrawerButton from "./CustomDrawerButton";
 import TrendingItem from "./TrendingItem";
 
 const { width } = Dimensions.get('window');
@@ -44,9 +45,7 @@ const CustomDrawer = (props: any) => {
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1, paddingTop: 0}}>
             <View style={styles.arrowContainer}>
-              <TouchableOpacity onPress={() => navigation.closeDrawer()}>
-                  <AntDesign name="arrowright" size={25} color='#7777' style={styles.backIcon} />
-              </TouchableOpacity>            
+              <CustomDrawerButton icon={"arrowFowardIcon"} onPress={() => navigation.closeDrawer()}/>           
             </View>
 
             {/* Conteúdo principal */}
@@ -62,11 +61,7 @@ const CustomDrawer = (props: any) => {
                 </View>
               </View>
 
-              {/* Reportar Bug */}
-              <TouchableOpacity style={styles.reportBug} onPress={() => alert("Reportar Bug")}>
-                  <FontAwesome name="bug" size={20} color="#7777" style={styles.bugIcon} />
-                  <Text style={styles.reportBugText}>Reportar Bug</Text>
-              </TouchableOpacity>
+              <CustomDrawerButton text={"Reportar Bug"}  icon={"bugIcon"} onPress={() => alert("Reportar Bug")} type={"primary"}/>
 
               {/* Menu */}
               <View style={styles.drawerList}>
@@ -88,13 +83,8 @@ const CustomDrawer = (props: any) => {
               </View>
             </View>
 
-            {/* Login */}
-            <View >
-              <TouchableOpacity style={styles.loginContainer} onPress={() => alert("Entrar")}>
-                  <Feather name="log-in" size={18} color="#7777" style={styles.loginIcon} />
-                  <Text style={styles.loginText}>Entrar</Text>
-              </TouchableOpacity>
-            </View>
+            
+            <CustomDrawerButton text={"Entrar"} icon={"loginIcon"} onPress={() => alert("Entrar")} type={"secondary"}/>
         </DrawerContentScrollView>
     )
 }
@@ -128,26 +118,6 @@ const styles = StyleSheet.create({
       fontFamily: "Palanquin-SemiBold",
       marginBottom: 2
     },
-    reportBug: {
-      flexDirection: "row",
-      flexWrap: 'wrap',
-      alignItems: "center",
-      marginTop: 17,
-      borderBottomWidth: 1,
-      borderColor: "#6c0318",
-      paddingVertical: 8,
-      padding: 10,
-    },
-    bugIcon: {
-      marginRight: 8,
-    },
-    reportBugText: {
-      marginLeft: 10,
-      marginTop: 10, 
-      fontSize: 16,
-      color: "#7777",
-      fontWeight: "700",
-    },
     drawerList: {
       marginBottom: 20,
     },
@@ -158,22 +128,4 @@ const styles = StyleSheet.create({
     icon: {
       marginHorizontal: 7,
     },
-    loginContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: 20,
-      marginHorizontal: 13
-
-    },
-    loginIcon: {
-      fontSize:25
-    },
-    loginText: {
-      marginLeft: 10,
-      fontSize: 16,
-      color: "#7777",
-      fontFamily: "Palanquin-SemiBold", 
-      marginVertical: 15,
-      fontWeight: "700"
-    }
 })
