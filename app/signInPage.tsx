@@ -1,6 +1,6 @@
 import { StyleSheet, SafeAreaView, View, Text } from 'react-native'
 import standard from "@/theme";
-import CustomInput from "@/components/CustomInput";
+import CustomInput from "@/components/CustomInputText";
 import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import CustomInputPassword from "@/components/CustomInputPassword";

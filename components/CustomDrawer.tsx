@@ -1,41 +1,67 @@
-import { Linking, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
-import React from 'react';
+import { Linking, StyleSheet, Text, TouchableOpacity, View, ScrollView, Dimensions, FlatList } from "react-native";
+import React, { useState, useEffect, useRef, } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from '../firebase.config'
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import CustomDrawerButton from "./CustomDrawerButton";
+import { useRouter } from "expo-router";
+import TrendingItem from "./TrendingItem";
+
+const { width } = Dimensions.get('window');
+
+interface Tag {
+  id: string,
+  name: string,
+  newsCount: number,
+  color: string,
+}
 
 
 const CustomDrawer = (props: any) => {
-  const { navigation } = props; // Obtenha a navegação do props;
+  const [tags, setTags] = useState<Tag[]>([])
+  const router = useRouter();
+  const { navigation } = props;
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+          const response = await getDocs(collection(db, "tags")); // Pega documentos da coleção 'tags'
+          const tags = response.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data(),
+          })) as Tag[]; 
+          tags.sort((a, b) => b.newsCount - a.newsCount);
+          setTags(tags); 
+      } catch (error) {
+          console.error("Erro ao buscar as tags: ", error);
+      }
+    };
+    fetchTags();
+  }, []);
+
+   // Obtenha a navegação do props;
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1, paddingTop: 0}}>
             <View style={styles.arrowContainer}>
-              <TouchableOpacity onPress={() => navigation.closeDrawer()}>
-                  <AntDesign name="arrowright" size={25} color='#7777' style={styles.backIcon} />
-              </TouchableOpacity>            
+              <CustomDrawerButton icon={"arrowFowardIcon"} onPress={() => navigation.closeDrawer()}/>           
             </View>
 
             {/* Conteúdo principal */}
             <View style={styles.contentContainer}>
               {/* Hashtags */}
               <View style={styles.hashtagsContainer}>
-                  <ScrollView>
-                      <View style={styles.grid}>
-                          {["#FAC", "#eleicoes", "#RU", "#debate", "#jogos", "#videos", "#Geologia"].map((tag, index) => (
-                              <Text key={index} style={[styles.hashtag, { color: index % 2 === 0 ? "green" : "red" }]}>
-                                  {tag}
-                              </Text>
-                          ))}
-                      </View>
-                  </ScrollView>
+                <View style={styles.grid}>
+                  {tags.map((tag) => (
+                    <Text key={tag.id} style={[styles.hashtag, { color: tag.color }]}>
+                      {tag.name}
+                    </Text>
+                  ))}
+                </View>
               </View>
 
-              {/* Reportar Bug */}
-              <TouchableOpacity style={styles.reportBug} onPress={() => alert("Reportar Bug")}>
-                  <FontAwesome name="bug" size={20} color="#7777" style={styles.bugIcon} />
-                  <Text style={styles.reportBugText}>Reportar Bug</Text>
-              </TouchableOpacity>
+              <CustomDrawerButton text={"Reportar Bug"}  icon={"bugIcon"} onPress={() => alert("Reportar Bug")} type={"primary"}/>
 
               {/* Menu */}
               <View style={styles.drawerList}>
@@ -57,13 +83,8 @@ const CustomDrawer = (props: any) => {
               </View>
             </View>
 
-            {/* Login */}
-            <View >
-              <TouchableOpacity style={styles.loginContainer} onPress={() => alert("Entrar")}>
-                  <Feather name="log-in" size={18} color="#7777" style={styles.loginIcon} />
-                  <Text style={styles.loginText}>Entrar</Text>
-              </TouchableOpacity>
-            </View>
+            
+            <CustomDrawerButton text={"Entrar"} icon={"loginIcon"} onPress={() => router.push('/signInPage')}/>
         </DrawerContentScrollView>
     )
 }
@@ -71,78 +92,39 @@ const CustomDrawer = (props: any) => {
 export default CustomDrawer;
 
 const styles = StyleSheet.create({
-    arrowContainer:{
-      alignItems: "flex-end",
-      marginRight: 10,
-      marginBottom: 10,
-    },
-    backIcon: {
-      padding: 10,
-    },
-    contentContainer: {
-      flex: 1,
-    },
-    hashtagsContainer: {
-        backgroundColor: "#FFFF",
-        borderRadius: 8,
-        padding: 10,      
-    },
-    grid:{
-      flexDirection: "row",
-      flexWrap: 'wrap', // Quebra linha ao exceder largura
-    },
-    hashtag: {
-      fontSize: 16,
-      marginHorizontal: 10,
-      fontFamily: "Palanquin-SemiBold",
-      marginBottom: 2
-    },
-    reportBug: {
-      flexDirection: "row",
-      flexWrap: 'wrap',
-      alignItems: "center",
-      marginTop: 17,
-      borderBottomWidth: 1,
-      borderColor: "#6c0318",
-      paddingVertical: 8,
-      padding: 10,
-    },
-    bugIcon: {
-      marginRight: 8,
-    },
-    reportBugText: {
-      marginLeft: 10,
-      marginTop: 10, 
-      fontSize: 16,
-      color: "#7777",
-      fontWeight: "700",
-    },
-    drawerList: {
-      marginBottom: 20,
-    },
-    socialIconsContainer: {
-      flexDirection: "row",
-      justifyContent: "flex-start",
-    },
-    icon: {
-      marginHorizontal: 7,
-    },
-    loginContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: 20,
-      marginHorizontal: 13
-
-    },
-    loginIcon: {
-      fontSize:25
-    },
-    loginText: {
-      marginLeft: 10,
-      fontSize: 16,
-      color: "#7777",
-      fontFamily: "Palanquin-SemiBold", 
-      marginVertical: 15,
-      fontWeight: "700"
-    }
+  arrowContainer:{
+    alignItems: "flex-end",
+    marginBottom: 10,
+  },
+  backIcon: {
+    padding: 10,
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  hashtagsContainer: {
+      backgroundColor: "#FFFF",
+      borderRadius: 8,
+      padding: 10,      
+  },
+  grid:{
+    flexDirection: "row",
+    flexWrap: 'wrap', // Quebra linha ao exceder largura
+  },
+  hashtag: {
+    fontSize: 16,
+    marginHorizontal: 10,
+    fontFamily: "Palanquin-SemiBold",
+    marginBottom: 2
+  },
+  drawerList: {
+    marginBottom: 20,
+  },
+  socialIconsContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  icon: {
+    marginHorizontal: 7,
+  },
 })

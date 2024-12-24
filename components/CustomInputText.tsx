@@ -2,7 +2,7 @@ import { StyleSheet, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import standard from '@/theme'
 
-const CustomInput = ({ value, setValue, placeholder}) => {
+const CustomInputText = ({ value, setValue, placeholder}) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -24,7 +24,7 @@ const CustomInput = ({ value, setValue, placeholder}) => {
   );
 };
 
-export default CustomInput;
+export default CustomInputText;
 
 const styles = StyleSheet.create({
   container: {
