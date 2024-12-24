@@ -1,11 +1,13 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
-import { FontAwesome } from '@expo/vector-icons'
+import standard from '@/theme'
+import { icons } from '@/constants'
+
 
 const MenuButton = ({ text, icon, onPress}) => {
   return (
-    <TouchableOpacity style={styles.container}>
-      <FontAwesome name={icon} size={20} style={styles.buttonIcon} />
+    <TouchableOpacity style={styles.container} onPress={onPress}>
+      <Image source={icons[icon]} style={styles.buttonIcon}/>
       <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>
   )
@@ -22,17 +24,18 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: "#6c0318",
         paddingVertical: 8,
-        padding: 10,
+
       },
       buttonIcon: {
-        marginRight: 8,
-        color: "#7777",
+        width: 32,
+        height: 32,
+        color: standard.colors.grey,
       },
       buttonText: {
         marginLeft: 10,
         marginTop: 10, 
         fontSize: 16,
-        color: "#7777",
-        fontWeight: "700",
+        color: standard.colors.grey,
+        fontFamily: standard.fonts.bold
       },
 })
