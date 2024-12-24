@@ -1,9 +1,9 @@
 import { Linking, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import React from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
-import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import MenuButton from "./MenuButton";
 
 
 const CustomDrawer = (props: any) => {
@@ -31,11 +31,7 @@ const CustomDrawer = (props: any) => {
                   </ScrollView>
               </View>
 
-              {/* Reportar Bug */}
-              <TouchableOpacity style={styles.reportBug} onPress={() => alert("Reportar Bug")}>
-                  <FontAwesome name="bug" size={20} color="#7777" style={styles.bugIcon} />
-                  <Text style={styles.reportBugText}>Reportar Bug</Text>
-              </TouchableOpacity>
+              <MenuButton text={"Reportar Bug"}  icon={"bugIcon"} onPress={() => alert("Reportar Bug")}/>
 
               {/* Menu */}
               <View style={styles.drawerList}>
@@ -57,13 +53,8 @@ const CustomDrawer = (props: any) => {
               </View>
             </View>
 
-            {/* Login */}
-            <View >
-              <TouchableOpacity style={styles.loginContainer} onPress={() => alert("Entrar")}>
-                  <Feather name="log-in" size={18} color="#7777" style={styles.loginIcon} />
-                  <Text style={styles.loginText}>Entrar</Text>
-              </TouchableOpacity>
-            </View>
+            
+            <MenuButton text={"Entrar"} icon={"loginIcon"} onPress={() => alert("Entrar")}/>
         </DrawerContentScrollView>
     )
 }
@@ -96,26 +87,6 @@ const styles = StyleSheet.create({
       marginHorizontal: 10,
       fontFamily: "Palanquin-SemiBold",
       marginBottom: 2
-    },
-    reportBug: {
-      flexDirection: "row",
-      flexWrap: 'wrap',
-      alignItems: "center",
-      marginTop: 17,
-      borderBottomWidth: 1,
-      borderColor: "#6c0318",
-      paddingVertical: 8,
-      padding: 10,
-    },
-    bugIcon: {
-      marginRight: 8,
-    },
-    reportBugText: {
-      marginLeft: 10,
-      marginTop: 10, 
-      fontSize: 16,
-      color: "#7777",
-      fontWeight: "700",
     },
     drawerList: {
       marginBottom: 20,
