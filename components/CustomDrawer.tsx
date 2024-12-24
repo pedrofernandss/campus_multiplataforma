@@ -1,14 +1,47 @@
-import { Linking, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
-import React from 'react';
+import { Linking, StyleSheet, Text, TouchableOpacity, View, ScrollView, Dimensions, FlatList } from "react-native";
+import React, { useState, useEffect, useRef, } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from '../firebase.config'
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import CustomDrawerButton from "./CustomDrawerButton";
 import { useRouter } from "expo-router";
+import TrendingItem from "./TrendingItem";
+
+const { width } = Dimensions.get('window');
+
+interface Tag {
+  id: string,
+  name: string,
+  newsCount: number,
+  color: string,
+}
 
 
 const CustomDrawer = (props: any) => {
+  const [tags, setTags] = useState<Tag[]>([])
   const router = useRouter();
-  const { navigation } = props; // Obtenha a navegação do props;
+  const { navigation } = props;
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+          const response = await getDocs(collection(db, "tags")); // Pega documentos da coleção 'tags'
+          const tags = response.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data(),
+          })) as Tag[]; 
+          tags.sort((a, b) => b.newsCount - a.newsCount);
+          setTags(tags); 
+      } catch (error) {
+          console.error("Erro ao buscar as tags: ", error);
+      }
+    };
+    fetchTags();
+  }, []);
+
+   // Obtenha a navegação do props;
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1, paddingTop: 0}}>
             <View style={styles.arrowContainer}>
@@ -19,15 +52,13 @@ const CustomDrawer = (props: any) => {
             <View style={styles.contentContainer}>
               {/* Hashtags */}
               <View style={styles.hashtagsContainer}>
-                  <ScrollView>
-                      <View style={styles.grid}>
-                          {["#FAC", "#eleicoes", "#RU", "#debate", "#jogos", "#videos", "#Geologia"].map((tag, index) => (
-                              <Text key={index} style={[styles.hashtag, { color: index % 2 === 0 ? "green" : "red" }]}>
-                                  {tag}
-                              </Text>
-                          ))}
-                      </View>
-                  </ScrollView>
+                <View style={styles.grid}>
+                  {tags.map((tag) => (
+                    <Text key={tag.id} style={[styles.hashtag, { color: tag.color }]}>
+                      {tag.name}
+                    </Text>
+                  ))}
+                </View>
               </View>
 
               <CustomDrawerButton text={"Reportar Bug"}  icon={"bugIcon"} onPress={() => alert("Reportar Bug")} type={"primary"}/>
