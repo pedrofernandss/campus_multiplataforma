@@ -2,27 +2,24 @@ import React from 'react'
 import { TouchableOpacity, Image, View, StyleSheet, Dimensions, SafeAreaView, StatusBar, Platform } from 'react-native'
 import { icons, images } from '../constants'
 import standard from '../theme'
-
+import 'react-native-gesture-handler'
+import { DrawerToggleButton } from '@react-navigation/drawer'
 const { width } = Dimensions.get('window');
+
+
 
 const Header = () => {
   return (
     <SafeAreaView style={{ backgroundColor: standard.colors.campusRed }}>
         <View style={styles.headerStyle}>
-            <Image 
-                source={images.logo}
-                style={styles.logo}
-                resizeMode="contain"
-            />
-            <TouchableOpacity>
-                <Image 
-                    source={icons.menuIcon}
-                    style={styles.menuIcon}
-                    resizeMode="contain"
-                />
-            </TouchableOpacity>
+          <Image 
+              source={images.logo}
+              style={styles.logo}
+              resizeMode="contain"
+              />
+          <DrawerToggleButton tintColor='white'/>
         </View>
-    </SafeAreaView>
+      </SafeAreaView>
   )
 }
 

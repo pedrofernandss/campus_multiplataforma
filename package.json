@@ -4,7 +4,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start -c",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-native-seoul/masonry-list": "^1.4.2",
+    "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.0",
     "@types/react": "~18.2.79",
     "axios": "^1.7.9",
