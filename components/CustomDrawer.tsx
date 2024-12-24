@@ -3,7 +3,7 @@ import React from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import MenuButton from "./MenuButton";
+import CustomDrawerButton from "./CustomDrawerButton";
 
 
 const CustomDrawer = (props: any) => {
@@ -11,9 +11,7 @@ const CustomDrawer = (props: any) => {
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1, paddingTop: 0}}>
             <View style={styles.arrowContainer}>
-              <TouchableOpacity onPress={() => navigation.closeDrawer()}>
-                  <AntDesign name="arrowright" size={25} color='#7777' style={styles.backIcon} />
-              </TouchableOpacity>            
+              <CustomDrawerButton icon={"arrowFowardIcon"} onPress={() => navigation.closeDrawer()}/>           
             </View>
 
             {/* Conteúdo principal */}
@@ -31,7 +29,7 @@ const CustomDrawer = (props: any) => {
                   </ScrollView>
               </View>
 
-              <MenuButton text={"Reportar Bug"}  icon={"bugIcon"} onPress={() => alert("Reportar Bug")}/>
+              <CustomDrawerButton text={"Reportar Bug"}  icon={"bugIcon"} onPress={() => alert("Reportar Bug")} type={"primary"}/>
 
               {/* Menu */}
               <View style={styles.drawerList}>
@@ -54,7 +52,7 @@ const CustomDrawer = (props: any) => {
             </View>
 
             
-            <MenuButton text={"Entrar"} icon={"loginIcon"} onPress={() => alert("Entrar")}/>
+            <CustomDrawerButton text={"Entrar"} icon={"loginIcon"} onPress={() => alert("Entrar")} type={"secondary"}/>
         </DrawerContentScrollView>
     )
 }
@@ -98,22 +96,4 @@ const styles = StyleSheet.create({
     icon: {
       marginHorizontal: 7,
     },
-    loginContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: 20,
-      marginHorizontal: 13
-
-    },
-    loginIcon: {
-      fontSize:25
-    },
-    loginText: {
-      marginLeft: 10,
-      fontSize: 16,
-      color: "#7777",
-      fontFamily: "Palanquin-SemiBold", 
-      marginVertical: 15,
-      fontWeight: "700"
-    }
 })
