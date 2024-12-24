@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Campus",
+    "newArchEnabled": true,
     "slug": "campus_multiplataforma",
     "version": "1.0.0",
     "orientation": "portrait",
