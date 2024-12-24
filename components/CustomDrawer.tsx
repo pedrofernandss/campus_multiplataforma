@@ -2,11 +2,12 @@ import { Linking, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "r
 import React from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import CustomDrawerButton from "./CustomDrawerButton";
+import { useRouter } from "expo-router";
 
 
 const CustomDrawer = (props: any) => {
+  const router = useRouter();
   const { navigation } = props; // Obtenha a navegação do props;
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1, paddingTop: 0}}>
@@ -52,7 +53,7 @@ const CustomDrawer = (props: any) => {
             </View>
 
             
-            <CustomDrawerButton text={"Entrar"} icon={"loginIcon"} onPress={() => alert("Entrar")} type={"secondary"}/>
+            <CustomDrawerButton text={"Entrar"} icon={"loginIcon"} onPress={() => router.push('/signInPage')}/>
         </DrawerContentScrollView>
     )
 }
@@ -60,40 +61,39 @@ const CustomDrawer = (props: any) => {
 export default CustomDrawer;
 
 const styles = StyleSheet.create({
-    arrowContainer:{
-      alignItems: "flex-end",
-      marginRight: 10,
-      marginBottom: 10,
-    },
-    backIcon: {
-      padding: 10,
-    },
-    contentContainer: {
-      flex: 1,
-    },
-    hashtagsContainer: {
-        backgroundColor: "#FFFF",
-        borderRadius: 8,
-        padding: 10,      
-    },
-    grid:{
-      flexDirection: "row",
-      flexWrap: 'wrap', // Quebra linha ao exceder largura
-    },
-    hashtag: {
-      fontSize: 16,
-      marginHorizontal: 10,
-      fontFamily: "Palanquin-SemiBold",
-      marginBottom: 2
-    },
-    drawerList: {
-      marginBottom: 20,
-    },
-    socialIconsContainer: {
-      flexDirection: "row",
-      justifyContent: "flex-start",
-    },
-    icon: {
-      marginHorizontal: 7,
-    },
+  arrowContainer:{
+    alignItems: "flex-end",
+    marginBottom: 10,
+  },
+  backIcon: {
+    padding: 10,
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  hashtagsContainer: {
+      backgroundColor: "#FFFF",
+      borderRadius: 8,
+      padding: 10,      
+  },
+  grid:{
+    flexDirection: "row",
+    flexWrap: 'wrap', // Quebra linha ao exceder largura
+  },
+  hashtag: {
+    fontSize: 16,
+    marginHorizontal: 10,
+    fontFamily: "Palanquin-SemiBold",
+    marginBottom: 2
+  },
+  drawerList: {
+    marginBottom: 20,
+  },
+  socialIconsContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  icon: {
+    marginHorizontal: 7,
+  },
 })
