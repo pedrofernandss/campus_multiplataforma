@@ -1,10 +1,16 @@
-import { StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, Image, GestureResponderEvent } from 'react-native'
 import React from 'react'
 import standard from '@/theme'
 import { icons } from '@/constants'
 
+interface DrawerButtons {
+  text: string,
+  icon: string,
+  onPress: (event: GestureResponderEvent) => void; 
+  type?: string, 
+}
 
-const CustomDrawerButton = ({ text, icon, onPress, type}) => {
+const CustomDrawerButton: React.FC<DrawerButtons> = ({ text, icon, onPress, type }) => {
   return (
     <TouchableOpacity style={[styles.container, styles[`container_${type}`]]} onPress={onPress}>
       <Image source={icons[icon]} style={styles.buttonIcon}/>
@@ -25,7 +31,7 @@ const styles = StyleSheet.create({
   },
   container_primary: {
     borderBottomWidth: 1,
-    borderColor: "#6c0318",
+    borderColor: standard.colors.campusRed,
   },
   buttonIcon: {
     width: 32,
