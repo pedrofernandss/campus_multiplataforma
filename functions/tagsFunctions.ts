@@ -1,12 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase.config";
+import { Tag } from "../constants/types";
 
-export interface Tag {
-    id: string;
-    name: string;
-    newsCount: number;
-    color: string;
-}
 
 export const fetchTags = async (): Promise<Tag[]> => {
     try {
