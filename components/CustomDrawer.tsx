@@ -1,45 +1,30 @@
-import { Linking, StyleSheet, Text, TouchableOpacity, View, ScrollView, Dimensions, FlatList } from "react-native";
-import React, { useState, useEffect, useRef, } from 'react';
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState, useEffect } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from '../firebase.config'
-import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import CustomDrawerButton from "./CustomDrawerButton";
 import { useRouter } from "expo-router";
-import TrendingItem from "./TrendingItem";
-
-const { width } = Dimensions.get('window');
-
-interface Tag {
-  id: string,
-  name: string,
-  newsCount: number,
-  color: string,
-}
+import { fetchTags } from "@/functions/tagsFunctions";
+import { types } from '@/constants'
 
 
 const CustomDrawer = (props: any) => {
-  const [tags, setTags] = useState<Tag[]>([])
+  const [tags, setTags] = useState<types.Tag[]>([])
   const router = useRouter();
   const { navigation } = props;
 
   useEffect(() => {
-    const fetchTags = async () => {
-      try {
-          const response = await getDocs(collection(db, "tags")); // Pega documentos da coleção 'tags'
-          const tags = response.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data(),
-          })) as Tag[]; 
-          tags.sort((a, b) => b.newsCount - a.newsCount);
-          setTags(tags); 
-      } catch (error) {
-          console.error("Erro ao buscar as tags: ", error);
-      }
-    };
-    fetchTags();
-  }, []);
+          const loadTags = async () => {
+              try {
+                  const fetchedTags = await fetchTags();
+                  setTags(fetchedTags);
+              } catch (error) {
+                  console.error("Erro ao buscar as tags: ", error);
+              }
+          };
+  
+          loadTags();
+      }, []);
 
    // Obtenha a navegação do props;
     return (
@@ -48,9 +33,7 @@ const CustomDrawer = (props: any) => {
               <CustomDrawerButton icon={"arrowFowardIcon"} onPress={() => navigation.closeDrawer()}/>           
             </View>
 
-            {/* Conteúdo principal */}
             <View style={styles.contentContainer}>
-              {/* Hashtags */}
               <View style={styles.hashtagsContainer}>
                 <View style={styles.grid}>
                   {tags.map((tag) => (
@@ -61,14 +44,12 @@ const CustomDrawer = (props: any) => {
                 </View>
               </View>
 
-              <CustomDrawerButton text={"Reportar Bug"}  icon={"bugIcon"} onPress={() => alert("Reportar Bug")} type={"primary"}/>
+              <CustomDrawerButton text={"Reportar Bug"}  icon={"bugIcon"} onPress={() => alert("Reportar Bug")} type={"active"}/>
 
-              {/* Menu */}
               <View style={styles.drawerList}>
-                  <DrawerItemList {...props} />
+                <DrawerItemList {...props} />
               </View>
 
-              {/* Social Media Icons */}
               <View style={styles.socialIconsContainer}>
                   {[
                   { name: "square-x-twitter", url : "https://x.com/campusitofacunb"},
@@ -109,7 +90,7 @@ const styles = StyleSheet.create({
   },
   grid:{
     flexDirection: "row",
-    flexWrap: 'wrap', // Quebra linha ao exceder largura
+    flexWrap: 'wrap',
   },
   hashtag: {
     fontSize: 16,
