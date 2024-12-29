@@ -2,25 +2,30 @@ import { Dimensions, StyleSheet, Text, View, Image } from 'react-native';
 import React from 'react';
 import standard from '@/theme';
 import { icons } from '@/constants';
+import { News } from '../constants/types'
 
 const { width } = Dimensions.get('window');
 
-const NewsCard = ({ item }) => {
+interface NewsCardItemProps {
+    news: News;
+}
+
+const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image style={styles.coverImageStyle} source={item.cover_image} />
+        <Image style={styles.coverImageStyle} source={{ uri: news.cover_image }} />
       </View>
 
       <View style={styles.contentContainer}>
-        <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">{item.title}</Text>
-        <Text style={styles.subtitleStyle} numberOfLines={2} ellipsizeMode="tail">{item.subtitle}</Text>
+        <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">{news.title}</Text>
+        <Text style={styles.subtitleStyle} numberOfLines={2} ellipsizeMode="tail">{news.subtitle}</Text>
 
         <View style={styles.metaDataStyle}>
-          <Text style={styles.authorStyle}>Por: {item.author}</Text>
+          <Text style={styles.authorStyle}>Por: {news.author}</Text>
           <View style={styles.timeDataStyle}>
             <Image source={icons.clockIcon} style={styles.clockIconStyle} />
-            <Text style={styles.timeStyle}>{item.created_at}</Text>
+            <Text style={styles.timeStyle}>{news.created_at}</Text>
           </View>
         </View>
       </View>
@@ -55,7 +60,7 @@ const styles = StyleSheet.create({
     fontFamily: standard.fonts.semiBold,
     color: standard.colors.black,
     fontSize: 13,
-    lineHeight: 15,
+    lineHeight: 16,
   },
   subtitleStyle: {
     fontFamily: standard.fonts.regular,
