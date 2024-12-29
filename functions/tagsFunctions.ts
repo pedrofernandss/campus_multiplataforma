@@ -17,3 +17,9 @@ export const fetchTags = async (): Promise<Tag[]> => {
         throw error;
     }
 };
+
+export const defineTagColor = async (): Promise<string> => {
+    const randomColor = Math.floor(Math.random() * 0xFFFFFF);
+    const color = `#${randomColor.toString(16).padStart(6, '0')}`;
+    return color;
+}
