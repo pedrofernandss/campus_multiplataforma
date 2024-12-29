@@ -11,6 +11,6 @@ export interface Tag {
 export interface DrawerButtons {
   text?: string,
   icon: keyof typeof icons,
-  onPress: (event: GestureResponderEvent) => void; 
-  type?: string, 
+  onPress: () => void; 
+  type?: 'active' | 'deactive', 
 }
