@@ -14,23 +14,25 @@ Este projeto está sendo desenvolvido com **React Native** no front-end, utiliza
 
 ## Integrantes
 
+- **Ithalo Medeiros** - Ciência da Computação, Universidade de Brasília  
+  [LinkedIn](https://www.linkedin.com/in/ithalo-medeiros/) | [GitHub](https://github.com/IthaloDekki)
+
+- **Pedro Fernandes** - Licenciatura em Computação, Universidade de Brasília  
+  [LinkedIn](https://www.linkedin.com/in/pedrofernandss) | [GitHub](https://github.com/pedrofernandss)
+
 - **Pedro Henrique** - Engenharia de Software, Universidade de Brasília  
   [LinkedIn](https://www.linkedin.com/in/pedro-henrique-monteiro-nascimento-069b0b2b6) | [GitHub](https://github.com/pedronascimentos)
-
-- **Pedro Fernandes** - Ciências da Computação, Universidade de Brasília  
-  [LinkedIn](https://www.linkedin.com/in/pedrofernandss) | [GitHub](https://github.com/pedrofernandss)
 
 ## Tecnologias Utilizadas
 
 ### Front-end
 - **React Native** (Expo)
+- **JavaScript**
 - **TypeScript**
-- **Docker**
 
 ### Back-end
 - **Google Firebase**
 - **TypeScript**
-- **Docker**
 
 
 ## Licença
@@ -40,5 +42,5 @@ Este projeto é licenciado sob a licença MIT. Consulte o arquivo [LICENSE](./LI
 ---
 
 <p align="center">
-  <em>Desenvolvido por Pedro Henrique e Pedro Fernandes - Universidade de Brasília</em>
+  <em>Desenvolvido por Ithalo Medeiros, Pedro Fernandes e Pedro Henrique - Universidade de Brasília</em>
 </p>
