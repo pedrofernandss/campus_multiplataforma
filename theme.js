@@ -7,6 +7,7 @@ const standard = {
     blue: '#00509A',
     green: '#008810',
     purple: '#2800F2',
+    grey: '#7777'
   },
   fonts: {
     regular: 'Palanquin-Regular',

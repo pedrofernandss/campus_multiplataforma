@@ -1,10 +1,16 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
+import React from 'react'
+import 'react-native-gesture-handler'
+import { Drawer } from 'expo-router/drawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { Feather } from '@expo/vector-icons';
+import CustomDrawer from '@/components/CustomDrawer';
 
-SplashScreen.preventAutoHideAsync();
 
-const RootLayout = () => {
+const DrawerLayout = () => {
+  
   const [fontsLoaded, error] = useFonts({
     "Palanquin-Regular": require("../assets/fonts/Palanquin-Regular.ttf"),
     "Palanquin-SemiBold": require("../assets/fonts/Palanquin-SemiBold.ttf"),
@@ -12,24 +18,46 @@ const RootLayout = () => {
   });
 
 
-useEffect(() => {
-  if (error) throw error;
+  useEffect(() => {
+    if (error) throw error;
 
-  if (fontsLoaded) {
-    SplashScreen.hideAsync();
-  }
-}, [fontsLoaded, error]);
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, error]);
 
-if (!fontsLoaded && !error) {
-  return null;
-}
-
+  if (!fontsLoaded && !error) {
+    return null;
+  } 
 
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{headerShown: false}}/>
-    </Stack>
+    <GestureHandlerRootView>
+      <Drawer 
+      drawerContent={props => <CustomDrawer {...props}/>}
+      screenOptions={{ 
+        drawerItemStyle: {display: 'none'},
+        headerShown: false,
+        drawerActiveBackgroundColor: "transparent",
+        drawerInactiveBackgroundColor: "transparent",
+        drawerInactiveTintColor: "#818181",
+        drawerActiveTintColor: '#6c0318',
+        drawerHideStatusBarOnOpen: true,
+        drawerStyle: {
+          backgroundColor: "#f5f5f5",
+          paddingTop: 32,
+          width: "65%"
+        },
+        drawerLabelStyle:{
+          marginLeft: -6,
+
+        }
+      }}>
+      </Drawer>
+    </GestureHandlerRootView>
   )
 }
 
-export default RootLayout
+
+export default DrawerLayout 
+
+
