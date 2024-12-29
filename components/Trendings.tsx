@@ -1,40 +1,28 @@
 import { Image, View, Text, Animated, FlatList, Dimensions, StyleSheet } from 'react-native';
-import { collection, getDocs } from "firebase/firestore";
+import { fetchTags } from '@/functions/tagsFunctions';
 import React, { useEffect, useRef, useState } from 'react';
-import { db } from '../firebase.config'
-import { icons } from '@/constants';
+import { icons, types } from '@/constants';
 import standard from '@/theme';
 import TrendingItem from './TrendingItem';
 
 const { width } = Dimensions.get('window');
 
-interface Tag {
-    id: string,
-    name: string,
-    newsCount: number,
-    color: string,
-}
-
 const Trendings: React.FC = () => {
-    const [tags, setTags] = useState<Tag[]>([]); // Tipagem correta para o estado
+
+    const [tags, setTags] = useState<types.Tag[]>([]);
     const translateX = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        const fetchTags = async () => {
+        const loadTags = async () => {
             try {
-                const response = await getDocs(collection(db, "tags")); // Pega documentos da coleção 'tags'
-                const tags = response.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                })) as Tag[]; 
-                tags.sort((a, b) => b.newsCount - a.newsCount);
-                setTags(tags); 
+                const fetchedTags = await fetchTags();
+                setTags(fetchedTags);
             } catch (error) {
                 console.error("Erro ao buscar as tags: ", error);
             }
         };
 
-        fetchTags();
+        loadTags();
     }, []);
 
     useEffect(() => {
@@ -61,7 +49,7 @@ const Trendings: React.FC = () => {
     }, [translateX, tags]);
 
     return (
-        <View style={styles.container}>
+        <View>
             <View style={styles.innerContainer}>
                 <Image 
                     source={icons.trendingIcon}
@@ -74,8 +62,8 @@ const Trendings: React.FC = () => {
                         <FlatList
                             data={tags}
                             horizontal
-                            keyExtractor={(item) => item.id.toString()}
-                            renderItem={({ item }) => <TrendingItem item={item}/> }
+                            keyExtractor={(tag) => tag.id.toString()}
+                            renderItem={({ item }) => <TrendingItem tag={item}/> }
                             scrollEnabled={false}
                             showsHorizontalScrollIndicator={false}
                         />
@@ -87,10 +75,6 @@ const Trendings: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        // padding: 1,
-        // borderRadius: 12,
-    },
     innerContainer: {
         flexDirection: 'row', 
         alignItems: 'center', 
