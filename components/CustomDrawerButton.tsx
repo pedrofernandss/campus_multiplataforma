@@ -4,7 +4,7 @@ import standard from '@/theme'
 import { icons } from '@/constants'
 
 interface DrawerButtons {
-  text: string,
+  text?: string,
   icon: string,
   onPress: (event: GestureResponderEvent) => void; 
   type?: string, 
