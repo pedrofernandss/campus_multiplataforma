@@ -22,7 +22,7 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
         <Text style={styles.subtitleStyle} numberOfLines={2} ellipsizeMode="tail">{news.description}</Text>
 
         <View style={styles.metaDataStyle}>
-          <Text style={styles.authorStyle}>Por: {news.authors}</Text>
+          <Text style={styles.authorStyle}>Por: {news.authors.join(", ")}</Text>
           <View style={styles.timeDataStyle}>
             <Image source={icons.clockIcon} style={styles.clockIconStyle} />
             <Text style={styles.timeStyle}>{news.created_at}</Text>
