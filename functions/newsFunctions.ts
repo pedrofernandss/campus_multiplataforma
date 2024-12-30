@@ -4,7 +4,7 @@ import { News } from "../constants/types";
 
 export const fetchNews = async (): Promise<News[]> => {
     try {
-        const response = await getDocs(collection(db, "newsTest")); 
+        const response = await getDocs(collection(db, "news")); 
         const news = response.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
