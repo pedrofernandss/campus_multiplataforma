@@ -92,6 +92,9 @@ const CustomDrawer = (props: any) => {
                             onPress={() => Alert.alert('Escrever Artigo')}
                             type={"primary"}
                           />
+
+                          <View style={styles.separatorLogged}></View>
+
                           <CustomDrawerButton
                             text={"Painel de Artigos"}
                             icon={"calendarIcon"}
@@ -113,6 +116,8 @@ const CustomDrawer = (props: any) => {
                             onPress={() => alert("Reportar Bug")} 
                             type={"primary"}
                           />
+
+                          <View style={styles.separatorUnlogged}></View>
 
                           <View style={styles.drawerList}>
                             <DrawerItemList {...props} />
@@ -138,8 +143,15 @@ const CustomDrawer = (props: any) => {
                       <>
                         <CustomDrawerButton 
                           text={"Sair"} 
-                          icon={"loginIcon"} 
-                          onPress={() => Alert.alert('Colocar logout')}
+                          icon={"logoutIcon"} 
+                          onPress={() => {
+                            auth.signOut().then(() => {
+                              router.push('/');
+                              console.log("Sign Out realizado com sucesso")
+                            }).catch((error) => {
+                              console.error("Erro ao sair: ", error);
+                            });
+                          }}
                         />
                       </>
                     ) : (
@@ -160,26 +172,34 @@ export default CustomDrawer;
 
 const styles = StyleSheet.create({
   topContainer: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    marginTop: 7
+  },
+  leftSection: {
+    flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-    marginBottom: 20,
   },
   logo: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginBottom: 10,
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 12,
+    backgroundColor: "#d32f2f",
   },
-  roleText: {
+  nameText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
   },
-  loggedArrowContainer:{
-    justifyContent: "space-between",
-    marginBottom: 10,
+  roleText: {
+    fontSize: 14,
+    color: "#666",
+  },
+  loggedArrowContainer: {
+    justifyContent: "center", // Ajusta para centralizar no eixo vertical
+    alignItems: "center",
   },
   unloggedArrowContainer:{
     alignItems: "flex-end",
@@ -187,6 +207,17 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     padding: 10,
+  },
+  separatorLogged:{
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+    marginBottom: 7,
+  },
+  separatorUnlogged:{
+    paddingVertical: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: "#6c0318",
   },
   contentContainer: {
     flex: 1,
