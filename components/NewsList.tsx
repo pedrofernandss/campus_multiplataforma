@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, FlatList, SafeAreaView, StyleSheet } from 'react-native';
-import newsData from '@/assets/mocked-data/news';
 import NewsCard from './NewsCard';
 import { types } from '@/constants';
 import { fetchNews } from '@/functions/newsFunctions';
