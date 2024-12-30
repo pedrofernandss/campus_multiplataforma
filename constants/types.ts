@@ -2,11 +2,11 @@ import icons from "./icons";
 
 export interface News {
   id: string;
-  title: string;
-  subtitle: number;
+  mainTitle: string;
+  description: number;
   content: string;
-  author: string;
-  cover_image: string;
+  authors: Array<string>;
+  thumbnail: string;
   created_at: string;
 }
 

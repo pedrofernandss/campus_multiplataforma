@@ -14,15 +14,15 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image style={styles.coverImageStyle} source={{ uri: news.cover_image }} />
+        <Image style={styles.coverImageStyle} source={{ uri: news.thumbnail }} />
       </View>
 
       <View style={styles.contentContainer}>
-        <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">{news.title}</Text>
-        <Text style={styles.subtitleStyle} numberOfLines={2} ellipsizeMode="tail">{news.subtitle}</Text>
+        <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">{news.mainTitle}</Text>
+        <Text style={styles.subtitleStyle} numberOfLines={2} ellipsizeMode="tail">{news.description}</Text>
 
         <View style={styles.metaDataStyle}>
-          <Text style={styles.authorStyle}>Por: {news.author}</Text>
+          <Text style={styles.authorStyle}>Por: {news.authors}</Text>
           <View style={styles.timeDataStyle}>
             <Image source={icons.clockIcon} style={styles.clockIconStyle} />
             <Text style={styles.timeStyle}>{news.created_at}</Text>
