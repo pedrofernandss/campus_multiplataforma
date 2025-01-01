@@ -1,4 +1,5 @@
-import { Dimensions, StyleSheet, Text, View, Image } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import standard from '@/theme';
 import { icons } from '@/constants';
@@ -11,10 +12,17 @@ interface NewsCardItemProps {
 }
 
 const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
+  const router = useRouter();
+
+  const processedThumbnailUri =
+  news.thumbnail.includes("imgur.com") && !news.thumbnail.endsWith(".jpg")
+    ? news.thumbnail + ".jpg"
+    : news.thumbnail;
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity onPress={() => router.push(`./newsPage?id=${news.id}`)} style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image style={styles.coverImageStyle} source={{ uri: news.thumbnail }} />
+        <Image style={styles.coverImageStyle} source={{ uri: processedThumbnailUri }} />
       </View>
 
       <View style={styles.contentContainer}>
@@ -29,7 +37,7 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
