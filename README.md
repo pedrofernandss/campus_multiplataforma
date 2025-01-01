@@ -1,84 +1,106 @@
-# Campus Multiplataforma
+# Campus Multiplataforma    
 
-<p align="center">
-  <img src="./assets/images/cover.png" alt="Campus Multiplataforma Logo">
-</p>
+<p align="center">  
+  <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native">  
+  <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo">  
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">  
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">  
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase">  
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">  
+</p>  
 
-## Descrição
-
-O **Campus Multiplataforma** é um aplicativo desenvolvido como parte da disciplina **Campus Multimídia** do curso de Jornalismo da Universidade de Brasília. Seu objetivo é unificar todas as publicações do jornal _Campus_ em um único aplicativo, centralizando o conteúdo de todos os canais de comunicação (impresso, digital e redes sociais). 
-
-A plataforma faz uso de **inteligência artificial** para otimizar o processo jornalístico, auxiliando na curadoria de conteúdo, sugestão de pautas e distribuição eficiente das notícias, integrando diferentes mídias de forma eficiente e acessível.
-
-Este projeto está sendo desenvolvido com **React Native** no front-end, utilizando o ambiente **Expo**, e **Nest.js** no back-end. Ambas as aplicações utilizam **TypeScript** para garantir um código robusto e escalável. A infraestrutura é totalmente dockerizada para facilitar o desenvolvimento, a implantação e o escalonamento. Além disso, **Python** será utilizado para integrar as funcionalidades de inteligência artificial.
-
-## Integrantes
-
-- **Pedro Henrique** - Engenharia de Software, Universidade de Brasília  
-  [LinkedIn](https://www.linkedin.com/in/pedro-henrique-monteiro-nascimento-069b0b2b6) | [GitHub](https://github.com/pedronascimentos)
-
-- **Pedro Fernandes** - Ciências da Computação, Universidade de Brasília  
-  [LinkedIn](https://www.linkedin.com/in/pedrofernandss) | [GitHub](https://github.com/pedrofernandss)
-
-## Tecnologias Utilizadas
-
-### Front-end
-- **React Native** (Expo)
-- **TypeScript**
-- **Docker**
-
-### Back-end
-- **Nest.js**
-- **TypeScript**
-- **Docker**
-- **Python** (para integração de IA)
-
-## Como Rodar o Projeto
-
-### 1. Clonar o repositório:
-```bash
-git clone https://github.com/seu-usuario/campus_multiplataforma.git
-```
-
-### 2. Acessar o diretório do projeto:
-```bash
-cd campus_multiplataforma/
-```
-
-### 3. Alterar o Dockerfile:
-No Dockerfile, altere a variável de ambiente `REACT_NATIVE_PACKAGER_HOSTNAME` para o **IP da sua máquina local**.
-
-```dockerfile
-ENV REACT_NATIVE_PACKAGER_HOSTNAME="SEU_IP_LOCAL"
-```
-
-Isso permite que o Expo se comunique corretamente com o dispositivo.
-
-### 4. Construir a imagem Docker:
-```bash
-docker build -t campusmultiplataforma-front .
-```
-
-### 5. Iniciar o container e entrar como root:
-```bash
-docker run -it --rm -p 8081:8081 -p 19006:19006 --user root campusmultiplataforma-front /bin/bash
-```
-
-
-### 6. Acessar o app no celular:
-- **Baixe o app Expo Go** (iOS/Android).
-- Escaneie o QR Code gerado pelo Expo.
-- Certifique-se de que o celular e o computador estão na mesma rede local.
-
-
-Contribuições são bem-vindas! Para reportar bugs ou sugerir melhorias, por favor, abra uma **issue** ou envie um **pull request**.
-
-## Licença
-
-Este projeto é licenciado sob a licença MIT. Consulte o arquivo [LICENSE](./LICENSE) para mais detalhes.
+<p align="center">  
+  <img src="./assets/images/cover.png" alt="Campus Multiplataforma Logo" width="85%">  
+</p>  
 
 ---
 
-<p align="center">
-  <em>Desenvolvido por Pedro Henrique e Pedro Fernandes - Universidade de Brasília</em>
-</p>
+## Sobre o Projeto  
+
+O **Campus Multiplataforma** é um aplicativo desenvolvido para o **Laboratório de Jornalismo** do **Departamento de Comunicação** da Universidade de Brasília. O projeto centraliza todas as publicações do jornal _Campus Multiplataforma_ em uma única plataforma, integrando conteúdos de diferentes canais de comunicação:  
+
+- **LinkedIn**  
+- **TikTok**  
+- **Instagram**  
+- **YouTube**  
+
+Com o objetivo de fortalecer a presença digital do jornal, o aplicativo oferece acesso centralizado ao conteúdo multimídia e uma experiência unificada para os usuários.  
+
+---
+
+## Equipe  
+
+- **Pedro Fernandes**  
+  **Ciências da Computação**, Universidade de Brasília  
+  [GitHub](https://github.com/pedrofernandss)  
+
+- **Pedro Henrique**  
+  **Engenharia de Software**, Universidade de Brasília  
+  [GitHub](https://github.com/pedronascimentos)  
+
+- **Ithalo Medeiros**  
+  **Ciências da Computação**, Universidade de Brasília  
+  [GitHub](https://github.com/IthaloDekki)  
+
+---
+
+## Configuração do Projeto  
+
+### Requisitos  
+
+- **Node.js** >= 18.x  
+- **Yarn** ou **npm**  
+
+### Variáveis de Ambiente  
+
+Antes de executar o projeto, configure as seguintes variáveis de ambiente no arquivo `.env`:  
+
+```env
+# Configurações do Firebase
+EXPO_PUBLIC_FIREBASE_API_KEY=sua_chave_api
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=sua_auth_domain
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=seu_id_projeto
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=seu_bucket
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=seu_sender_id
+EXPO_PUBLIC_FIREBASE_APP_ID=seu_app_id
+EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=seu_measurement_id
+
+# Configurações do YouTube
+EXPO_PUBLIC_YOUTUBE_API_KEY=sua_chave_api_youtube
+EXPO_PUBLIC_CHANNEL_ID=seu_id_canal
+```  
+
+### Rodando o Projeto com Docker  
+
+1. **Clone o repositório:**  
+   ```bash
+   git clone https://github.com/pedrofernandss/campus_multiplataforma.git
+   ```  
+
+2. **Inicie o ambiente de desenvolvimento:**  
+   ```bash
+   docker-compose up
+   ```  
+
+### Rodando o Projeto sem Docker  
+
+1. **Clone o repositório:**  
+   ```bash
+   git clone https://github.com/pedrofernandss/campus_multiplataforma.git  
+   ```  
+
+2. **Instale as dependências:**  
+   ```bash
+   cd app && yarn install
+   ```  
+
+3. **Inicie o servidor Expo:**  
+   ```bash
+   npx expo start
+   ```  
+
+---
+
+## Licença  
+
+Este projeto está licenciado sob a licença **MIT**. Consulte o arquivo `LICENSE` para mais detalhes.  
