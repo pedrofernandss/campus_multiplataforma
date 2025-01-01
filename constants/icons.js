@@ -4,5 +4,6 @@ import clockIcon from "../assets/icons/clock-icon.png";
 import loginIcon from "../assets/icons/login-icon.png";
 import bugIcon from "../assets/icons/bug-icon.png";
 import arrowFowardIcon from "../assets/icons/arrow-foward-icon.png"
+import arrow from "../assets/icons/arrow.png";
 
-export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon };
+export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon, arrow };
