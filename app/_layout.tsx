@@ -50,7 +50,8 @@ const DrawerLayout = () => {
         drawerLabelStyle:{
           marginLeft: -6,
 
-        }
+        },
+        drawerPosition: 'right',
       }}>
       </Drawer>
     </GestureHandlerRootView>

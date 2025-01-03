@@ -1,5 +1,14 @@
-import { GestureResponderEvent } from "react-native";
 import icons from "./icons";
+
+export interface News {
+  id: string;
+  mainTitle: string;
+  description: number;
+  content: string;
+  authors: Array<string>;
+  thumbnail: string;
+  created_at: string;
+}
 
 export interface Tag {
     id: string;
