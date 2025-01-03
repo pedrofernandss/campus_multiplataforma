@@ -10,7 +10,7 @@ import { useFonts } from "expo-font";
 
 const { width } = Dimensions.get('window');
 
-const NewsPage: React.FC = () => {
+export default function NewsPage() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [newsData, setNewsData] = useState<any>(null);
@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     backgroundColor: standard.colors.campusRed,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   logoContainer: {
@@ -163,19 +162,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  backButtonIcon: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "bold",
-  },
   logo: {
+    marginTop: 6,
     width: 145,
     height: 31,
   },
   icon: {
     transform: [{ rotate: '180deg' }],
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
   },
   subheading: {
     fontSize: 20,
@@ -185,13 +180,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Rowdies-Bold',
   },
   contentContainer: {
-    padding: 16
+    padding: 12
   },
   mainTitle: {
-    fontSize: 24,
-    marginBottom: 2,
+    fontSize: 20,
+    marginBottom: 3,
     textAlign: 'justify',
-    color: "#222",
+    color: standard.colors.black,
     fontFamily: 'Quicksand-Bold',
   },
   blockContainer: {
@@ -205,7 +200,7 @@ const styles = StyleSheet.create({
   },
   caption: {
     fontSize: 12,
-    color: "#666",
+    color: standard.colors.grey,
     marginBottom: 8,
     textAlign: 'center',
     fontStyle: "italic"
@@ -213,14 +208,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     lineHeight: 24,
-    marginBottom: 8,
+    marginBottom: 1,
     textAlign: 'justify',
     color: "#333",
     fontFamily: 'Quicksand-Semibold',
   },
   authors: {
     fontSize: 14,
-    color: "#545454",
+    color: standard.colors.grey,
     marginBottom: 16
   },
   loadingContainer: {
@@ -230,17 +225,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   webview: {
-    height: 200,
+    height: 50,
     width: "100%"
   },
   video: {
     height: 200,
-    width: "100%",
+    width: width,
     backgroundColor: "#000"
   },
   boldText: {
     fontWeight: "bold", 
   },
 });
-
-export default NewsPage;
