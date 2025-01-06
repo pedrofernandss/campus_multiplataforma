@@ -17,6 +17,13 @@ export interface Tag {
     color: string;
 }
 
+export interface InstagramReels {
+  id: string;
+  permalink: string;
+  media_type: string;
+  thumbnail_url: string;
+}
+
 export interface DrawerButtons {
   text?: string,
   icon: keyof typeof icons,
