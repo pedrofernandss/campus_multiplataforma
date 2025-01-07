@@ -13,9 +13,14 @@ export const fetchInstagramMedia = async (): Promise<InstagramReels[]> => {
                 }
             })
         const instagramMedia = response.data.data
-        const filteredMedia = instagramMedia.filter(
-            (item) => item.media_type === 'VIDEO'
-        ) as InstagramReels[]
+        const aspectRatioArray = [0.6337, 0.9913, 0.9453, 1.1826]
+        
+        const filteredMedia = instagramMedia
+        .filter((item) => item.media_type === 'VIDEO')
+        .map((item) => ({
+            ...item, 
+            aspect_ratio: aspectRatioArray[Math.floor(Math.random() * aspectRatioArray.length)],
+        })) as InstagramReels[]
         return filteredMedia;       
     } catch (error) {
         console.error("Erro ao buscar os arquivos de vídeos: ", error);
