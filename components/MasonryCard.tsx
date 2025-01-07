@@ -5,22 +5,22 @@ import React from 'react'
 
 const MasonryCard = ({ item }) => {
     
-    const handlePress = async () => {
-        if (item.link) {
-          const supported = await Linking.canOpenURL(item.link);
+    const goToReels = async () => {
+        if (item.permalink) {
+          const supported = await Linking.canOpenURL(item.permalink);
           if (supported) {
-            await Linking.openURL(item.link);
+            await Linking.openURL(item.permalink);
           } else {
-            console.error(`Não é possível abrir o link: ${item.link}`);
+            console.error(`Não é possível abrir o link: ${item.permalink}`);
           }
         }
     };
 
     return (
-        <TouchableOpacity style={styles.container} onPress={handlePress}>
+        <TouchableOpacity style={styles.container} onPress={goToReels}>
         <Image
-            source={item.image}
-            style={[styles.image, { aspectRatio: item.aspectRatio}]}
+            source={{ uri: item.thumbnail_url }}
+            style={[styles.image, { aspectRatio: 200 / 300}]}
             resizeMode="cover"
         />
         </TouchableOpacity>
