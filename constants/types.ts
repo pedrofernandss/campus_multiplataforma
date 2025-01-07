@@ -7,7 +7,7 @@ export interface News {
   content: string;
   authors: Array<string>;
   thumbnail: string;
-  created_at: string;
+  createdAt: string;
 }
 
 export interface Tag {

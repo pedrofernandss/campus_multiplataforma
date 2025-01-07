@@ -33,7 +33,7 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
           <Text style={styles.authorStyle}>Por: {news.authors.join(", ")}</Text>
           <View style={styles.timeDataStyle}>
             <Image source={icons.clockIcon} style={styles.clockIconStyle} />
-            <Text style={styles.timeStyle}>{news.created_at}</Text>
+            <Text style={styles.timeStyle}>{news.createdAt}</Text>
           </View>
         </View>
       </View>
