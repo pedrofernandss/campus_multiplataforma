@@ -9,6 +9,9 @@ export const fetchNews = async (): Promise<News[]> => {
             id: doc.id,
             ...doc.data(),
         })) as News[];
+
+        news.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
         return news;
     } catch (error) {
         console.error("Erro ao buscar as noticias: ", error);
