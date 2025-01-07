@@ -12,23 +12,28 @@ const getLastYearTimestamp = (): number => {
 
 export const fetchInstagramMedia = async (): Promise<InstagramReels[]> => {
     try {
-        const sinceTimestamp = getLastYearTimestamp();
-
         const url =  `https://graph.instagram.com/${process.env.EXPO_PUBLIC_USER_ID}/media`
         const response = await axios.get(url,
             {
                 params: {
                     fields: 'id,media_type,media_url,thumbnail_url,permalink',
                     access_token: process.env.EXPO_PUBLIC_INSTAGRAM_ACCESS_TOKEN,
-                    since: sinceTimestamp,
+                    since: getLastYearTimestamp(),
                 }
             })
-            
+        
+        if(!response.data || !response.data.data){
+            throw new Error("Dados não encontrados na resposta da API.");
+        }
+
         let instagramMedia = [...response.data.data]
         
         let nextPage = response.data.paging?.next;
         while(nextPage){
             const nextResponse = await axios.get(nextPage);
+            if (!nextResponse.data || !nextResponse.data.data) {
+                break;
+            }
             instagramMedia = [...instagramMedia, ...nextResponse.data.data];
             nextPage = nextResponse.data.paging?.next;
         }
