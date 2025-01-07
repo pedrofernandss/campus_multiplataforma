@@ -15,7 +15,7 @@ const NewsList = () => {
               const fetchedNews = await fetchNews();
               setNews(fetchedNews);
           } catch (error) {
-              console.error("Erro ao buscar as tags: ", error);
+              console.error("Erro ao buscar as notícias: ", error);
           }
       };
 
