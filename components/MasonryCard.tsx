@@ -18,11 +18,11 @@ const MasonryCard = ({ item }) => {
 
     return (
         <TouchableOpacity style={styles.container} onPress={goToReels}>
-        <Image
-            source={{ uri: item.thumbnail_url }}
-            style={[styles.image, { aspectRatio: item.aspect_ratio}]}
-            resizeMode="cover"
-        />
+            <Image
+                source={{ uri: item.thumbnail_url }}
+                style={[styles.image, { aspectRatio: item.aspect_ratio}]}
+                resizeMode="cover"
+            />
         </TouchableOpacity>
     )
 }
