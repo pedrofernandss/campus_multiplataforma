@@ -20,7 +20,7 @@ const MasonryCard = ({ item }) => {
         <TouchableOpacity style={styles.container} onPress={goToReels}>
         <Image
             source={{ uri: item.thumbnail_url }}
-            style={[styles.image, { aspectRatio: 200 / 300}]}
+            style={[styles.image, { aspectRatio: item.aspect_ratio}]}
             resizeMode="cover"
         />
         </TouchableOpacity>
@@ -32,7 +32,7 @@ export default MasonryCard
 const styles = StyleSheet.create({
     container: {
         marginTop: 16,
-        marginBottom: 8,
+        // marginBottom: 6,
         marginHorizontal: 8,
         borderRadius: 12,
         overflow: 'hidden',
