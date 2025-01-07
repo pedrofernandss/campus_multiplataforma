@@ -3,7 +3,7 @@ import icons from "./icons";
 export interface News {
   id: string;
   mainTitle: string;
-  description: number;
+  description: string;
   content: string;
   authors: Array<string>;
   thumbnail: string;
