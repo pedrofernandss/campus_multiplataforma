@@ -8,6 +8,7 @@ export interface News {
   authors: Array<string>;
   thumbnail: string;
   createdAt: string;
+  published: boolean;
 }
 
 export interface Tag {
