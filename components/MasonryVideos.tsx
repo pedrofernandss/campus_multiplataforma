@@ -38,6 +38,6 @@ export default MasonryVideos
 
 const styles = StyleSheet.create({
   masonry: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 8,
   }
 })
