@@ -84,7 +84,7 @@ export default function NewsPage() {
         <Text style={styles.authors}>
           <Text style={styles.boldText}>Por: </Text>
           {newsData.authors.join(", ")} {"\n"}
-          {new Date(newsData.publishedAt).toLocaleDateString()}
+          {new Date(newsData.createdAt).toLocaleDateString()}
         </Text>
 
         {newsData.blocks
