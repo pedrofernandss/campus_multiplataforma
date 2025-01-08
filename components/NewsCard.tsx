@@ -4,6 +4,7 @@ import React from 'react';
 import standard from '@/theme';
 import { icons } from '@/constants';
 import { News } from '../constants/types'
+import { getRelativeTime } from '@/functions/newsFunctions';
 
 const { width } = Dimensions.get('window');
 
@@ -30,10 +31,10 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
         <Text style={styles.subtitleStyle} numberOfLines={2} ellipsizeMode="tail">{news.description}</Text>
 
         <View style={styles.metaDataStyle}>
-          <Text style={styles.authorStyle}>Por: {news.authors.join(", ")}</Text>
+          <Text style={styles.authorStyle} numberOfLines={1}>Por: {news.authors.join(", ")}</Text>
           <View style={styles.timeDataStyle}>
             <Image source={icons.clockIcon} style={styles.clockIconStyle} />
-            <Text style={styles.timeStyle}>{news.created_at}</Text>
+            <Text style={styles.timeStyle}>{getRelativeTime(news.createdAt)}</Text>
           </View>
         </View>
       </View>
@@ -84,6 +85,7 @@ const styles = StyleSheet.create({
     marginTop: 5,  
   },
   authorStyle: {
+    flex: 1,
     fontFamily: standard.fonts.bold,
     color: standard.colors.black,
     opacity: 0.5,

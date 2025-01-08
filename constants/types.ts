@@ -3,11 +3,12 @@ import icons from "./icons";
 export interface News {
   id: string;
   mainTitle: string;
-  description: number;
+  description: string;
   content: string;
   authors: Array<string>;
   thumbnail: string;
-  created_at: string;
+  createdAt: string;
+  published: boolean;
 }
 
 export interface Tag {
