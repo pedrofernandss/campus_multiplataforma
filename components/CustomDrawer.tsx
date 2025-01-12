@@ -69,7 +69,7 @@ const CustomDrawer = (props: any) => {
               {!user && (
                 <View style={styles.hashtagsContainer}>
                   <View style={styles.grid}>
-                    {tags.map((tag) => (
+                    {tags.slice(0, 8).map((tag) => (
                       <Text key={tag.id} style={[styles.hashtag, { color: tag.color }]}>
                         {tag.name}
                       </Text>
