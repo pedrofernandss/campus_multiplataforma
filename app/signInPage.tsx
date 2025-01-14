@@ -6,6 +6,7 @@ import CustomButton from "@/components/CustomButton";
 import CustomInputPassword from "@/components/CustomInputPassword";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase.config";
+import { router } from 'expo-router';
 
 export default function signInPage() {
   const [email, setEmail] = useState('')
@@ -18,6 +19,7 @@ export default function signInPage() {
 
   const signIn = async () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      router.push('/');
       console.log("Login bem-sucedido", userCredential.user.email)
     }
 
