@@ -1,4 +1,4 @@
-import { InstagramReels } from '@/constants/types'
+import { InstagramReels } from "../types/instagramReels"
 import axios from 'axios'
 
 const getLastYearTimestamp = (): number => {

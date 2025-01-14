@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native'
-import { Tag } from '../constants/types'
+import { Tag } from '../types/tag'
 import standard from '@/theme';
 import React from 'react'
 

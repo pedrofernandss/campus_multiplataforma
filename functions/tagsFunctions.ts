@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase.config";
-import { Tag } from "../constants/types";
+import { Tag } from "../types/tag";
 
 
 export const fetchTags = async (): Promise<Tag[]> => {
