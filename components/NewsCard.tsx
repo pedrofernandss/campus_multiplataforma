@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import standard from '@/theme';
 import { icons } from '@/constants';
-import { News } from '../constants/types'
+import { News } from '../types/news'
 import { getRelativeTime } from '@/functions/newsFunctions';
 
 const { width } = Dimensions.get('window');

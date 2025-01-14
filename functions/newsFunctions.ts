@@ -1,6 +1,6 @@
 import { collection, getDocs, query, orderBy, where  } from "firebase/firestore";
 import { db } from "../firebase.config";
-import { News } from "../constants/types";
+import { News } from "../types/news";
 
 export const fetchNews = async (): Promise<News[]> => {
     try {

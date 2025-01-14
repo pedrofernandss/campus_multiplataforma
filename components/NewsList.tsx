@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, FlatList, SafeAreaView, StyleSheet } from 'react-native';
 import NewsCard from './NewsCard';
-import { types } from '@/constants';
 import { fetchNews } from '@/functions/newsFunctions';
+import { News } from '@/types/news';
 
 const { width } = Dimensions.get('window');
 
 const NewsList = () => {
-  const [news, setNews] = useState<types.News[]>([]);
+  const [news, setNews] = useState<News[]>([]);
   
   useEffect(() => {
       const loadNews = async () => {
