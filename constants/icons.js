@@ -9,5 +9,7 @@ import descriptionIcon from "../assets/icons/description-icon.png";
 import homeIcon from "../assets/icons/home-icon.png";
 import logoutIcon from "../assets/icons/logout-icon.png";
 import rightClick from "../assets/icons/right-click-icon.png"
+import taskDone from '../assets/icons/task-done-icon.png';
+import clockEditorPage from '../assets/icons/clock-editor-icon.png';
 
-export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon, calendarIcon, descriptionIcon, homeIcon, logoutIcon, rightClick };
+export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon, calendarIcon, descriptionIcon, homeIcon, logoutIcon, rightClick, taskDone, clockEditorPage };
