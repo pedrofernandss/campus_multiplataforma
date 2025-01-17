@@ -1,4 +1,4 @@
-import { Linking, StyleSheet, Text, TouchableOpacity, View, Alert, Image } from "react-native";
+import { Linking, StyleSheet, Text, TouchableOpacity, View, Alert, Image, Pressable } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -7,12 +7,15 @@ import { useRouter } from "expo-router";
 import { fetchTags } from "@/functions/tagsFunctions";
 import { types } from '@/constants'
 import { auth } from "../firebase.config";
-import { icons } from "../constants"
+import ModalComponent from "./ModalComponent";
+import { sendEmail, sendSugestionNewsEmail } from "@/functions/emailFunctions";
 
 
 const CustomDrawer = (props: any) => {
   const [tags, setTags] = useState<types.Tag[]>([])
   const [user, setUser] = useState(null)
+  const [isNewsSugestionModalOpen, setNewsSugestionModalOpen] = useState(false)
+  const [newsSugestion, setNewsSugestion] = useState('')
   const router = useRouter();
   const { navigation } = props;
 
@@ -114,9 +117,29 @@ const CustomDrawer = (props: any) => {
                           <CustomDrawerButton 
                             text={"Sugerir Notícia"}  
                             icon={"sugestNews"} 
-                            onPress={() => alert("Sugerir uma notícia")} 
+                            onPress={() => setNewsSugestionModalOpen(true)} 
                             type={"primary"}
                           />
+                          <ModalComponent
+                            label={'Digite sua sugestão de notícia ou pauta abaixo:'}
+                            icon= {"redSugestNews"}
+                            isOpen={isNewsSugestionModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setNewsSugestion('')
+                              setNewsSugestionModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={newsSugestion} 
+                            onInputChange={setNewsSugestion}  
+                            onConfirmButton={() => {
+                              sendSugestionNewsEmail("template_qqdw65j", newsSugestion)
+                              setNewsSugestion('')
+                              setNewsSugestionModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          >
+                          </ModalComponent>  
+                          
                           <CustomDrawerButton 
                             text={"Reportar Bug"}  
                             icon={"bugIcon"} 
