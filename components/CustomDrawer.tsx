@@ -8,7 +8,7 @@ import { fetchTags } from "@/functions/tagsFunctions";
 import { types } from '@/constants'
 import { auth } from "../firebase.config";
 import ModalComponent from "./ModalComponent";
-import { sendEmail, sendSugestionNewsEmail } from "@/functions/emailFunctions";
+import { sendSugestionNewsEmail, sendBugInformEmail } from "@/functions/emailFunctions";
 
 
 const CustomDrawer = (props: any) => {
@@ -16,6 +16,8 @@ const CustomDrawer = (props: any) => {
   const [user, setUser] = useState(null)
   const [isNewsSugestionModalOpen, setNewsSugestionModalOpen] = useState(false)
   const [newsSugestion, setNewsSugestion] = useState('')
+  const [isBugInformModalOpen, setBugInformModalOpen] = useState(false)
+  const [bugInform, setBugInform] = useState('')
   const router = useRouter();
   const { navigation } = props;
 
@@ -137,15 +139,32 @@ const CustomDrawer = (props: any) => {
                               setNewsSugestionModalOpen(false)
                             }}
                             confirmButtonText={"Enviar"}
-                          >
-                          </ModalComponent>  
+                          />  
                           
                           <CustomDrawerButton 
                             text={"Reportar Bug"}  
                             icon={"bugIcon"} 
-                            onPress={() => alert("Reportar Bug")} 
+                            onPress={() => setBugInformModalOpen(true)} 
                             type={"primary"}
                           />
+                          <ModalComponent
+                            label={'Encontrou um bug? Informe aqui e nos ajude a melhorar'}
+                            icon= {"redBugIcon"}
+                            isOpen={isBugInformModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setBugInform('')
+                              setBugInformModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={bugInform} 
+                            onInputChange={setBugInform}  
+                            onConfirmButton={() => {
+                              sendBugInformEmail("template_viuaym9", bugInform)
+                              setBugInform('')
+                              setBugInformModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          />  
 
                           <View style={styles.separatorUnlogged}></View>
 
