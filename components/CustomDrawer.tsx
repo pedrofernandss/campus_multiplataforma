@@ -110,9 +110,27 @@ const CustomDrawer = (props: any) => {
                           <CustomDrawerButton 
                             text={"Reportar Bug"}  
                             icon={"bugIcon"} 
-                            onPress={() => alert("Reportar Bug")} 
+                            onPress={() => setBugInformModalOpen(true)} 
                             type={"primary"}
                           />
+                          <ModalComponent
+                            label={'Encontrou um bug? Informe aqui e nos ajude a melhorar'}
+                            icon= {"redBugIcon"}
+                            isOpen={isBugInformModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setBugInform('')
+                              setBugInformModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={bugInform} 
+                            onInputChange={setBugInform}  
+                            onConfirmButton={() => {
+                              sendBugInformEmail("template_viuaym9", bugInform)
+                              setBugInform('')
+                              setBugInformModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          />  
                         </>
                       ) : (
                         <>
