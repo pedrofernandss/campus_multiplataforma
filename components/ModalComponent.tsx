@@ -21,6 +21,8 @@ const ModalComponent: React.FC<ModalBox> = ( { title, label, icon, isOpen, hasIn
                 {hasInput && (
                   <TextInput style={styles.input} 
                   placeholder="Digite aqui..."
+                  textAlignVertical="top"
+                  multiline={true}
                   value={inputValue}
                   onChangeText={onInputChange} />
                 )
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
       },
       modalContainer: {
         width: '95%',
-        backgroundColor: standard.colors.primaryWhite,
+        backgroundColor: '#ECECEC',
         borderRadius: 15,
         padding: 20,
         alignItems: 'center',
@@ -79,16 +81,20 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         textAlign: 'center',
         marginVertical: 10,
+        color: '#7E7E7E',
         fontFamily: standard.fonts.regular
       },
       input: {
         width: '100%',
-        height: 55,
+        height: 104,
+        backgroundColor: standard.colors.primaryWhite,
+  
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         padding: 10,
         marginVertical: 10,
+        
       },
       buttonContainer: {
         width: '100%',
