@@ -93,7 +93,8 @@ export default function NewsPage() {
             switch (block.type) {
               case "image":
                 const processedUri =
-                  block.content.includes("imgur.com") && !block.content.endsWith(".jpg")
+                  block.content.includes("imgur.com") &&
+                  !/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(block.content)
                     ? block.content + ".jpg"
                     : block.content;
                 return (
