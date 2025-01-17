@@ -11,6 +11,7 @@ import logoutIcon from "../assets/icons/logout-icon.png";
 import rightClick from "../assets/icons/right-click-icon.png"
 import sugestNews from "../assets/icons/sugest-news-icon.png"
 import redSugestNews from "../assets/icons/red-sugest-news-icon.png"
+import redBugIcon from "../assets/icons/red-bug-icon.png";
 
 export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon, 
-    calendarIcon, descriptionIcon, homeIcon, logoutIcon, rightClick, sugestNews, redSugestNews };
+    calendarIcon, descriptionIcon, homeIcon, logoutIcon, rightClick, sugestNews, redSugestNews, redBugIcon };
