@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, Image, GestureResponderEvent } from 'react-native'
 import React, { useState } from 'react'
 import standard from '@/theme'
-import { icons, types } from '@/constants'
+import { icons } from '@/constants'
 import { opacity } from 'react-native-reanimated/lib/typescript/Colors'
 
 

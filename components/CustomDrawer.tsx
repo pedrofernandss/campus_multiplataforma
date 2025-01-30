@@ -5,8 +5,9 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import CustomDrawerButton from "./CustomDrawerButton";
 import { useRouter } from "expo-router";
 import { fetchTags } from "@/functions/tagsFunctions";
-import { types } from '@/constants'
 import { auth } from "../firebase.config";
+import * as types from "../types/index";
+
 
 
 const CustomDrawer = (props: any) => {
@@ -98,7 +99,7 @@ const CustomDrawer = (props: any) => {
                           <CustomDrawerButton
                             text={"Painel de Artigos"}
                             icon={"calendarIcon"}
-                            onPress={() => Alert.alert('Painel de artigos')}
+                            onPress={() => router.push('/editor\'sPanel')}
                             type={"primary"}
                           />
                           <CustomDrawerButton 
