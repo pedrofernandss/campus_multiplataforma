@@ -99,7 +99,7 @@ const CustomDrawer = (props: any) => {
                           <CustomDrawerButton
                             text={"Painel de Artigos"}
                             icon={"calendarIcon"}
-                            onPress={() => router.push('/editor\'sPanel')}
+                            onPress={() => router.push('/editorsPanel')}
                             type={"primary"}
                           />
                           <CustomDrawerButton 
