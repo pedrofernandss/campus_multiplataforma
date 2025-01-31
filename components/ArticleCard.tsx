@@ -24,7 +24,7 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
     <View style={styles.container}>
         <Image style={styles.coverImageStyle} source={{ uri: processedThumbnailUri }} />
         <View style={styles.contentContainer}>
-          <Text style={styles.titleStyle} numberOfLines={3} ellipsizeMode="tail">
+          <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">
             {news.mainTitle.length > 50 ? news.mainTitle.substring(0, 40) + "..." : news.mainTitle}
           </Text>
             <Text style={styles.authorStyle} numberOfLines={1}>Por: {news.authors.join(", ")}</Text>
@@ -82,16 +82,15 @@ const styles = StyleSheet.create({
       backgroundColor: '#ffffff',
       marginHorizontal: 20,
       marginVertical: 7,
-      height: 100, 
+      height: 80, 
       overflow: 'hidden',
-      alignItems: 'center',
-      
+      alignItems: 'center',    
   },
   coverImageStyle: {
       width: width * 0.3, 
       height: '100%', 
-      borderTopLeftRadius: 12,
-      borderBottomLeftRadius: 12,
+      borderTopLeftRadius: 6,
+      borderBottomLeftRadius: 6,
   },
   contentContainer: {
       flex: 1,
