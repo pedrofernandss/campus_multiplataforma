@@ -19,6 +19,22 @@ export const fetchNews = async (): Promise<News[]> => {
     }
 };
 
+export const getAllNews = async (): Promise<News[]> => {
+    try {
+        const response = await getDocs(collection(db, "news")); 
+        const news = response.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        })) as News[];
+        news.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        return news
+
+    } catch (error) {
+        console.error("Erro ao buscar as todas as noticias: ", error);
+        throw error;
+    }
+}
+
 export const getRelativeTime = (dateString: string): string => {
     const now = new Date();
     const createdAt = new Date(dateString);
