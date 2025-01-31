@@ -6,6 +6,7 @@ import standard from '@/theme';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase.config"; // Certifique-se de importar sua instância do Firestore
 import { icons } from '@/constants';
+import { getAllNews } from '@/functions/newsFunctions';
 
 
 const ArticleList = () => {
@@ -13,44 +14,20 @@ const ArticleList = () => {
   const [publishedCount, setPublishedCount] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
 
-  const fetchNews = async (): Promise<News[]> => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "news")); // Obtém todos os documentos da coleção "news"
   
-      const newsList: News[] = querySnapshot.docs.map((doc) => {
-        const data = doc.data(); // Obtém os dados do documento
-  
-        return {
-          id: doc.id,
-          mainTitle: data.mainTitle || "Sem título",
-          description: data.description || "Sem descrição",
-          content: data.content || "",
-          authors: data.authors || [],
-          published: data.published ?? false, 
-          createdAt: data.createdAt || new Date(), 
-          thumbnail: data.thumbnail || "https://via.placeholder.com/150", 
-        };
-      });
-  
-      return newsList;
-    } catch (error) {
-      console.error("Erro ao buscar as notícias:", error);
-      return [];
-    }
-  };
   
   useEffect(() => {
       const loadNews = async () => {
           try {
-            const allNews = await fetchNews();
+            const allNews = await getAllNews();
 
-              setNews(allNews);
-              
-              const published = allNews.filter((item) => item.published === true).length;
-              const pending = allNews.length - published;
+            setNews(allNews);
+            
+            const published = allNews.filter((item) => item.published === true).length;
+            const pending = allNews.length - published;
 
-              setPublishedCount(published);
-              setPendingCount(pending);
+            setPublishedCount(published);
+            setPendingCount(pending);
 
           } catch (error) {
               console.error("Erro ao buscar as notícias: ", error);
@@ -67,7 +44,7 @@ const ArticleList = () => {
       <View style={styles.statsContainer}>
 
         <View style={styles.statCard}>
-        <View style={styles.iconContainer}>
+          <View style={styles.iconContainer}>
             <Image source={icons.taskIcon} style={styles.icon}/>
           </View>
           <View style={styles.statCardContainer}>
@@ -105,11 +82,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     marginTop: 30,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   statCard: {
     flex: 1,
@@ -119,6 +91,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginHorizontal: 5,
+    shadowColor: "#383737",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, 
   },
   iconContainer: {
     width: 40,
@@ -158,7 +135,7 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     marginTop: 10, 
-    marginLeft: 10,
+    marginLeft: 20,
     fontFamily: standard.fonts.semiBold,
     fontSize: 20,
   }
