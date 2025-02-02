@@ -68,7 +68,7 @@ const CustomDrawer = (props: any) => {
               <View style={styles.topContainer}>
                 <View style={styles.leftSection}>
                   <Image
-                    source={require('../assets/icons/campus-icon.png')} // Substitua pela URL da logo
+                    source={require('../assets/icons/campus-icon.png')}
                     style={styles.logo}
                   />
                   <View>
