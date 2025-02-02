@@ -6,13 +6,9 @@ import CustomDrawerButton from "./CustomDrawerButton";
 import { useRouter } from "expo-router";
 import { fetchTags } from "@/functions/tagsFunctions";
 import { auth } from "../firebase.config";
-<<<<<<< HEAD
 import * as types from "../types/index";
-
-=======
 import ModalComponent from "./ModalComponent";
 import { sendSugestionNewsEmail, sendBugInformEmail } from "@/functions/emailFunctions";
->>>>>>> feature/modals
 
 
 const CustomDrawer = (props: any) => {
