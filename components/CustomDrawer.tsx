@@ -1,4 +1,4 @@
-import { Linking, StyleSheet, Text, TouchableOpacity, View, Alert, Image } from "react-native";
+import { Linking, StyleSheet, Text, TouchableOpacity, View, Alert, Image, Pressable } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -6,13 +6,22 @@ import CustomDrawerButton from "./CustomDrawerButton";
 import { useRouter } from "expo-router";
 import { fetchTags } from "@/functions/tagsFunctions";
 import { auth } from "../firebase.config";
+<<<<<<< HEAD
 import * as types from "../types/index";
 
+=======
+import ModalComponent from "./ModalComponent";
+import { sendSugestionNewsEmail, sendBugInformEmail } from "@/functions/emailFunctions";
+>>>>>>> feature/modals
 
 
 const CustomDrawer = (props: any) => {
   const [tags, setTags] = useState<types.Tag[]>([])
   const [user, setUser] = useState(null)
+  const [isNewsSugestionModalOpen, setNewsSugestionModalOpen] = useState(false)
+  const [newsSugestion, setNewsSugestion] = useState('')
+  const [isBugInformModalOpen, setBugInformModalOpen] = useState(false)
+  const [bugInform, setBugInform] = useState('')
   const router = useRouter();
   const { navigation } = props;
 
@@ -105,18 +114,79 @@ const CustomDrawer = (props: any) => {
                           <CustomDrawerButton 
                             text={"Reportar Bug"}  
                             icon={"bugIcon"} 
-                            onPress={() => alert("Reportar Bug")} 
+                            onPress={() => setBugInformModalOpen(true)} 
                             type={"primary"}
                           />
+                          <ModalComponent
+                            label={'Encontrou um bug? Informe aqui e nos ajude a melhorar'}
+                            icon= {"redBugIcon"}
+                            isOpen={isBugInformModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setBugInform('')
+                              setBugInformModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={bugInform} 
+                            onInputChange={setBugInform}  
+                            onConfirmButton={() => {
+                              sendBugInformEmail("template_viuaym9", bugInform)
+                              setBugInform('')
+                              setBugInformModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          />  
                         </>
                       ) : (
                         <>
                           <CustomDrawerButton 
-                            text={"Reportar Bug"}  
-                            icon={"bugIcon"} 
-                            onPress={() => alert("Reportar Bug")} 
+                            text={"Sugerir Notícia"}  
+                            icon={"sugestNews"} 
+                            onPress={() => setNewsSugestionModalOpen(true)} 
                             type={"primary"}
                           />
+                          <ModalComponent
+                            label={'Digite sua sugestão de notícia ou pauta abaixo:'}
+                            icon= {"redSugestNews"}
+                            isOpen={isNewsSugestionModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setNewsSugestion('')
+                              setNewsSugestionModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={newsSugestion} 
+                            onInputChange={setNewsSugestion}  
+                            onConfirmButton={() => {
+                              sendSugestionNewsEmail("template_qqdw65j", newsSugestion)
+                              setNewsSugestion('')
+                              setNewsSugestionModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          />  
+                          
+                          <CustomDrawerButton 
+                            text={"Reportar Bug"}  
+                            icon={"bugIcon"} 
+                            onPress={() => setBugInformModalOpen(true)} 
+                            type={"primary"}
+                          />
+                          <ModalComponent
+                            label={'Encontrou um bug? Informe aqui e nos ajude a melhorar'}
+                            icon= {"redBugIcon"}
+                            isOpen={isBugInformModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setBugInform('')
+                              setBugInformModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={bugInform} 
+                            onInputChange={setBugInform}  
+                            onConfirmButton={() => {
+                              sendBugInformEmail("template_viuaym9", bugInform)
+                              setBugInform('')
+                              setBugInformModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          />  
 
                           <View style={styles.separatorUnlogged}></View>
 
