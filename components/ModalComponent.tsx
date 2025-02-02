@@ -14,8 +14,10 @@ const ModalComponent: React.FC<ModalBox> = ( { title, label, icon, isOpen, hasIn
         statusBarTranslucent  
     >
       <View style={styles.overlay}>
-            <View style={styles.modalContainer}>
+            <View style={[icon ? styles.modalContainer : styles.modalContainerWithoutIcon]}>
+              {icon && (
                 <Image source={icons[icon as keyof typeof icons]} style={styles.iconContainer}/>
+              )}
                 {title && <Text style={styles.title}>{title}</Text>}
                 <Text style={styles.label}>{label}</Text>
                 {hasInput && (
@@ -28,16 +30,17 @@ const ModalComponent: React.FC<ModalBox> = ( { title, label, icon, isOpen, hasIn
                 )
                   }
                 <View style={styles.buttonContainer}>
-                    {onCancelButton && (
-                        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancelButton}>
-                        <Text style={styles.cancelButtonText}>{cancelButtonText || 'Cancelar'}</Text>
-                        </TouchableOpacity>
-                    )}
-                    {onConfirmButton && (
-                    <TouchableOpacity style={styles.button} onPress={onConfirmButton}>
-                    <Text style={styles.buttonText}>{confirmButtonText || 'Confirmar'}</Text>
-                    </TouchableOpacity>
-                    )}
+                      {onCancelButton && (
+                      <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancelButton}>
+                      <Text style={styles.cancelButtonText}>{cancelButtonText || 'Cancelar'}</Text>
+                      </TouchableOpacity>
+                      )}
+                      {onConfirmButton && (
+                      <TouchableOpacity style={[!onCancelButton ? styles.onlyConfirmButton : styles.button]} onPress={onConfirmButton}>
+                      <Text style={styles.buttonText}>{confirmButtonText || 'Confirmar'}</Text>
+                      </TouchableOpacity>
+                      )}
+                    
                 </View>
             </View>
       </View>
@@ -59,6 +62,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#ECECEC',
         borderRadius: 15,
         padding: 20,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+      },
+      modalContainerWithoutIcon: {
+        width: '85%',
+        backgroundColor: '#ECECEC',
+        borderRadius: 15,
+        padding: 15,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -117,6 +132,15 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
       },
+      onlyConfirmButton: {
+        backgroundColor: standard.colors.campusRed,
+        paddingVertical: 10,
+        width: '100%',
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 10,
+        alignItems: 'center'
+      },
       buttonText: {
         color: standard.colors.primaryWhite,
         fontSize: 16,
@@ -126,5 +150,5 @@ const styles = StyleSheet.create({
         color: '#423B34',
         fontSize: 16,
         fontFamily: standard.fonts.bold,
-      },
+      }
 })
