@@ -5,6 +5,7 @@ import standard from '@/theme';
 import { News } from '../types/news'
 import { auth } from "../firebase.config";
 import { icons } from '@/constants';
+import ModalComponent from './ModalComponent';
 const { width } = Dimensions.get('window');
 
 interface NewsCardItemProps {
@@ -13,6 +14,7 @@ interface NewsCardItemProps {
 
 const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
   const router = useRouter();
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
   const [pressedIcon, setPressedIcon] = useState<string | null>(null);
   const processedThumbnailUri =
   news.thumbnail.includes("imgur.com") && !news.thumbnail.endsWith(".jpg")
@@ -55,6 +57,7 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
             />          
           </TouchableOpacity>
           <TouchableOpacity 
+            onPress={() => setDeleteModalOpen(true)}
             onPressIn={() => setPressedIcon("trash")}
             onPressOut={() => setPressedIcon(null)}          
           >
@@ -66,6 +69,17 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
               ]}
             />          
           </TouchableOpacity>
+          <ModalComponent
+            label={"Tem certeza que deseja excluir esse artigo? Essa ação não poderá ser revertida."}
+            isOpen={isDeleteModalOpen}
+            icon= {"reportIcon"}
+            hasInput={false}
+            onCancelButton={() => setDeleteModalOpen(false)}
+            cancelButtonText={"Fechar"}
+            onConfirmButton={() => {
+              setDeleteModalOpen(false)}}
+            confirmButtonText={"Excluir"}
+          />  
 
         </View>
     </View>
