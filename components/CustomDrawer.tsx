@@ -1,18 +1,27 @@
-import { Linking, StyleSheet, Text, TouchableOpacity, View, Alert, Image } from "react-native";
+import { Linking, StyleSheet, Text, TouchableOpacity, View, Alert, Image, Pressable } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import CustomDrawerButton from "./CustomDrawerButton";
 import { useRouter } from "expo-router";
 import { fetchTags } from "@/functions/tagsFunctions";
-import { types } from '@/constants'
+import { Tag } from "../types/tag";
+import { User } from "../types/user";
 import { auth } from "../firebase.config";
-import { icons } from "../constants"
+import ModalComponent from "./ModalComponent";
+import { sendSugestionNewsEmail, sendBugInformEmail } from "@/functions/emailFunctions";
+import { fetchUser } from "@/functions/userFunctions";
 
 
 const CustomDrawer = (props: any) => {
-  const [tags, setTags] = useState<types.Tag[]>([])
-  const [user, setUser] = useState(null)
+  const [tags, setTags] = useState<Tag[]>([])
+  const [userIsLogged, setUserIsLogged] = useState(null)
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isNewsSugestionModalOpen, setNewsSugestionModalOpen] = useState(false)
+  const [newsSugestion, setNewsSugestion] = useState('')
+  const [isBugInformModalOpen, setBugInformModalOpen] = useState(false)
+  const [isDeniedAccessModalOpen, setDeniedAccessModalOpen] = useState(false)
+  const [bugInform, setBugInform] = useState('')
   const router = useRouter();
   const { navigation } = props;
 
@@ -32,26 +41,39 @@ const CustomDrawer = (props: any) => {
     // Verifica o estado do usuário no Firebase Auth
     useEffect(() => {
       const unsubscribe = auth.onAuthStateChanged((currentUser: any) => {
-        setUser(currentUser); // Atualiza o estado com o usuário logado ou null
+        setUserIsLogged(currentUser); // Atualiza o estado com o usuário logado ou null
       });
   
       return () => unsubscribe(); // Cleanup ao desmontar o componente
     }, []);
 
+    useEffect(() => {
+          const loadUserData = async () => {
+              try {
+                  const fetchedUser = await fetchUser();
+                  setCurrentUser(fetchedUser[0]);
+              } catch (error) {
+                  console.error("Erro ao buscar informações de usuário: ", error);
+              }
+          };
+    
+          loadUserData();
+      }, []);
+
 
    // Obtenha a navegação do props;
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1, paddingTop: 0}}>
-            {user ? (
+            {userIsLogged && currentUser ? (
               <View style={styles.topContainer}>
                 <View style={styles.leftSection}>
                   <Image
-                    source={require('../assets/icons/campus-icon.png')} // Substitua pela URL da logo
+                    source={require('../assets/icons/campus-icon.png')}
                     style={styles.logo}
                   />
                   <View>
-                    <Text style={styles.nameText}>Campusito</Text>
-                    <Text style={styles.roleText}>Repórter</Text>
+                    <Text style={styles.nameText}>{currentUser.name}</Text>
+                    <Text style={styles.roleText}>{currentUser.role}</Text>
                   </View>
                 </View>
                 <View style={styles.loggedArrowContainer}>
@@ -67,7 +89,7 @@ const CustomDrawer = (props: any) => {
 
             <View style={styles.contentContainer}>
               {/* Hashtags */}
-              {!user && (
+              {!userIsLogged && (
                 <View style={styles.hashtagsContainer}>
                   <View style={styles.grid}>
                     {tags.slice(0, 8).map((tag) => (
@@ -79,7 +101,7 @@ const CustomDrawer = (props: any) => {
                 </View>
               )}
 
-              {user ? (
+              {userIsLogged && currentUser ? (
                         <>
                           <CustomDrawerButton 
                             text={"Home"}  
@@ -99,30 +121,97 @@ const CustomDrawer = (props: any) => {
                           <CustomDrawerButton
                             text={"Painel de Artigos"}
                             icon={"calendarIcon"}
-                            onPress={() => Alert.alert('Painel de artigos')}
+                            onPress={() => currentUser.role === "Editor" ? (Alert.alert('Escrever'))
+                              : (setDeniedAccessModalOpen(true))}
                             type={"primary"}
                           />
+                          <ModalComponent
+                            title={"Acesso negado"}
+                            label={"Você não possui permissão para acessar essa página. Acesse com contas de editor para visualizar o painel de artigos."}
+                            isOpen={isDeniedAccessModalOpen}
+                            hasInput={false}
+                            onConfirmButton={() => {
+                              setDeniedAccessModalOpen(false)
+                            }}
+                            confirmButtonText={"Fechar"}
+                          />  
+
                           <CustomDrawerButton 
                             text={"Reportar Bug"}  
                             icon={"bugIcon"} 
-                            onPress={() => alert("Reportar Bug")} 
+                            onPress={() => setBugInformModalOpen(true)} 
                             type={"primary"}
                           />
+                          <ModalComponent
+                            label={'Encontrou um bug? Informe aqui e nos ajude a melhorar'}
+                            icon= {"redBugIcon"}
+                            isOpen={isBugInformModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setBugInform('')
+                              setBugInformModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={bugInform} 
+                            onInputChange={setBugInform}  
+                            onConfirmButton={() => {
+                              sendBugInformEmail("template_viuaym9", bugInform)
+                              setBugInform('')
+                              setBugInformModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          />  
                         </>
                       ) : (
                         <>
                           <CustomDrawerButton 
                             text={"Sugerir Notícia"}  
                             icon={"sugestNews"} 
-                            onPress={() => alert("Sugerir uma notícia")} 
+                            onPress={() => setNewsSugestionModalOpen(true)} 
                             type={"primary"}
                           />
+                          <ModalComponent
+                            label={'Digite sua sugestão de notícia ou pauta abaixo:'}
+                            icon= {"redSugestNews"}
+                            isOpen={isNewsSugestionModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setNewsSugestion('')
+                              setNewsSugestionModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={newsSugestion} 
+                            onInputChange={setNewsSugestion}  
+                            onConfirmButton={() => {
+                              sendSugestionNewsEmail("template_qqdw65j", newsSugestion)
+                              setNewsSugestion('')
+                              setNewsSugestionModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          />  
+                          
                           <CustomDrawerButton 
                             text={"Reportar Bug"}  
                             icon={"bugIcon"} 
-                            onPress={() => alert("Reportar Bug")} 
+                            onPress={() => setBugInformModalOpen(true)} 
                             type={"primary"}
                           />
+                          <ModalComponent
+                            label={'Encontrou um bug? Informe aqui e nos ajude a melhorar'}
+                            icon= {"redBugIcon"}
+                            isOpen={isBugInformModalOpen}
+                            hasInput={true}
+                            onCancelButton={() => {
+                              setBugInform('')
+                              setBugInformModalOpen(false)}}
+                            cancelButtonText={"Cancelar"}
+                            inputValue={bugInform} 
+                            onInputChange={setBugInform}  
+                            onConfirmButton={() => {
+                              sendBugInformEmail("template_viuaym9", bugInform)
+                              setBugInform('')
+                              setBugInformModalOpen(false)
+                            }}
+                            confirmButtonText={"Enviar"}
+                          />  
 
                           <View style={styles.separatorUnlogged}></View>
 
@@ -146,7 +235,7 @@ const CustomDrawer = (props: any) => {
               )}
             </View>
 
-            {user ? (
+            {userIsLogged ? (
                       <>
                         <CustomDrawerButton 
                           text={"Sair"} 
