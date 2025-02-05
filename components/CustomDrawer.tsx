@@ -7,6 +7,7 @@ import { useRouter } from "expo-router";
 import { fetchTags } from "@/functions/tagsFunctions";
 import { types } from '@/constants'
 import { auth } from "../firebase.config";
+import { icons } from "../constants"
 
 
 const CustomDrawer = (props: any) => {
@@ -110,6 +111,12 @@ const CustomDrawer = (props: any) => {
                         </>
                       ) : (
                         <>
+                          <CustomDrawerButton 
+                            text={"Sugerir Notícia"}  
+                            icon={"sugestNews"} 
+                            onPress={() => alert("Sugerir uma notícia")} 
+                            type={"primary"}
+                          />
                           <CustomDrawerButton 
                             text={"Reportar Bug"}  
                             icon={"bugIcon"} 

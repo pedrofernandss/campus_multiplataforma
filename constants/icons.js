@@ -9,5 +9,7 @@ import descriptionIcon from "../assets/icons/description-icon.png";
 import homeIcon from "../assets/icons/home-icon.png";
 import logoutIcon from "../assets/icons/logout-icon.png";
 import rightClick from "../assets/icons/right-click-icon.png"
+import sugestNews from "../assets/icons/sugest-news-icon.png"
 
-export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon, calendarIcon, descriptionIcon, homeIcon, logoutIcon, rightClick };
+export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon, 
+    calendarIcon, descriptionIcon, homeIcon, logoutIcon, rightClick, sugestNews };
