@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, View, Text } from 'react-native'
+import { StyleSheet, SafeAreaView, View, Text, ActivityIndicator } from 'react-native'
 import standard from "@/theme";
 import CustomInput from "@/components/CustomInputText";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import { router } from 'expo-router';
 export default function signInPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false);
   
 
   const onForgotPasswordPressed = () => {
@@ -18,27 +19,40 @@ export default function signInPage() {
   }
 
   const signIn = async () => {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      router.push('/');
-      console.log("Login bem-sucedido", userCredential.user.email)
+    setIsLoading(false);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setIsLoading(true)
+      setTimeout(() => {
+        setIsLoading(false);
+        router.push('/');
+      }, 3000);
+
+    } catch (error) {
+      console.error("Erro ao efetuar login:", error);
+      setIsLoading(false);
     }
+  };
 
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
-      
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#6C0318" style={{ flex: 1 }} />
+      ) : (
         <View style={styles.container}>
-        <View style={styles.externalCircle} />
-        <View style={styles.innerCircle} />
+          <View style={styles.externalCircle} />
+          <View style={styles.innerCircle} />
           <Text style={styles.title}>Login</Text>
           <Text style={styles.subtitle}>Bem vindo de volta!</Text>
           <View style={styles.innerContainer}>
-            <CustomInput placeholder="Email" value={email} setValue={setEmail}/>
-            <CustomInputPassword placeholder="Senha" value={password} setValue={setPassword}/>
-            <CustomButton text={"Esqueci minha senha"} onPress={onForgotPasswordPressed} type="tertiary"/>
-            <CustomButton text={"Acessar"} onPress={signIn} type="primary"/>
+            <CustomInput placeholder="Email" value={email} setValue={setEmail} />
+            <CustomInputPassword placeholder="Senha" value={password} setValue={setPassword} />
+            <CustomButton text={"Esqueci minha senha"} onPress={onForgotPasswordPressed} type="tertiary" />
+            <CustomButton text={"Acessar"} onPress={signIn} type="primary" />
           </View>
         </View>
+      )}
     </SafeAreaView>
   );
 }
