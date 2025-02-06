@@ -1,30 +1,44 @@
-import { Dimensions, StyleSheet, Text, View, Image } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import standard from '@/theme';
 import { icons } from '@/constants';
+import { News } from '../types/news'
+import { getRelativeTime } from '@/functions/newsFunctions';
 
 const { width } = Dimensions.get('window');
 
-const NewsCard = ({ item }) => {
+interface NewsCardItemProps {
+    news: News;
+}
+
+const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
+  const router = useRouter();
+
+  const processedThumbnailUri =
+  news.thumbnail.includes("imgur.com") && !news.thumbnail.endsWith(".jpg")
+    ? news.thumbnail + ".jpg"
+    : news.thumbnail;
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity onPress={() => router.push(`./newsPage?id=${news.id}`)} style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image style={styles.coverImageStyle} source={item.cover_image} />
+        <Image style={styles.coverImageStyle} source={{ uri: processedThumbnailUri }} />
       </View>
 
       <View style={styles.contentContainer}>
-        <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">{item.title}</Text>
-        <Text style={styles.subtitleStyle} numberOfLines={2} ellipsizeMode="tail">{item.subtitle}</Text>
+        <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">{news.mainTitle}</Text>
+        <Text style={styles.subtitleStyle} numberOfLines={2} ellipsizeMode="tail">{news.description}</Text>
 
         <View style={styles.metaDataStyle}>
-          <Text style={styles.authorStyle}>Por: {item.author}</Text>
+          <Text style={styles.authorStyle} numberOfLines={1}>Por: {news.authors.join(", ")}</Text>
           <View style={styles.timeDataStyle}>
             <Image source={icons.clockIcon} style={styles.clockIconStyle} />
-            <Text style={styles.timeStyle}>{item.created_at}</Text>
+            <Text style={styles.timeStyle}>{getRelativeTime(news.createdAt)}</Text>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -55,7 +69,7 @@ const styles = StyleSheet.create({
     fontFamily: standard.fonts.semiBold,
     color: standard.colors.black,
     fontSize: 13,
-    lineHeight: 15,
+    lineHeight: 16,
   },
   subtitleStyle: {
     fontFamily: standard.fonts.regular,
@@ -71,6 +85,7 @@ const styles = StyleSheet.create({
     marginTop: 5,  
   },
   authorStyle: {
+    flex: 1,
     fontFamily: standard.fonts.bold,
     color: standard.colors.black,
     opacity: 0.5,

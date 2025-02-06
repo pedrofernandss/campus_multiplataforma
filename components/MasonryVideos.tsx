@@ -1,15 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import MasonryList from '@react-native-seoul/masonry-list';
 import { StyleSheet, Text, View } from 'react-native'
 import MasonryCard from './MasonryCard';
-import masonryImages from '@/assets/mocked-data/masonryImages';
+import { types } from '@/constants';
+import { fetchInstagramMedia } from '@/functions/instagramFunctions';
 
 
 const MasonryVideos = () => {
+  const [reels, setReels] = useState<types.InstagramReels[]>([]);
+  useEffect(() => {
+    const loadReels = async () => {
+        try {
+            const fetchedReels = await fetchInstagramMedia();
+            setReels(fetchedReels);
+        } catch (error) {
+            console.error("Erro ao buscar os reels: ", error);
+        }
+    };
+
+    loadReels();
+  }, []);
   
   return (
     <MasonryList
-        data={masonryImages} 
+        data={reels} 
         renderItem={({ item }) => <MasonryCard item={item} />}
         keyExtractor={(item) => item.id}
         numColumns={2}
@@ -24,6 +38,6 @@ export default MasonryVideos
 
 const styles = StyleSheet.create({
   masonry: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 8,
   }
 })

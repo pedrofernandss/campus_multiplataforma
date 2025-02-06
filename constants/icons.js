@@ -4,5 +4,14 @@ import clockIcon from "../assets/icons/clock-icon.png";
 import loginIcon from "../assets/icons/login-icon.png";
 import bugIcon from "../assets/icons/bug-icon.png";
 import arrowFowardIcon from "../assets/icons/arrow-foward-icon.png"
+import calendarIcon from "../assets/icons/calendar-icon.png";
+import descriptionIcon from "../assets/icons/description-icon.png";
+import homeIcon from "../assets/icons/home-icon.png";
+import logoutIcon from "../assets/icons/logout-icon.png";
+import rightClick from "../assets/icons/right-click-icon.png"
+import sugestNews from "../assets/icons/sugest-news-icon.png"
+import redSugestNews from "../assets/icons/red-sugest-news-icon.png"
+import redBugIcon from "../assets/icons/red-bug-icon.png";
 
-export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon };
+export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon, 
+    calendarIcon, descriptionIcon, homeIcon, logoutIcon, rightClick, sugestNews, redSugestNews, redBugIcon };
