@@ -1,8 +1,8 @@
-import { StyleSheet, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
-import standard from '@/theme'
+import React, { useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
+import standard from '../theme';
 
-const CustomInputText = ({ value, setValue, placeholder}) => {
+const CustomInputText = ({ value, setValue, placeholder }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -29,7 +29,7 @@ export default CustomInputText;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F1F4FF',
-    borderWidth: 2, 
+    borderWidth: 2,
     borderRadius: 10,
     paddingHorizontal: 10,
     marginVertical: 10,

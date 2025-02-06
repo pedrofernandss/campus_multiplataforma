@@ -1,9 +1,9 @@
-import Trendings from "@/components/Trendings";
+import Trendings from "../components/Trendings";
 import Header from "../components/Header";
 import { StatusBar } from "expo-status-bar";
-import standard from "@/theme";
-import Carousel from "@/components/Carousel";
-import NewsList from "@/components/NewsList";
+import standard from "../theme";
+import Carousel from "../components/Carousel";
+import NewsList from "../components/NewsList";
 import { StyleSheet, Dimensions, SafeAreaView } from 'react-native';
 
 export default function App() {

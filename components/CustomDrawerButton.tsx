@@ -1,8 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, Image, GestureResponderEvent } from 'react-native'
 import React, { useState } from 'react'
-import standard from '@/theme'
-import { icons, types } from '@/constants'
-import { opacity } from 'react-native-reanimated/lib/typescript/Colors'
+import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { icons, types } from '../constants'
+import standard from '../theme'
 
 
 const CustomDrawerButton: React.FC<types.DrawerButtons> = ({ text, icon, onPress, type }) => {
@@ -10,17 +9,17 @@ const CustomDrawerButton: React.FC<types.DrawerButtons> = ({ text, icon, onPress
 
 
   return (
-    <TouchableOpacity 
-    style={styles.container}
-    onPressIn={() => setIsPressed(true)} // Quando pressionado
-    onPressOut={() => setIsPressed(false)} // Quando liberado
-    onPress={onPress} // Ação principal ao clicar
+    <TouchableOpacity
+      style={styles.container}
+      onPressIn={() => setIsPressed(true)} // Quando pressionado
+      onPressOut={() => setIsPressed(false)} // Quando liberado
+      onPress={onPress} // Ação principal ao clicar
     >
       <Image
         source={icons[icon as keyof typeof icons]}
         style={[
           styles.buttonIcon,
-          { tintColor: isPressed ? standard.colors.campusRed : standard.colors.grey}, // Altera a cor do ícone
+          { tintColor: isPressed ? standard.colors.campusRed : standard.colors.grey }, // Altera a cor do ícone
         ]}
       />
       <Text style={[styles.buttonText, isPressed && styles.pressedText]}>{text}</Text>
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     marginLeft: 10,
-    marginTop: 7, 
+    marginTop: 7,
     fontSize: 16,
     color: standard.colors.grey,
     fontFamily: standard.fonts.bold

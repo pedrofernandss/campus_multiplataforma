@@ -6,7 +6,7 @@ import 'react-native-gesture-handler'
 import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { Feather } from '@expo/vector-icons';
-import CustomDrawer from '@/components/CustomDrawer';
+import CustomDrawer from '../components/CustomDrawer';
 
 
 const DrawerLayout = () => {
