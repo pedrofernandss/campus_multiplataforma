@@ -4,7 +4,7 @@ import CustomInput from "@/components/CustomInputText";
 import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import CustomInputPassword from "@/components/CustomInputPassword";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "@/firebase.config";
 import { router } from 'expo-router';
 
@@ -15,8 +15,16 @@ export default function signInPage() {
   
 
   const onForgotPasswordPressed = () => {
-    console.warn('Botão de Esqueci minha senha funcionando')
+    if (!email) {
+      Alert.alert('', 'Por favor, insira seu endereço de e-mail.');
+      return;
+    }
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        Alert.alert('', 'E-mail de redefinição de senha enviado. Verifique sua caixa de entrada.');
+      })
   }
+  
 
   const signIn = async () => {
     setIsLoading(false);
