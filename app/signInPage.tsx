@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, View, Text, ActivityIndicator } from 'react-native'
+import { StyleSheet, SafeAreaView, View, Text, ActivityIndicator, Alert } from 'react-native'
 import standard from "@/theme";
 import CustomInput from "@/components/CustomInputText";
 import { useState } from "react";
@@ -29,8 +29,7 @@ export default function signInPage() {
       }, 3000);
 
     } catch (error) {
-      console.error("Erro ao efetuar login:", error);
-      setIsLoading(false);
+      Alert.alert('', 'Ocorreu um erro ao efetuar login. Por favor, tente novamente.');
     }
   };
 
