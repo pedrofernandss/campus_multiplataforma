@@ -23,6 +23,8 @@ export default function signInPage() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setIsLoading(true)
+      setEmail('');
+      setPassword('');
       setTimeout(() => {
         setIsLoading(false);
         router.push('/');
