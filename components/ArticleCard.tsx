@@ -1,26 +1,44 @@
 import { Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useRouter, useSegments  } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import standard from '@/theme';
 import { News } from '../types/news'
 import { auth } from "../firebase.config";
 import { icons } from '@/constants';
 import ModalComponent from './ModalComponent';
-const { width } = Dimensions.get('window');
+import ProgressBar from './ProgressBar';
+import { deleteNews, updateNewsStatus } from '@/functions/newsFunctions';
 
 interface NewsCardItemProps {
     news: News;
+    onActionComplete?: () => void; // Callback para atualizar a lista
 }
 
-const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
+const ArticleCard: React.FC<NewsCardItemProps> = ({ news, onActionComplete }) => {
   const router = useRouter();
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); 
   const [pressedIcon, setPressedIcon] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [currentAction, setCurrentAction] = useState<"approve" | "delete" | null>(null); 
+  const [isMounted, setIsMounted] = useState(true); 
   const processedThumbnailUri =
   news.thumbnail.includes("imgur.com") && !news.thumbnail.endsWith(".jpg")
     ? news.thumbnail + ".jpg"
     : news.thumbnail;
 
+
+    const handleApprove = () => {
+      setIsProcessing(true);
+      setCurrentAction("approve");
+    };
+
+  const handleDelete = async () => {
+    setDeleteModalOpen(false);
+    setIsProcessing(true);
+    setCurrentAction("delete");
+  };
+  
+    
   return (
     
     <View style={styles.container}>
@@ -32,18 +50,21 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
             <Text style={styles.authorStyle} numberOfLines={1}>Por: {news.authors.join(", ")}</Text>
         </View>
         <View style={styles.iconsContainer}>
-          <TouchableOpacity 
-            onPressIn={() => setPressedIcon("main")}
-            onPressOut={() => setPressedIcon(null)}
-          >
-            <Image
-              source={icons.checkIcon} // Ajuste para o ícone correto
-              style={[
-                styles.iconStyle,
-                { tintColor: pressedIcon === "main" ? standard.colors.campusRed : standard.colors.grey }
-              ]}
-            />
-          </TouchableOpacity>
+          {news.published == false && !isProcessing && (
+              <TouchableOpacity 
+                onPress={handleApprove}
+                onPressIn={() => setPressedIcon("main")}
+                onPressOut={() => setPressedIcon(null)}
+              >              
+                <Image
+                  source={icons.checkIcon}
+                  style={[
+                    styles.iconStyle,
+                    { tintColor: pressedIcon === "main" ? standard.colors.campusRed : standard.colors.grey }
+                  ]}
+                />
+              </TouchableOpacity>
+            )}
           <TouchableOpacity 
             onPressIn={() => setPressedIcon("edit")}
             onPressOut={() => setPressedIcon(null)}
@@ -57,7 +78,9 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
             />          
           </TouchableOpacity>
           <TouchableOpacity 
-            onPress={() => setDeleteModalOpen(true)}
+            onPress={() => {
+                setDeleteModalOpen(true)
+              }}
             onPressIn={() => setPressedIcon("trash")}
             onPressOut={() => setPressedIcon(null)}          
           >
@@ -76,10 +99,19 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
             hasInput={false}
             onCancelButton={() => setDeleteModalOpen(false)}
             cancelButtonText={"Fechar"}
-            onConfirmButton={() => {
-              setDeleteModalOpen(false)}}
+            onConfirmButton={handleDelete}
             confirmButtonText={"Excluir"}
           />  
+          <ProgressBar
+            newsId={news.id}
+            label={currentAction === "approve" ? "Postagem em andamento" : "Exclusão em progresso"}
+            type={currentAction}
+            isOpen={isProcessing}
+            onClose={() => {
+              setIsProcessing(false);
+              onActionComplete && onActionComplete();
+            }}
+            />
 
         </View>
     </View>
@@ -88,6 +120,8 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news }) => {
 };
 
 export default ArticleCard;
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
