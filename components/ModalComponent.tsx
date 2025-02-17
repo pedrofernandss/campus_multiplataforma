@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
       },
       iconContainer: {
-        width: 32,
-        height: 32,
-        marginVertical: 10,
+        width: 50,
+        height: 50,
+        marginVertical: 5,
       },
       label: {
         fontSize: 15,
