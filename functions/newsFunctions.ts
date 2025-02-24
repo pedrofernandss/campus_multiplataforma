@@ -1,4 +1,4 @@
-import { collection, getDocs, query, orderBy, where  } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, where, updateDoc, doc, deleteDoc  } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { News } from "../types/news";
 
@@ -18,6 +18,45 @@ export const fetchNews = async (): Promise<News[]> => {
         throw error;
     }
 };
+
+export const getAllNews = async (): Promise<News[]> => {
+    try {
+        const response = await getDocs(collection(db, "news")); 
+        const news = response.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        })) as News[];
+        news.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        return news
+
+    } catch (error) {
+        console.error("Erro ao buscar as todas as noticias: ", error);
+        throw error;
+    }
+}
+
+export const updateNewsStatus = async (newsId: string, published: boolean): Promise<void> => {
+    try {
+        const newsRef = doc(db, "news", newsId);
+        await updateDoc(newsRef, { published });
+        console.log("Status da notícia atualizado com sucesso!");
+    } catch (error) {
+        console.error("Erro ao atualizar o status da notícia: ", error);
+        throw error;
+    }
+};
+
+export const deleteNews = async (newsId: string): Promise<void> => {
+    try {
+        const newsRef = doc(db, "news", newsId);
+        await deleteDoc(newsRef);
+        console.log("Notícia deletada com sucesso!");
+    } catch (error) {
+        console.error("Erro ao deletar a notícia: ", error);
+        throw error;
+    }
+};
+
 
 export const getRelativeTime = (dateString: string): string => {
     const now = new Date();
