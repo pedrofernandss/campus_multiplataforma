@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
 import standard from "@/theme";
 import { icons } from "../constants";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";  
 
 const { width } = Dimensions.get("window");
@@ -30,6 +30,7 @@ export const InfoCard: React.FC<CardProps> = ({ title, value, icon }) => {
 export default function CardsSection() {
   const [artigosPostados, setArtigosPostados] = useState<number>(0);
   const [pendentes, setPendentes] = useState<number>(0);
+  
   const contarDocumentos = async () => {
     try {
       const newsCollection = collection(db, "news");
@@ -42,7 +43,14 @@ export default function CardsSection() {
 
   // Simulação de "Pendentes"
   const contarPendentes = async () => {
-    setPendentes(3); 
+    try {
+      const newsCollection = collection(db, "news");
+      const q = query(newsCollection, where("published", "==", false));
+      const snapshot = await getDocs(q);
+      setPendentes(snapshot.size);
+    } catch (error) {
+      console.log("Erro ao contar artigos pendentes:", error);
+    }
   };
 
   useEffect(() => {
@@ -52,7 +60,7 @@ export default function CardsSection() {
 
   return (
     <View style={styles.container}>
-      <InfoCard title="Artigos Postados" value={artigosPostados} icon={icons.taskDone} />
+      <InfoCard title="Artigos Postados" value={artigosPostados} icon={icons.taskIcon} />
       <InfoCard title="Pendentes" value={pendentes} icon={icons.clockEditorPage} />
     </View>
   );
