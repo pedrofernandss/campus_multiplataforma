@@ -31,6 +31,7 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news, onActionComplete }) =>
       setIsProcessing(true);
       setCurrentAction("approve");
     };
+    
 
   const handleDelete = async () => {
     setDeleteModalOpen(false);
@@ -65,18 +66,24 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({ news, onActionComplete }) =>
                 />
               </TouchableOpacity>
             )}
-          <TouchableOpacity 
-            onPressIn={() => setPressedIcon("edit")}
-            onPressOut={() => setPressedIcon(null)}
-          >
-            <Image 
-              source={icons.editIcon} 
-              style={[
-                styles.iconStyle,
-                { tintColor: pressedIcon === "edit" ? standard.colors.campusRed : standard.colors.grey }
-              ]}
-            />          
-          </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => {
+                router.push({
+                  pathname: "/newsEditor", 
+                  params: { newsData: JSON.stringify(news) }, 
+                });
+              }}
+              onPressIn={() => setPressedIcon("edit")}
+              onPressOut={() => setPressedIcon(null)}
+            >
+              <Image 
+                source={icons.editIcon} 
+                style={[
+                  styles.iconStyle,
+                  { tintColor: pressedIcon === "edit" ? standard.colors.campusRed : standard.colors.grey }
+                ]}
+              />          
+            </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => {
                 setDeleteModalOpen(true)

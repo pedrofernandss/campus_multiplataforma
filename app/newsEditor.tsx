@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Dimensions, Alert, TextInput } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import axios from 'axios';
 import CardsSection from "@/components/CardSection";
@@ -9,23 +9,54 @@ import HeaderEditor from "@/components/HeaderEditor";
 import FixedInputs from "@/components/FixedInputs";
 import standard from "@/theme";
 import { db } from "@/firebase.config";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const { width } = Dimensions.get("window");
 
+interface Block {
+  id: string;
+  type: string;
+  content: string;
+  order: number;
+}
+
+interface NewsData {
+  id: string;
+  mainTitle: string;
+  description: string;
+  authors: string[];
+  hashtags: string[];
+  thumbnail: string;
+  blocks: Block[];
+  published: boolean;
+  createdAt: string;
+}
 
 export default function NewsForm() {
   const router = useRouter();
+  const { newsData } = useLocalSearchParams();
+  const parsedNewsData: NewsData | null = newsData ? JSON.parse(String(newsData)) : null;
+
+  const [formData, setFormData] = useState<{
+    articleTitle: string;
+    textDraft: string;
+    reporters: string[];
+    articleTags: string[];
+    dynamicInputs: Block[];
+    thumbnailUri: string | null;
+  }>({
+    articleTitle: "",
+    textDraft: "",
+    reporters: [],
+    articleTags: [],
+    dynamicInputs: [],
+    thumbnailUri: null
+  });
+
   const [articleTag, setArticleTag] = useState(""); 
   const [reporterName, setReporterName] = useState("");
-  const [articleTitle, setArticleTitle] = useState("");
-  const [textDraft, setTextDraft] = useState("");
-  const [reporters, setReporters] = useState<string[]>([]);
-  const [articleTags, setArticleTags] = useState<string[]>([]);
-  const [dynamicInputs, setDynamicInputs] = useState<any[]>([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
 
   const typeMapping = {
     Tópico: "subheading",
@@ -36,49 +67,58 @@ export default function NewsForm() {
 
   type FriendlyType = keyof typeof typeMapping;
 
-  // Cache de mídia
   useEffect(() => {
-    const loadMedia = async () => {
-      const thumbnail = await AsyncStorage.getItem('thumbnailUri');
-      if (thumbnail) {
-        setThumbnailUri(thumbnail);
-      }
+    if (parsedNewsData) {
+      setFormData({
+        articleTitle: parsedNewsData.mainTitle,
+        textDraft: parsedNewsData.description,
+        reporters: parsedNewsData.authors,
+        articleTags: parsedNewsData.hashtags,
+        dynamicInputs: parsedNewsData.blocks,
+        thumbnailUri: parsedNewsData.thumbnail
+      });
+    }
+  }, []); 
 
-      const loadedInputs = await Promise.all(
-        dynamicInputs.map(async (input) => {
-          const mediaUri = await AsyncStorage.getItem(`media_${input.id}`);
-          return mediaUri ? { ...input, value: mediaUri } : input;
-        })
-      );
+  const handleInputChange = (id: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      dynamicInputs: prev.dynamicInputs.map(input =>
+        input.id === id ? { ...input, content: value } : input
+      )
+    }));
+  };
 
-      setDynamicInputs(loadedInputs);
-    };
-
-    loadMedia();
-  }, []);
-
-  // Manipulação dos inputs
   const handleAddInput = (friendlyType: FriendlyType) => {
     const technicalType = typeMapping[friendlyType];
-    setDynamicInputs((prev) => [...prev, { id: Date.now(), type: technicalType, value: "" }]);
+    const newInput: Block = {
+      id: `${Date.now()}-${Math.random()}`,
+      type: technicalType,
+      content: "",
+      order: formData.dynamicInputs.length + 1
+    };
+
+    setFormData(prev => ({
+      ...prev,
+      dynamicInputs: [...prev.dynamicInputs, newInput]
+    }));
     setIsDropdownVisible(false);
   };
 
-  const handleRemoveInput = async (id: number) => {
-    setDynamicInputs((prev) => prev.filter((input) => input.id !== id));
+  const handleRemoveInput = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      dynamicInputs: prev.dynamicInputs.filter(input => input.id !== id)
+    }));
   };
 
-  const handleInputChange = (id: number, value: string) => {
-    setDynamicInputs((prev) =>
-      prev.map((input) => (input.id === id ? { ...input, value } : input))
-    );
-  };
-
-  // Manipulação das tags
   const handleReporterChange = (text: string) => {
     if (text.endsWith(",")) {
       const names = text.split(",").map((name) => name.trim()).filter(Boolean);
-      setReporters((prev) => [...prev, ...names]);
+      setFormData(prev => ({
+        ...prev,
+        reporters: [...prev.reporters, ...names]
+      }));
       setReporterName("");
     } else {
       setReporterName(text);
@@ -86,24 +126,32 @@ export default function NewsForm() {
   };
 
   const handleRemoveReporter = (index: number) => {
-    setReporters((prev) => prev.filter((_, i) => i !== index));
+    setFormData(prev => ({
+      ...prev,
+      reporters: prev.reporters.filter((_, i) => i !== index)
+    }));
   };
 
   const handleRemoveTag = (index: number) => {
-    setArticleTags((prev) => prev.filter((_, i) => i !== index));
+    setFormData(prev => ({
+      ...prev,
+      articleTags: prev.articleTags.filter((_, i) => i !== index)
+    }));
   };
 
   const handleTagsChange = (text: string) => {
     if (text.endsWith(" ")) {
       const tags = text.split(" ").map((tag) => tag.trim()).filter(Boolean);
-      setArticleTags((prev) => [...prev, ...tags.map((tag) => `#${tag}`)]);
+      setFormData(prev => ({
+        ...prev,
+        articleTags: [...prev.articleTags, ...tags.map((tag) => `#${tag}`)]
+      }));
       setArticleTag("");
     } else {
       setArticleTag(text);
     }
   };
 
-  // Upload de imagens para o Imgur
   const uploadImageToImgur = async (imageUri: string) => {
     const formData = new FormData();
     formData.append('image', {
@@ -126,7 +174,7 @@ export default function NewsForm() {
     }
   };
 
-  const pickMedia = async (id: number, type: 'image' | 'video') => {
+  const pickMedia = async (id: string, type: 'image' | 'video') => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permissão necessária', 'Precisamos da permissão para acessar sua galeria de mídias.');
@@ -154,7 +202,6 @@ export default function NewsForm() {
     }
   };
 
-  // Thumbnail
   const pickThumbnail = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -173,7 +220,10 @@ export default function NewsForm() {
       const uri = result.assets[0].uri;
       const imgurUrl = await uploadImageToImgur(uri);
       if (imgurUrl) {
-        setThumbnailUri(imgurUrl);
+        setFormData(prev => ({
+          ...prev,
+          thumbnailUri: imgurUrl
+        }));
         await AsyncStorage.setItem('thumbnailUri', imgurUrl);
       }
     }
@@ -184,26 +234,26 @@ export default function NewsForm() {
     const thumbnail = await AsyncStorage.getItem('thumbnailUri');
 
     const blocks = await Promise.all(
-      dynamicInputs.map(async (input, index) => {
+      formData.dynamicInputs.map(async (input, index) => {
         const mediaUri = await AsyncStorage.getItem(`media_${input.id}`);
         return {
           type: input.type,
-          content: mediaUri || input.value,
+          content: mediaUri || input.content,
           order: index + 1,
         };
       })
     );
 
     const data = {
-      authors: reporters,
+      authors: formData.reporters,
       blocks,
       createdAt: new Date().toISOString(),
-      description: textDraft,
-      feedTitle: articleTitle,
-      hashtags: articleTags,
-      mainTitle: articleTitle,
+      description: formData.textDraft,
+      feedTitle: formData.articleTitle,
+      hashtags: formData.articleTags,
+      mainTitle: formData.articleTitle,
       published: false,
-      thumbnail: thumbnail || dynamicInputs.find((block) => block.type === "image")?.content || "",
+      thumbnail: thumbnail || formData.dynamicInputs.find((block) => block.type === "image")?.content || "",
     };
 
     return data;
@@ -212,19 +262,19 @@ export default function NewsForm() {
   // Geração do JSON padronizado para publicação
   const generateJSON = () => {
     const data = {
-      authors: reporters,
-      blocks: dynamicInputs.map((input, index) => ({
+      authors: formData.reporters,
+      blocks: formData.dynamicInputs.map((input, index) => ({
         type: input.type,
-        content: input.value,
+        content: input.content,
         order: index + 1,
       })),
       createdAt: new Date().toISOString(),
-      description: textDraft,
-      feedTitle: articleTitle,
-      hashtags: articleTags,
-      mainTitle: articleTitle,
+      description: formData.textDraft,
+      feedTitle: formData.articleTitle,
+      hashtags: formData.articleTags,
+      mainTitle: formData.articleTitle,
       published: false,
-      thumbnail: thumbnailUri || dynamicInputs.find((block) => block.type === "image")?.content || "",
+      thumbnail: formData.thumbnailUri || formData.dynamicInputs.find((block) => block.type === "image")?.content || "",
     };
 
     return data;
@@ -247,7 +297,7 @@ export default function NewsForm() {
         text: "Enviar",
         onPress: async () => {
           try {
-            await addDoc(collection(db, "articles"), jsonData);
+            await addDoc(collection(db, "news"), jsonData);
             Alert.alert("Sucesso", "Artigo publicado com sucesso!");
             router.back();
           } catch {
@@ -258,7 +308,40 @@ export default function NewsForm() {
     ]);
   };
 
-  
+  const handleSaveOrSubmit = async () => {
+    if (parsedNewsData) {
+      await handleUpdate();
+    } else {
+      await handleSubmit();
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!parsedNewsData?.id) return;
+
+    const updatedData = {
+      authors: formData.reporters,
+      blocks: formData.dynamicInputs,
+      description: formData.textDraft,
+      feedTitle: formData.articleTitle,
+      hashtags: formData.articleTags,
+      mainTitle: formData.articleTitle,
+      thumbnail: formData.thumbnailUri || "",
+      published: parsedNewsData.published,
+      createdAt: parsedNewsData.createdAt
+    };
+
+    try {
+      const newsRef = doc(db, "news", parsedNewsData.id);
+      await updateDoc(newsRef, updatedData);
+      Alert.alert("Sucesso", "Notícia atualizada com sucesso!");
+      router.back();
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Erro", "Não foi possível atualizar a notícia.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <HeaderEditor />
@@ -270,57 +353,76 @@ export default function NewsForm() {
         <View style={styles.thumbnailContainer}>
           <Text style={styles.label}>Thumbnail</Text>
           <TouchableOpacity onPress={pickThumbnail} style={styles.thumbnailButton}>
-            {thumbnailUri ? (
-              <Image source={{ uri: thumbnailUri }} style={styles.thumbnailImage} />
+            {formData.thumbnailUri ? (
+              <Image source={{ uri: formData.thumbnailUri }} style={styles.thumbnailImage} />
             ) : (
-              <Text style={styles.thumbnailButtonText}>Selecionar Thumbnail</Text>
+              <View style={styles.uploadIconContainer}>
+                <MaterialIcons name="cloud-upload" size={40} color="#fff" />
+                <Text style={styles.thumbnailButtonText}>Faça o upload da thumbnail</Text>
+              </View>
             )}
           </TouchableOpacity>
         </View>
 
         <FixedInputs
-          articleTitle={articleTitle}
-          setArticleTitle={setArticleTitle}
-          textDraft={textDraft}
-          setTextDraft={setTextDraft}
-          reporters={reporters}
+          articleTitle={formData.articleTitle}
+          setArticleTitle={(value) => setFormData(prev => ({ ...prev, articleTitle: value }))}
+          textDraft={formData.textDraft}
+          setTextDraft={(value) => setFormData(prev => ({ ...prev, textDraft: value }))}
+          reporters={formData.reporters}
           handleReporterChange={handleReporterChange}
           reporterName={reporterName}
           handleRemoveReporter={handleRemoveReporter}
-          articleTags={articleTags}
+          articleTags={formData.articleTags}
           articleTag={articleTag}
           handleTagsChange={handleTagsChange}
           handleRemoveTag={handleRemoveTag}
         />
 
         {/* Inputs dinâmicos */}
-        {dynamicInputs.map((input) => (
-          <View key={input.id} style={styles.dynamicInputContainer}>
-            {input.type === 'image' || input.type === 'video' ? (
-              input.value ? (
-                <Image source={{ uri: input.value }} style={styles.mediaPreview} />
-              ) : (
-                <TouchableOpacity onPress={() => pickMedia(input.id, input.type)} style={styles.mediaButton}>
-                  <View style={styles.uploadIconContainer}>
-                    <MaterialIcons name="cloud-upload" size={40} color="#fff" />
-                    <Text style={styles.mediaButtonText}>Upload {input.type === 'image' ? 'Imagem' : 'Vídeo'}</Text>
-                  </View>
+        {formData.dynamicInputs.map((input) => (
+        <View key={input.id} style={styles.dynamicInputContainer}>
+          {input.type === 'image' || input.type === 'video' ? (
+            input.content ? (
+              <View style={{flex: 1}}>
+                <Image source={{ uri: input.content }} style={styles.mediaPreview} />
+                <TouchableOpacity 
+                  onPress={() => pickMedia(input.id, input.type as 'image' | 'video')} 
+                  style={styles.editMediaButton}
+                >
+                  <Text style={styles.editMediaButtonText}>Alterar mídia</Text>
                 </TouchableOpacity>
-              )
+              </View>
             ) : (
-              <TextInput
-                style={styles.dynamicInput}
-                placeholder={`Digite o ${input.type === 'text' ? 'texto' : input.type === 'subheading' ? 'tópico' : '' }`}
-                value={input.value}
-                onChangeText={(value) => handleInputChange(input.id, value)}
-                multiline
-              />
-            )}
-            <TouchableOpacity onPress={() => handleRemoveInput(input.id)} style={styles.removeButton}>
-              <Text style={styles.removeButtonText}>X</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+              <TouchableOpacity 
+                onPress={() => pickMedia(input.id, input.type as 'image' | 'video')} 
+                style={styles.mediaButton}
+              >
+                <View style={styles.uploadIconContainer}>
+                  <MaterialIcons name="cloud-upload" size={40} color="#fff" />
+                  <Text style={styles.mediaButtonText}>
+                    Upload {input.type === 'image' ? 'Imagem' : 'Vídeo'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )
+          ) : (
+            <TextInput
+              style={styles.dynamicInput}
+              placeholder={`Digite o ${input.type === 'text' ? 'texto' : 'tópico'}`}
+              value={input.content}
+              onChangeText={(text) => handleInputChange(input.id, text)}
+              multiline
+            />
+          )}
+          <TouchableOpacity 
+            onPress={() => handleRemoveInput(input.id)} 
+            style={styles.removeButton}
+          >
+            <Text style={styles.removeButtonText}>X</Text>
+          </TouchableOpacity>
+        </View>
+      ))}
 
         <TouchableOpacity style={styles.addInputButton} onPress={() => setIsDropdownVisible(!isDropdownVisible)}>
           <Text style={styles.addInputButtonText}>+ Adicionar novo campo</Text>
@@ -344,8 +446,10 @@ export default function NewsForm() {
           <TouchableOpacity style={[styles.button, styles.previewButton]} onPress={handlePreview}>
             <Text style={styles.previewText}>Pré-visualizar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.submitButton]} onPress={handleSubmit}>
-            <Text style={styles.submitText}>Enviar</Text>
+          <TouchableOpacity style={[styles.button, styles.submitButton]} onPress={handleSaveOrSubmit}>
+            <Text style={styles.submitText}>
+              {parsedNewsData ? "Salvar Alterações" : "Enviar"}
+            </Text>
           </TouchableOpacity>
         </View>
         
@@ -381,11 +485,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 160,
+    backgroundColor: standard.colors.campusRed,
   },
   thumbnailButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+    marginTop: 8,
+  },
+  uploadIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   thumbnailImage: {
     width: '100%',
@@ -491,8 +601,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
   },
-  uploadIconContainer: {
+  editMediaButton: {
+    backgroundColor: standard.colors.campusRed,
+    padding: 8,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
+    height: 40,
+    width: 100,
+  },
+  editMediaButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
