@@ -5,6 +5,6 @@ export interface News {
     content: string;
     authors: Array<string>;
     thumbnail: string;
-    createdAt: string;
+    createdAt: Date | string;
     published: boolean;
 }

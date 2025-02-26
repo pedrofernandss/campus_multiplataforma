@@ -1,103 +1,26 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-  SafeAreaView,
-  Platform,
-  StatusBar,
-  Dimensions,
-} from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { db } from "../firebase.config";
-import { doc, getDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { View, Text, ScrollView, Image, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, Platform, StatusBar, ActivityIndicator } from "react-native";
 import { WebView } from "react-native-webview";
-import { images, icons } from "../constants";
-import standard from "../theme";
 import { useFonts } from "expo-font";
+import { useRouter } from "expo-router";
+import { icons, images } from "../constants";
+import standard from "@/theme";
 
 const { width } = Dimensions.get("window");
 
-export default function NewsPage() {
-  const { id } = useLocalSearchParams();
+const NewsContent = ({ newsData }: { newsData: any }) => {
   const router = useRouter();
-  const [newsData, setNewsData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  const [fontsLoaded] = useFonts({
-    "Quicksand-Medium": require("../assets/fonts/Quicksand-Medium.ttf"),
-    "Quicksand-Regular": require("../assets/fonts/Quicksand-Regular.ttf"),
-    "Rowdies-Bold": require("../assets/fonts/Rowdies-Bold.ttf"),
-  });
-
-  useEffect(() => {
-    const fetchNewsById = async () => {
-      try {
-        const docRef = doc(db, "news", id as string);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          setNewsData(docSnap.data());
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchNewsById();
-  }, [id]);
-
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Carregando fontes...</Text>
-      </View>
-    );
-  }
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Carregando...</Text>
-      </View>
-    );
-  }
-
-  if (!newsData) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>Notícia não encontrada.</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
-      <SafeAreaView
-        style={{ backgroundColor: styles.headerStyle.backgroundColor }}
-      >
+      <SafeAreaView style={{ backgroundColor: styles.headerStyle.backgroundColor }}>
         <View style={styles.headerStyle}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Image
-              source={icons.arrowFowardIcon}
-              style={styles.icon}
-              resizeMode="contain"
-            />
+          <TouchableOpacity onPress={() => router.push('/newsEditor')}>
+            <Image source={icons.arrowFowardIcon} style={styles.icon} resizeMode="contain" />
           </TouchableOpacity>
           <View style={styles.logoContainer}>
-            <Image
-              source={images.logo}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            <Image source={images.logo} style={styles.logo} resizeMode="contain" />
           </View>
         </View>
       </SafeAreaView>
@@ -114,20 +37,10 @@ export default function NewsPage() {
           .map((block: any, index: number) => {
             switch (block.type) {
               case "image":
-                const processedUri =
-                  block.content.includes("imgur.com") &&
-                  !/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(block.content)
-                    ? block.content + ".jpg"
-                    : block.content;
                 return (
                   <View key={index} style={styles.blockContainer}>
-                    <Image
-                      source={{ uri: processedUri }}
-                      style={styles.image}
-                    />
-                    {block.caption && (
-                      <Text style={styles.caption}>{block.caption}</Text>
-                    )}
+                    <Image source={{ uri: block.content }} style={styles.image} />
+                    {block.caption && <Text style={styles.caption}>{block.caption}</Text>}
                   </View>
                 );
               case "text":
@@ -137,28 +50,15 @@ export default function NewsPage() {
                   </View>
                 );
               case "audio":
-                return (
-                  <View key={index} style={styles.blockContainer}>
-                    <WebView
-                      source={{ html: block.content }}
-                      style={styles.webview}
-                      javaScriptEnabled
-                      allowsInlineMediaPlayback
-                    />
-                  </View>
-                );
               case "video":
                 return (
                   <View key={index} style={styles.blockContainer}>
                     <WebView
                       source={{ uri: block.content }}
-                      style={styles.video}
+                      style={styles.webview}
                       javaScriptEnabled
                       allowsInlineMediaPlayback
                     />
-                    {block.caption && (
-                      <Text style={styles.caption}>{block.caption}</Text>
-                    )}
                   </View>
                 );
               case "subheading":
@@ -174,6 +74,41 @@ export default function NewsPage() {
       </ScrollView>
     </View>
   );
+};
+export default function PreviewPage() {
+  const { previewData } = useLocalSearchParams();
+  const [newsData, setNewsData] = useState(previewData ? JSON.parse(previewData) : null);
+
+  useEffect(() => {
+    if (previewData) {
+      setNewsData(JSON.parse(previewData as string)); // Atualiza o newsData quando a previewData muda
+    }
+  }, [previewData]);
+
+  const [fontsLoaded] = useFonts({
+    "Quicksand-Medium": require("../assets/fonts/Quicksand-Medium.ttf"),
+    "Quicksand-Regular": require("../assets/fonts/Quicksand-Regular.ttf"),
+    "Rowdies-Bold": require("../assets/fonts/Rowdies-Bold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Carregando fontes...</Text>
+      </View>
+    );
+  }
+
+  if (!newsData) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Erro ao carregar a pré-visualização.</Text>
+      </View>
+    );
+  }
+
+  return <NewsContent newsData={newsData} />;
 }
 
 const styles = StyleSheet.create({
@@ -181,8 +116,7 @@ const styles = StyleSheet.create({
   headerStyle: {
     paddingHorizontal: "4%",
     width: "100%",
-    height:
-      width * 0.145 + (Platform.OS === "android" ? StatusBar.currentHeight : 0),
+    height: width * 0.145 + (Platform.OS === "android" ? StatusBar.currentHeight : 0),
     backgroundColor: standard.colors.campusRed,
     flexDirection: "row",
     alignItems: "center",

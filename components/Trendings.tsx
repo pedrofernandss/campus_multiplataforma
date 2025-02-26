@@ -32,22 +32,20 @@ const Trendings: React.FC = () => {
     loadTags();
   }, []);
 
-  useEffect(() => {
-    const totalWidth = tags.length * 150;
-    const startAnimation = () => {
-      if (totalWidth > 0) {
-        translateX.setValue(0);
-        Animated.timing(translateX, {
-          toValue: -totalWidth + 500,
-          duration: 13000,
-          useNativeDriver: true,
-        }).start(() => {
-          translateX.setValue(0);
-          startAnimation();
-        });
-      }
-    };
-
+    useEffect(() => {
+        const totalWidth = tags.length * 150;
+        const startAnimation = () => {
+            if (totalWidth > 0 && !isScrolling) {
+                Animated.timing(translateX, {
+                    toValue: -totalWidth,
+                    duration: 20000,
+                    useNativeDriver: true,
+                }).start(() => {
+                    translateX.setValue(0);
+                    startAnimation();
+                });
+            }
+        };
     startAnimation();
 
     return () => {

@@ -22,8 +22,10 @@ interface NewsCardItemProps {
 const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
   const router = useRouter();
 
-  const processedThumbnailUri =
-    news.thumbnail.includes("imgur.com") && !news.thumbnail.endsWith(".jpg")
+  const processedThumbnailUri = 
+    news.thumbnail.includes("imgur.com") && 
+    !news.thumbnail.endsWith(".jpg") && 
+    !news.thumbnail.endsWith(".png")  // Verifica se não termina com .png
       ? news.thumbnail + ".jpg"
       : news.thumbnail;
 

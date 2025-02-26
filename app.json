@@ -13,11 +13,18 @@
       "backgroundColor": "#6C0318"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Este aplicativo precisa acessar sua galeria para permitir que você selecione vídeos."
+      }
     },
     "android": {
       "icon": "./assets/icons/campus-icon.png",
       "package": "com.pedrofernandss.campus_multiplataforma"
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "bundler": "metro",

@@ -20,6 +20,7 @@ import { fetchTags } from "../functions/tagsFunctions";
 import { Tag } from "../types/tag";
 import { User } from "../types/user";
 import { auth } from "../firebase.config";
+import * as types from "../types/index";
 import ModalComponent from "./ModalComponent";
 import {
   sendSugestionNewsEmail,
@@ -136,7 +137,7 @@ const CustomDrawer = (props: any) => {
             <CustomDrawerButton
               text={"Escrever Artigo"}
               icon={"descriptionIcon"}
-              onPress={() => Alert.alert("Escrever Artigo")}
+              onPress={() => router.push('/newsEditor')}
               type={"primary"}
             />
 
@@ -147,7 +148,7 @@ const CustomDrawer = (props: any) => {
               icon={"calendarIcon"}
               onPress={() =>
                 currentUser.role === "Editor"
-                  ? Alert.alert("Escrever")
+                  ? router.push('/editorsPanel')
                   : setDeniedAccessModalOpen(true)
               }
               type={"primary"}
@@ -164,7 +165,6 @@ const CustomDrawer = (props: any) => {
               }}
               confirmButtonText={"Fechar"}
             />
-
             <CustomDrawerButton
               text={"Reportar Bug"}
               icon={"bugIcon"}
