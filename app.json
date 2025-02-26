@@ -20,7 +20,7 @@
     },
     "android": {
       "icon": "./assets/icons/campus-icon.png",
-      "package": "com.pedrofernandss.campus_multiplataforma"
+      "package": "com.pedrofernandss.campus_multiplataforma",
       "permissions": [
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
