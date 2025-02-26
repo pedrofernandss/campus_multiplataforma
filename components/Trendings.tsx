@@ -1,8 +1,8 @@
+import { Image, View, Text, Animated, FlatList, Dimensions, StyleSheet } from 'react-native';
+import { fetchTags } from '@/functions/tagsFunctions';
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-native';
-import { icons, types } from '../constants';
-import { fetchTags } from '../functions/tagsFunctions';
-import standard from '../theme';
+import { icons, types } from '@/constants';
+import standard from '@/theme';
 import TrendingItem from './TrendingItem';
 
 const { width } = Dimensions.get('window');
@@ -31,7 +31,7 @@ const Trendings: React.FC = () => {
             if (totalWidth > 0) {
                 translateX.setValue(0);
                 Animated.timing(translateX, {
-                    toValue: -totalWidth + 500,
+                    toValue: -totalWidth+500,
                     duration: 13000,
                     useNativeDriver: true,
                 }).start(() => {
@@ -51,19 +51,19 @@ const Trendings: React.FC = () => {
     return (
         <View>
             <View style={styles.innerContainer}>
-                <Image
+                <Image 
                     source={icons.trendingIcon}
                     style={styles.trendingIcon}
-                    resizeMode="contain"
+                    resizeMode="contain"           
                 />
                 <Text style={styles.labelText}>Em alta</Text>
                 <View style={styles.overflowTransformation}>
-                    <Animated.View style={[{ transform: [{ translateX }], width: tags.length * 150 }, styles.animatedTrendingText]}>
+                    <Animated.View style={[{ transform: [{ translateX }], width: tags.length*150}, styles.animatedTrendingText]}>
                         <FlatList
                             data={tags}
                             horizontal
                             keyExtractor={(tag) => tag.id.toString()}
-                            renderItem={({ item }) => <TrendingItem tag={item} />}
+                            renderItem={({ item }) => <TrendingItem tag={item}/> }
                             scrollEnabled={false}
                             showsHorizontalScrollIndicator={false}
                         />
@@ -76,24 +76,24 @@ const Trendings: React.FC = () => {
 
 const styles = StyleSheet.create({
     innerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: 'row', 
+        alignItems: 'center', 
     },
-    trendingIcon: {
+    trendingIcon:{
         width: width * 0.09,
         height: width * 0.09,
     },
     labelText: {
-        marginLeft: 4,
-        marginRight: 8,
-        fontSize: width * 0.05,
-        fontFamily: standard.fonts.semiBold,
+        marginLeft: 4, 
+        marginRight: 8, 
+        fontSize: width * 0.05, 
+        fontFamily: standard.fonts.semiBold, 
         color: 'black',
     },
-    overflowTransformation: {
+    overflowTransformation:{
         overflow: 'hidden'
     },
-    animatedTrendingText: {
+    animatedTrendingText:{
         flexDirection: 'row',
     },
 });

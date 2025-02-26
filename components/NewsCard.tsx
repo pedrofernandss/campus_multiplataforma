@@ -1,24 +1,24 @@
+import { Dimensions, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { icons } from '../constants';
-import { getRelativeTime } from '../functions/newsFunctions';
-import standard from '../theme';
-import { News } from '../types/news';
+import standard from '@/theme';
+import { icons } from '@/constants';
+import { News } from '../types/news'
+import { getRelativeTime } from '@/functions/newsFunctions';
 
 const { width } = Dimensions.get('window');
 
 interface NewsCardItemProps {
-  news: News;
+    news: News;
 }
 
 const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
   const router = useRouter();
 
   const processedThumbnailUri =
-    news.thumbnail.includes("imgur.com") && !news.thumbnail.endsWith(".jpg")
-      ? news.thumbnail + ".jpg"
-      : news.thumbnail;
+  news.thumbnail.includes("imgur.com") && !news.thumbnail.endsWith(".jpg")
+    ? news.thumbnail + ".jpg"
+    : news.thumbnail;
 
   return (
     <TouchableOpacity onPress={() => router.push(`./newsPage?id=${news.id}`)} style={styles.container}>
@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: width * 0.35,
-    height: 80,
-    justifyContent: 'flex-start',
+    height: 80,  
+    justifyContent: 'flex-start', 
   },
   coverImageStyle: {
     width: '100%',
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     marginLeft: 8,
-    justifyContent: 'space-between',
+    justifyContent: 'space-between',  
   },
   titleStyle: {
     fontFamily: standard.fonts.semiBold,
@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
   },
   metaDataStyle: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between', 
     width: '100%',
-    marginTop: 5,
+    marginTop: 5,  
   },
   authorStyle: {
     flex: 1,
@@ -90,12 +90,12 @@ const styles = StyleSheet.create({
     color: standard.colors.black,
     opacity: 0.5,
     fontSize: 10,
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-start',  
   },
   timeDataStyle: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-end', 
   },
   clockIconStyle: {
     width: 10,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   timeStyle: {
     fontFamily: standard.fonts.regular,
     color: standard.colors.black,
-    marginLeft: 3,
+    marginLeft: 3, 
     opacity: 0.6,
     fontSize: 10,
   },

@@ -1,12 +1,12 @@
-import { useFonts } from "expo-font";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { doc, getDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, Image, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { WebView } from "react-native-webview";
-import { icons, images } from "../constants";
+import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, SafeAreaView, Platform, StatusBar, Dimensions } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { db } from "../firebase.config";
-import standard from "../theme";
+import { doc, getDoc } from "firebase/firestore";
+import { WebView } from "react-native-webview";
+import { images, icons } from "../constants";
+import standard from "@/theme";
+import { useFonts } from "expo-font";
 
 const { width } = Dimensions.get('window');
 
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   logoContainer: {
-    flex: 1,
+    flex: 1, 
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -234,6 +234,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#000"
   },
   boldText: {
-    fontWeight: "bold",
+    fontWeight: "bold", 
   },
 });

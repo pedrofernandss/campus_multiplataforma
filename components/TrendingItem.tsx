@@ -1,22 +1,22 @@
-import React from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import standard from '../theme';
-import { Tag } from '../types/tag';
+import { StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native'
+import { Tag } from '../types/tag'
+import standard from '@/theme';
+import React from 'react'
 
-const { width } = Dimensions.get('window')
+const {width} = Dimensions.get('window')
 
 interface TrendingItemProps {
     tag: Tag;
 }
 
 const TrendingItem: React.FC<TrendingItemProps> = ({ tag }) => {
-    return (
-        <TouchableOpacity style={styles.container}>
-            <Text key={tag.id} style={[styles.trendingItemText, { color: tag.color }]}>
-                {tag.name}
-            </Text>
-        </TouchableOpacity>
-    )
+  return (
+    <TouchableOpacity style={styles.container}>
+        <Text key={tag.id} style={[styles.trendingItemText, { color: tag.color }]}>
+            {tag.name}
+        </Text>
+    </TouchableOpacity>
+  )
 }
 
 export default TrendingItem

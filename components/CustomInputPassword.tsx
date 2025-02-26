@@ -1,15 +1,15 @@
+import { StyleSheet, TextInput, View } from 'react-native'
+import React, { useState } from 'react'
+import standard from '@/theme'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
-import standard from '../theme';
 
 const CustomInput = ({ value, setValue, placeholder }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+   const [showPassword, setShowPassword] = useState(false);
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+   const toggleShowPassword = () => {
+       setShowPassword(!showPassword);
+   };
 
 
   return (
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F1F4FF',
-    borderWidth: 2,
+    borderWidth: 2, 
     borderRadius: 10,
     paddingHorizontal: 10,
     marginVertical: 10,
@@ -61,5 +61,5 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 10,
-  },
+},
 });

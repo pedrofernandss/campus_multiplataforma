@@ -1,4 +1,4 @@
-import { icons } from "../constants";
+import { icons } from "@/constants";
 
 export interface ModalBox {
     title?: string,
@@ -10,6 +10,6 @@ export interface ModalBox {
     onCancelButton?: () => void;
     confirmButtonText?: string;
     cancelButtonText?: string;
-    inputValue?: string;
-    onInputChange?: (text: string) => void;
+    inputValue?: string; 
+    onInputChange?: (text: string) => void;   
 }
