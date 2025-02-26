@@ -84,7 +84,7 @@ const ArticleList = () => {
             <Image source={icons.taskIcon} style={styles.icon} />
           </View>
           <View style={styles.statCardContainer}>
-            <Text style={styles.statTitle}>Artigos Postados</Text>
+            <Text style={styles.statTitle} numberOfLines={1} ellipsizeMode="tail">Artigos Postados</Text>
             <Text style={styles.statValue}>{publishedCount}</Text>
           </View>
         </View>
@@ -119,13 +119,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    marginTop: 30,
+    marginTop: 25,
   },
   statCard: {
     flex: 1,
     flexDirection: "row",
     backgroundColor: "#f8f8f8",
-    padding: 12,
+    padding: 10,
     borderRadius: 10,
     alignItems: "center",
     marginHorizontal: 5,
@@ -152,10 +152,10 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   statTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: standard.fonts.regular,
-    color: standard.colors.blue,
-    marginBottom: 0,
+    color: standard.colors.black,
+    marginBottom: -12,
   },
   statValue: {
     fontSize: 20,
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   titleStyle: {
-    marginTop: 10,
+    marginTop: 8,
     marginLeft: 20,
     fontFamily: standard.fonts.semiBold,
     fontSize: 20,
