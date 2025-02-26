@@ -31,7 +31,7 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
 
   return (
     <TouchableOpacity
-      onPress={() => router.push(`./newsPage?id=${news.id}`)}
+      onPress={() => router.push(`./openNewsPage?id=${news.id}`)}
       style={styles.container}
     >
       <View style={styles.imageContainer}>

@@ -184,7 +184,7 @@ export default function NewsForm() {
         formData,
         {
           headers: {
-            Authorization: `Client-ID ${process.env.EXPO_PUBLIC_CLIENT_ID}`,
+            Authorization: `Client-ID ${process.env.EXPO_PUBLIC_IMGUR_CLIENT_ID}`,
             "Content-Type": "multipart/form-data",
           },
         }
