@@ -1,53 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
-  Text,
-  Image,
-  ScrollView,
   StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
   SafeAreaView,
   Platform,
   StatusBar,
   Dimensions,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { db } from "../firebase.config";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { auth } from "../firebase.config";
-import { WebView } from "react-native-webview";
-import { images, icons } from "../constants";
 import standard from "../theme";
-import { useFonts } from "expo-font";
-import { getAuth } from "firebase/auth";
 import Header from "../components/Header";
-import ArticleCard from "../components/ArticleCard";
 import ArticleList from "../components/ArticleList";
 
 const { width } = Dimensions.get("window");
 
 export default function EditorPanel() {
-  const [user, setUser] = useState(null);
-  const router = useRouter();
-  const [articleData, setArticleData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  const [fontsLoaded] = useFonts({
-    "Quicksand-Medium": require("../assets/fonts/Quicksand-Medium.ttf"),
-    "Quicksand-Regular": require("../assets/fonts/Quicksand-Regular.ttf"),
-    "Rowdies-Bold": require("../assets/fonts/Rowdies-Bold.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Carregando fontes...</Text>
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1 }}>
@@ -85,15 +51,15 @@ const styles = StyleSheet.create({
   },
   icon: {
     transform: [{ rotate: "180deg" }],
-    width: 35,
-    height: 35,
+    width: 30,
+    height: 30,
   },
   subheading: {
     fontSize: 20,
     color: standard.colors.campusRed,
     marginBottom: 8,
     textAlign: "left",
-    fontFamily: "Rowdies-Bold",
+    fontFamily: standard.fonts.semiBold,
   },
   contentContainer: {
     padding: 12,
@@ -103,7 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     textAlign: "justify",
     color: standard.colors.black,
-    fontFamily: "Quicksand-Bold",
+    fontFamily: standard.fonts.bold,
   },
   blockContainer: {
     marginBottom: 16,
@@ -127,7 +93,7 @@ const styles = StyleSheet.create({
     marginBottom: 1,
     textAlign: "justify",
     color: "#333",
-    fontFamily: "Quicksand-Semibold",
+    fontFamily: standard.fonts.semiBold,
   },
   authors: {
     fontSize: 14,
