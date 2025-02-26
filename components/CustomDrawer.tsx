@@ -137,7 +137,7 @@ const CustomDrawer = (props: any) => {
             <CustomDrawerButton
               text={"Escrever Artigo"}
               icon={"descriptionIcon"}
-              onPress={() => router.push('/newsEditor')}
+              onPress={() => router.push('/writeNewsPage')}
               type={"primary"}
             />
 
