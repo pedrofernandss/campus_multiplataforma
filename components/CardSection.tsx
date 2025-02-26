@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
+import { View, Text, StyleSheet, Dimensions, Image, SafeAreaView } from "react-native";
 import standard from "../theme";
 import { icons } from "../constants";
 import {
@@ -17,20 +17,6 @@ type CardProps = {
   title: string;
   value: number;
   icon: any;
-};
-
-export const InfoCard: React.FC<CardProps> = ({ title, value, icon }) => {
-  return (
-    <View style={styles.card}>
-      <View style={styles.iconContainer}>
-        <Image source={icon} style={styles.icon} resizeMode="contain" />
-      </View>
-      <View style={styles.textContainer}>
-        <Text style={styles.cardTitle}>{title}</Text>
-        <Text style={styles.cardValue}>{value}</Text>
-      </View>
-    </View>
-  );
 };
 
 export default function CardsSection() {
@@ -65,71 +51,76 @@ export default function CardsSection() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <InfoCard
-        title="Artigos Postados"
-        value={artigosPostados}
-        icon={icons.taskIcon}
-      />
-      <InfoCard
-        title="Pendentes"
-        value={pendentes}
-        icon={icons.clockEditorPage}
-      />
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.statsContainer}>
+        <View style={styles.statCard}>
+          <View style={styles.iconContainer}>
+            <Image source={icons.taskIcon} style={styles.icon} />
+          </View>
+          <View style={styles.statCardContainer}>
+            <Text style={styles.statTitle} numberOfLines={1} ellipsizeMode="tail">Artigos Postados</Text>
+            <Text style={styles.statValue}>{artigosPostados}</Text>
+          </View>
+        </View>
+          <View style={styles.statCard}>
+            <View style={styles.iconContainer}>
+              <Image source={icons.timerIcon} style={styles.icon} />
+            </View>
+            <View style={styles.statCardContainer}>
+              <Text style={styles.statTitle}>Pendentes</Text>
+              <Text style={styles.statValue}>{pendentes}</Text>
+            </View>
+          </View>
+      </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
-  container: {
+  statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    marginVertical: 16,
-    gap: 16,
+    marginTop: 25,
+    marginBottom: 5,
   },
-  card: {
+  statCard: {
+    flex: 1,
     flexDirection: "row",
-    width: (width - 24) / 2.4,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
+    padding: 10,
     borderRadius: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
     alignItems: "center",
-    shadowColor: "#000",
+    marginHorizontal: 5,
+    shadowColor: "#383737",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
   iconContainer: {
-    width: 35,
-    height: 35,
-    backgroundColor: "#F2E8FF",
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    backgroundColor: "#EAEAEA",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 10,
   },
   icon: {
-    width: 18,
-    height: 18,
-    tintColor: standard.colors.campusRed,
+    width: 28,
+    height: 28,
+    resizeMode: "contain",
   },
-  textContainer: {
-    flex: 1,
+  statCardContainer: {
+    paddingLeft: 5,
   },
-  cardTitle: {
-    fontSize: 10,
-    color: "#666",
-    fontFamily: "Quicksand-Medium",
-    textAlign: "left",
-    marginBottom: 2,
+  statTitle: {
+    fontSize: 12,
+    fontFamily: standard.fonts.regular,
+    color: standard.colors.black,
+    marginBottom: -12,
   },
-  cardValue: {
-    fontSize: 14,
-    color: "#000",
-    fontWeight: "bold",
-    fontFamily: "Rowdies-Bold",
-    textAlign: "left",
+  statValue: {
+    fontSize: 20,
+    fontFamily: standard.fonts.bold,
+    color: standard.colors.black,
   },
 });
