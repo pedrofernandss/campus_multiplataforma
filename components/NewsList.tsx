@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, FlatList, SafeAreaView, StyleSheet } from 'react-native';
-import NewsCard from './NewsCard';
-import { fetchNews } from '@/functions/newsFunctions';
-import { News } from '@/types/news';
+import React, { useEffect, useState } from "react";
+import { Dimensions, FlatList, SafeAreaView, StyleSheet } from "react-native";
+import NewsCard from "./NewsCard";
+import { fetchNews } from "../functions/newsFunctions";
+import { News } from "../types/news";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const NewsList = () => {
   const [news, setNews] = useState<News[]>([]);
-  
-  useEffect(() => {
-      const loadNews = async () => {
-          try {
-              const fetchedNews = await fetchNews();
-              setNews(fetchedNews);
-          } catch (error) {
-              console.error("Erro ao buscar as notícias: ", error);
-          }
-      };
 
-      loadNews();
+  useEffect(() => {
+    const loadNews = async () => {
+      try {
+        const fetchedNews = await fetchNews();
+        setNews(fetchedNews);
+      } catch (error) {
+        console.error("Erro ao buscar as notícias: ", error);
+      }
+    };
+
+    loadNews();
   }, []);
 
   return (
@@ -39,6 +39,6 @@ export default NewsList;
 
 const styles = StyleSheet.create({
   flatListContainer: {
-    paddingTop: 15, 
+    paddingTop: 15,
   },
 });
