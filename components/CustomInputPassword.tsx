@@ -1,22 +1,21 @@
-import { StyleSheet, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
-import standard from '@/theme'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleSheet, TextInput, View } from "react-native";
+import React, { useState } from "react";
+import standard from "../theme";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const CustomInput = ({ value, setValue, placeholder }) => {
   const [isFocused, setIsFocused] = useState(false);
-   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-   const toggleShowPassword = () => {
-       setShowPassword(!showPassword);
-   };
-
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <View
       style={[
         styles.container,
-        { borderColor: isFocused ? standard.colors.campusRed : 'transparent' } // Alterna a cor da borda
+        { borderColor: isFocused ? standard.colors.campusRed : "transparent" }, // Alterna a cor da borda
       ]}
     >
       <TextInput
@@ -28,9 +27,9 @@ const CustomInput = ({ value, setValue, placeholder }) => {
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />
-      {String(value ?? '').length > 0 && (
+      {String(value ?? "").length > 0 && (
         <MaterialCommunityIcons
-          name={showPassword ? 'eye-off' : 'eye'}
+          name={showPassword ? "eye-off" : "eye"}
           size={20}
           color="#aaa"
           style={styles.icon}
@@ -45,10 +44,10 @@ export default CustomInput;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F1F4FF',
-    borderWidth: 2, 
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F1F4FF",
+    borderWidth: 2,
     borderRadius: 10,
     paddingHorizontal: 10,
     marginVertical: 10,
@@ -56,10 +55,10 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     fontFamily: standard.fonts.semiBold,
-    color: '#626262',
+    color: "#626262",
     flex: 1,
   },
   icon: {
     marginLeft: 10,
-},
+  },
 });
