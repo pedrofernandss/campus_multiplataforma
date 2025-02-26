@@ -1,12 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableWithoutFeedback, Animated, Easing } from 'react-native';
-import { deleteNews, updateNewsStatus } from '@/functions/newsFunctions';
-import standard from '@/theme';
-import { News } from '@/types';
-import { ProgressBox } from '@/types/progressBar';
-import { useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableWithoutFeedback,
+  Animated,
+  Easing,
+} from "react-native";
+import { deleteNews, updateNewsStatus } from "../functions/newsFunctions";
+import standard from "../theme";
+import { News } from "../types";
+import { ProgressBox } from "../types/progressBar";
+import { useRouter } from "expo-router";
 
-const ProgressBar: React.FC<ProgressBox> = ({ newsId, label, isOpen, onClose, type }) => {
+const ProgressBar: React.FC<ProgressBox> = ({
+  newsId,
+  label,
+  isOpen,
+  onClose,
+  type,
+}) => {
   const totalTime = 3; // Tempo total em segundos
   const animatedProgress = useRef(new Animated.Value(0)).current;
   const [progress, setProgress] = useState(0);
@@ -18,13 +32,18 @@ const ProgressBar: React.FC<ProgressBox> = ({ newsId, label, isOpen, onClose, ty
       // Executa a ação (aprovar ou deletar) assim que o modal abre
       const executeAction = async () => {
         try {
-          if (type === 'approve') {
+          if (type === "approve") {
             await updateNewsStatus(newsId, true);
-          } else if (type === 'delete') {
+          } else if (type === "delete") {
             await deleteNews(newsId);
           }
         } catch (error) {
-          console.error(`Erro ao ${type === 'approve' ? 'atualizar' : 'remover'} a notícia:`, error);
+          console.error(
+            `Erro ao ${
+              type === "approve" ? "atualizar" : "remover"
+            } a notícia:`,
+            error
+          );
         }
       };
       executeAction();
@@ -74,7 +93,7 @@ const ProgressBar: React.FC<ProgressBox> = ({ newsId, label, isOpen, onClose, ty
                   {
                     width: animatedProgress.interpolate({
                       inputRange: [0, 100],
-                      outputRange: ['0%', '100%'],
+                      outputRange: ["0%", "100%"],
                     }),
                   },
                 ]}
@@ -90,34 +109,34 @@ const ProgressBar: React.FC<ProgressBox> = ({ newsId, label, isOpen, onClose, ty
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   container: {
-    width: '85%',
+    width: "85%",
     backgroundColor: standard.colors.primaryWhite,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
   progressHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     margin: 15,
   },
   percentage: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: standard.colors.campusRed,
   },
   label: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: standard.colors.black,
   },
   timeLeft: {
@@ -125,15 +144,15 @@ const styles = StyleSheet.create({
     color: standard.colors.grey,
   },
   progressBarContainer: {
-    width: '100%',
+    width: "100%",
     height: 8,
-    backgroundColor: '#D9E2F1',
+    backgroundColor: "#D9E2F1",
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   progress: {
-    height: '100%',
+    height: "100%",
     backgroundColor: standard.colors.campusRed,
   },
 });

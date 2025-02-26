@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, FlatList, Text, SafeAreaView, StyleSheet, View, Image } from 'react-native';
-import { News } from '@/types/news';
-import ArticleCard from './ArticleCard';
-import standard from '@/theme';
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  FlatList,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Image,
+} from "react-native";
+import { News } from "../types/news";
+import ArticleCard from "./ArticleCard";
+import standard from "../theme";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase.config";
-import { icons } from '@/constants';
-import { getAllNews } from '@/functions/newsFunctions';
-
+import { icons } from "../constants";
+import { getAllNews } from "../functions/newsFunctions";
 
 const ArticleList = () => {
   const [news, setNews] = useState<News[]>([]);
   const [publishedCount, setPublishedCount] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
-
-
 
   // Função que busca os dados do Firestore
   const fetchArticles = async () => {
@@ -25,11 +30,15 @@ const ArticleList = () => {
         ...doc.data(),
       })) as News[];
       // Ordena os artigos – por exemplo, pelos não publicados primeiro
-      const sortedNews = allNews.sort((a, b) => Number(a.published) - Number(b.published));
+      const sortedNews = allNews.sort(
+        (a, b) => Number(a.published) - Number(b.published)
+      );
       setNews(sortedNews);
 
       // Atualiza as contagens
-      const published = allNews.filter((item) => item.published === true).length;
+      const published = allNews.filter(
+        (item) => item.published === true
+      ).length;
       setPublishedCount(published);
       setPendingCount(allNews.length - published);
     } catch (error) {
@@ -47,11 +56,15 @@ const ArticleList = () => {
         })) as News[];
 
         // Ordena os artigos – por exemplo, pelos não publicados primeiro
-        const sortedNews = allNews.sort((a, b) => Number(a.published) - Number(b.published));
+        const sortedNews = allNews.sort(
+          (a, b) => Number(a.published) - Number(b.published)
+        );
         setNews(sortedNews);
 
         // Atualiza as contagens
-        const published = allNews.filter((item) => item.published === true).length;
+        const published = allNews.filter(
+          (item) => item.published === true
+        ).length;
         setPublishedCount(published);
         setPendingCount(allNews.length - published);
       } catch (error) {
@@ -63,12 +76,9 @@ const ArticleList = () => {
     return () => unsubscribe();
   }, []); // Array de dependências vazio para executar apenas uma vez
 
-
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.statsContainer}>
-
         <View style={styles.statCard}>
           <View style={styles.iconContainer}>
             <Image source={icons.taskIcon} style={styles.icon} />
@@ -92,7 +102,9 @@ const ArticleList = () => {
       <FlatList
         data={news}
         keyExtractor={(news) => news.id.toString()}
-        renderItem={({ item }) => <ArticleCard news={item} onActionComplete={fetchArticles} />}
+        renderItem={({ item }) => (
+          <ArticleCard news={item} onActionComplete={fetchArticles} />
+        )}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContainer}
       />
@@ -104,18 +116,18 @@ export default ArticleList;
 
 const styles = StyleSheet.create({
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
     marginTop: 30,
   },
   statCard: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#f8f8f8',
+    flexDirection: "row",
+    backgroundColor: "#f8f8f8",
     padding: 12,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 5,
     shadowColor: "#383737",
     shadowOffset: { width: 0, height: 2 },
@@ -127,15 +139,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 40,
-    backgroundColor: '#EAEAEA',
-    justifyContent: 'center',
-    alignItems: 'center',
-
+    backgroundColor: "#EAEAEA",
+    justifyContent: "center",
+    alignItems: "center",
   },
   icon: {
     width: 28,
     height: 28,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   statCardContainer: {
     paddingLeft: 5,
@@ -164,5 +175,5 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     fontFamily: standard.fonts.semiBold,
     fontSize: 20,
-  }
+  },
 });

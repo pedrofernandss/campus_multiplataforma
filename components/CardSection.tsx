@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
-import standard from "@/theme";
+import standard from "../theme";
 import { icons } from "../constants";
-import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../firebase.config";  
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../firebase.config";
 
 const { width } = Dimensions.get("window");
 
@@ -30,7 +36,7 @@ export const InfoCard: React.FC<CardProps> = ({ title, value, icon }) => {
 export default function CardsSection() {
   const [artigosPostados, setArtigosPostados] = useState<number>(0);
   const [pendentes, setPendentes] = useState<number>(0);
-  
+
   const contarDocumentos = async () => {
     try {
       const newsCollection = collection(db, "news");
@@ -54,14 +60,22 @@ export default function CardsSection() {
   };
 
   useEffect(() => {
-    contarDocumentos(); 
-    contarPendentes();   
+    contarDocumentos();
+    contarPendentes();
   }, []);
 
   return (
     <View style={styles.container}>
-      <InfoCard title="Artigos Postados" value={artigosPostados} icon={icons.taskIcon} />
-      <InfoCard title="Pendentes" value={pendentes} icon={icons.clockEditorPage} />
+      <InfoCard
+        title="Artigos Postados"
+        value={artigosPostados}
+        icon={icons.taskIcon}
+      />
+      <InfoCard
+        title="Pendentes"
+        value={pendentes}
+        icon={icons.clockEditorPage}
+      />
     </View>
   );
 }
@@ -71,17 +85,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     marginVertical: 16,
-    gap: 16, 
+    gap: 16,
   },
   card: {
-    flexDirection: "row", 
-    width: (width - 24) / 2.4 , 
-    backgroundColor: "#fff", 
+    flexDirection: "row",
+    width: (width - 24) / 2.4,
+    backgroundColor: "#fff",
     borderRadius: 10,
     paddingVertical: 20,
     paddingHorizontal: 10,
     alignItems: "center",
-    shadowColor: "#000", 
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -90,29 +104,29 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 35,
     height: 35,
-    backgroundColor: "#F2E8FF", 
+    backgroundColor: "#F2E8FF",
     borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 10, 
+    marginRight: 10,
   },
   icon: {
     width: 18,
     height: 18,
-    tintColor: standard.colors.campusRed, 
+    tintColor: standard.colors.campusRed,
   },
   textContainer: {
-    flex: 1, 
+    flex: 1,
   },
   cardTitle: {
-    fontSize: 10, 
-    color: "#666", 
+    fontSize: 10,
+    color: "#666",
     fontFamily: "Quicksand-Medium",
     textAlign: "left",
     marginBottom: 2,
   },
   cardValue: {
-    fontSize: 14, 
+    fontSize: 14,
     color: "#000",
     fontWeight: "bold",
     fontFamily: "Rowdies-Bold",

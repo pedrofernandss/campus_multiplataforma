@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { 
-  View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, 
-  TouchableOpacity, SafeAreaView, Platform, StatusBar, Dimensions 
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  StatusBar,
+  Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { db } from "../firebase.config";
@@ -9,17 +18,17 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { auth } from "../firebase.config";
 import { WebView } from "react-native-webview";
 import { images, icons } from "../constants";
-import standard from "@/theme";
+import standard from "../theme";
 import { useFonts } from "expo-font";
 import { getAuth } from "firebase/auth";
-import Header from "@/components/Header";
-import ArticleCard from "@/components/ArticleCard";
-import ArticleList from "@/components/ArticleList";
+import Header from "../components/Header";
+import ArticleCard from "../components/ArticleCard";
+import ArticleList from "../components/ArticleList";
 
 const { width } = Dimensions.get("window");
 
 export default function EditorPanel() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
   const router = useRouter();
   const [articleData, setArticleData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -41,29 +50,31 @@ export default function EditorPanel() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flex: 1}}>
-        <Header/>
-        <ArticleList/>
+      <View style={{ flex: 1 }}>
+        <Header />
+        <ArticleList />
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: standard.colors.primaryWhite },
+  container: {
+    flex: 1,
+    backgroundColor: standard.colors.primaryWhite,
+  },
   headerStyle: {
     paddingHorizontal: "4%",
     width: "100%",
-    height: width * 0.145 + (Platform.OS === "android" ? StatusBar.currentHeight : 0),
+    height:
+      width * 0.145 + (Platform.OS === "android" ? StatusBar.currentHeight : 0),
     backgroundColor: standard.colors.campusRed,
     flexDirection: "row",
     alignItems: "center",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   logoContainer: {
-    flex: 1, 
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },

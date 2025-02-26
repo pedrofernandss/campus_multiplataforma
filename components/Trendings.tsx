@@ -35,7 +35,7 @@ const Trendings: React.FC = () => {
     useEffect(() => {
         const totalWidth = tags.length * 150;
         const startAnimation = () => {
-            if (totalWidth > 0 && !isScrolling) {
+            if (totalWidth > 0) {
                 Animated.timing(translateX, {
                     toValue: -totalWidth,
                     duration: 20000,

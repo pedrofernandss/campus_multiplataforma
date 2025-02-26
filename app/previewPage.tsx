@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, ScrollView, Image, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, Platform, StatusBar, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  SafeAreaView,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Platform,
+  StatusBar,
+  ActivityIndicator,
+} from "react-native";
 import { WebView } from "react-native-webview";
 import { useFonts } from "expo-font";
 import { useRouter } from "expo-router";
 import { icons, images } from "../constants";
-import standard from "@/theme";
+import standard from "../theme";
 
 const { width } = Dimensions.get("window");
 
@@ -14,13 +26,23 @@ const NewsContent = ({ newsData }: { newsData: any }) => {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{ backgroundColor: styles.headerStyle.backgroundColor }}>
+      <SafeAreaView
+        style={{ backgroundColor: styles.headerStyle.backgroundColor }}
+      >
         <View style={styles.headerStyle}>
-          <TouchableOpacity onPress={() => router.push('/newsEditor')}>
-            <Image source={icons.arrowFowardIcon} style={styles.icon} resizeMode="contain" />
+          <TouchableOpacity onPress={() => router.push("/newsEditor")}>
+            <Image
+              source={icons.arrowFowardIcon}
+              style={styles.icon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
           <View style={styles.logoContainer}>
-            <Image source={images.logo} style={styles.logo} resizeMode="contain" />
+            <Image
+              source={images.logo}
+              style={styles.logo}
+              resizeMode="contain"
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -39,8 +61,13 @@ const NewsContent = ({ newsData }: { newsData: any }) => {
               case "image":
                 return (
                   <View key={index} style={styles.blockContainer}>
-                    <Image source={{ uri: block.content }} style={styles.image} />
-                    {block.caption && <Text style={styles.caption}>{block.caption}</Text>}
+                    <Image
+                      source={{ uri: block.content }}
+                      style={styles.image}
+                    />
+                    {block.caption && (
+                      <Text style={styles.caption}>{block.caption}</Text>
+                    )}
                   </View>
                 );
               case "text":
@@ -77,7 +104,9 @@ const NewsContent = ({ newsData }: { newsData: any }) => {
 };
 export default function PreviewPage() {
   const { previewData } = useLocalSearchParams();
-  const [newsData, setNewsData] = useState(previewData ? JSON.parse(previewData) : null);
+  const [newsData, setNewsData] = useState(
+    previewData ? JSON.parse(previewData) : null
+  );
 
   useEffect(() => {
     if (previewData) {
@@ -116,7 +145,8 @@ const styles = StyleSheet.create({
   headerStyle: {
     paddingHorizontal: "4%",
     width: "100%",
-    height: width * 0.145 + (Platform.OS === "android" ? StatusBar.currentHeight : 0),
+    height:
+      width * 0.145 + (Platform.OS === "android" ? StatusBar.currentHeight : 0),
     backgroundColor: standard.colors.campusRed,
     flexDirection: "row",
     alignItems: "center",
