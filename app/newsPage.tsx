@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, SafeAreaView, Platform, StatusBar, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  StatusBar,
+  Dimensions,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { db } from "../firebase.config";
 import { doc, getDoc } from "firebase/firestore";
 import { WebView } from "react-native-webview";
 import { images, icons } from "../constants";
-import standard from "@/theme";
+import standard from "../theme";
 import { useFonts } from "expo-font";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export default function NewsPage() {
   const { id } = useLocalSearchParams();
@@ -17,9 +29,9 @@ export default function NewsPage() {
   const [loading, setLoading] = useState(true);
 
   const [fontsLoaded] = useFonts({
-    'Quicksand-Medium': require('../assets/fonts/Quicksand-Medium.ttf'),
-    'Quicksand-Regular': require('../assets/fonts/Quicksand-Regular.ttf'),
-    'Rowdies-Bold': require('../assets/fonts/Rowdies-Bold.ttf'),
+    "Quicksand-Medium": require("../assets/fonts/Quicksand-Medium.ttf"),
+    "Quicksand-Regular": require("../assets/fonts/Quicksand-Regular.ttf"),
+    "Rowdies-Bold": require("../assets/fonts/Rowdies-Bold.ttf"),
   });
 
   useEffect(() => {
@@ -69,13 +81,23 @@ export default function NewsPage() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{ backgroundColor: styles.headerStyle.backgroundColor }}>
+      <SafeAreaView
+        style={{ backgroundColor: styles.headerStyle.backgroundColor }}
+      >
         <View style={styles.headerStyle}>
           <TouchableOpacity onPress={() => router.back()}>
-            <Image source={icons.arrowFowardIcon} style={styles.icon} resizeMode="contain" />
+            <Image
+              source={icons.arrowFowardIcon}
+              style={styles.icon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
           <View style={styles.logoContainer}>
-            <Image source={images.logo} style={styles.logo} resizeMode="contain" />
+            <Image
+              source={images.logo}
+              style={styles.logo}
+              resizeMode="contain"
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -99,8 +121,13 @@ export default function NewsPage() {
                     : block.content;
                 return (
                   <View key={index} style={styles.blockContainer}>
-                    <Image source={{ uri: processedUri }} style={styles.image} />
-                    {block.caption && <Text style={styles.caption}>{block.caption}</Text>}
+                    <Image
+                      source={{ uri: processedUri }}
+                      style={styles.image}
+                    />
+                    {block.caption && (
+                      <Text style={styles.caption}>{block.caption}</Text>
+                    )}
                   </View>
                 );
               case "text":
@@ -129,7 +156,9 @@ export default function NewsPage() {
                       javaScriptEnabled
                       allowsInlineMediaPlayback
                     />
-                    {block.caption && <Text style={styles.caption}>{block.caption}</Text>}
+                    {block.caption && (
+                      <Text style={styles.caption}>{block.caption}</Text>
+                    )}
                   </View>
                 );
               case "subheading":
@@ -145,23 +174,24 @@ export default function NewsPage() {
       </ScrollView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   headerStyle: {
-    paddingHorizontal: '4%',
-    width: '100%',
-    height: width * 0.145 + (Platform.OS === 'android' ? StatusBar.currentHeight : 0),
+    paddingHorizontal: "4%",
+    width: "100%",
+    height:
+      width * 0.145 + (Platform.OS === "android" ? StatusBar.currentHeight : 0),
     backgroundColor: standard.colors.campusRed,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   logoContainer: {
-    flex: 1, 
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   logo: {
     marginTop: 6,
@@ -169,7 +199,7 @@ const styles = StyleSheet.create({
     height: 31,
   },
   icon: {
-    transform: [{ rotate: '180deg' }],
+    transform: [{ rotate: "180deg" }],
     width: 35,
     height: 35,
   },
@@ -178,63 +208,63 @@ const styles = StyleSheet.create({
     color: standard.colors.campusRed,
     marginBottom: 8,
     textAlign: "left",
-    fontFamily: 'Rowdies-Bold',
+    fontFamily: "Rowdies-Bold",
   },
   contentContainer: {
-    padding: 12
+    padding: 12,
   },
   mainTitle: {
     fontSize: 20,
     marginBottom: 3,
-    textAlign: 'justify',
+    textAlign: "justify",
     color: standard.colors.black,
-    fontFamily: 'Quicksand-Bold',
+    fontFamily: "Quicksand-Bold",
   },
   blockContainer: {
-    marginBottom: 16
+    marginBottom: 16,
   },
   image: {
     width: "100%",
     height: 200,
     borderRadius: 8,
-    marginBottom: 8
+    marginBottom: 8,
   },
   caption: {
     fontSize: 12,
     color: standard.colors.grey,
     marginBottom: 8,
-    textAlign: 'center',
-    fontStyle: "italic"
+    textAlign: "center",
+    fontStyle: "italic",
   },
   text: {
     fontSize: 16,
     lineHeight: 24,
     marginBottom: 1,
-    textAlign: 'justify',
+    textAlign: "justify",
     color: "#333",
-    fontFamily: 'Quicksand-Semibold',
+    fontFamily: "Quicksand-Semibold",
   },
   authors: {
     fontSize: 14,
     color: standard.colors.grey,
-    marginBottom: 16
+    marginBottom: 16,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   webview: {
     height: 50,
-    width: "100%"
+    width: "100%",
   },
   video: {
     height: 200,
     width: width,
-    backgroundColor: "#000"
+    backgroundColor: "#000",
   },
   boldText: {
-    fontWeight: "bold", 
+    fontWeight: "bold",
   },
 });

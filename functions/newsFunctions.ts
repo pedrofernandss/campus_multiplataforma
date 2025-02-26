@@ -62,22 +62,21 @@ export const getRelativeTime = (dateString: string): string => {
     const now = new Date();
     const createdAt = new Date(dateString);
     const diffInMilliseconds = now.getTime() - createdAt.getTime();
-    const units: {[key:string]: number} = {
-        'ano': 1000 * 3600 * 24 * 365,  
-        'mês': 1000 * 3600 * 24 * 30,   
-        'sem': 1000 * 3600 * 24 * 7,    
-        'dia': 1000 * 3600 * 24,        
-        'hora': 1000 * 3600,             
-        'min': 1000 * 60 
+    const units: { [key: string]: { singular: string; plural: string; value: number } } = {
+        'ano': { singular: 'ano', plural: 'anos', value: 1000 * 3600 * 24 * 365 },
+        'mês': { singular: 'mês', plural: 'meses', value: 1000 * 3600 * 24 * 30 },
+        'sem': { singular: 'semana', plural: 'semanas', value: 1000 * 3600 * 24 * 7 },
+        'dia': { singular: 'dia', plural: 'dias', value: 1000 * 3600 * 24 },
+        'hora': { singular: 'hora', plural: 'horas', value: 1000 * 3600 },
+        'min': { singular: 'minuto', plural: 'minutos', value: 1000 * 60 }
     };
 
-    for(const [unit, millisecondsInUnit] of Object.entries(units)){
-        const diff = Math.floor(diffInMilliseconds / millisecondsInUnit);
-        if(diff >= 1){
-            return `${diff} ${unit}`
+    for (const { singular, plural, value } of Object.values(units)) {
+        const diff = Math.floor(diffInMilliseconds / value);
+        if (diff >= 1) {
+            return `${diff} ${diff === 1 ? singular : plural}`;
         }
     }
 
-    return 'Agora'
-
-}
+    return 'Agora';
+};

@@ -24,7 +24,11 @@ O **Campus Multiplataforma** é um aplicativo desenvolvido para o **Laboratório
 - **Instagram**  
 - **YouTube**  
 
+
 Com o objetivo de fortalecer a presença digital do jornal, o aplicativo oferece acesso centralizado ao conteúdo multimídia e uma experiência unificada para os usuários.  
+
+Este projeto está sendo desenvolvido com **React Native** no front-end, utilizando o ambiente **Expo**, e **Google Firebase** no back-end. Ambas as aplicações utilizam **TypeScript** para garantir um código robusto e escalável. A infraestrutura é totalmente dockerizada para facilitar o desenvolvimento, a implantação e o escalonamento.
+
 
 ---
 
@@ -89,6 +93,19 @@ EXPO_PUBLIC_CHANNEL_ID=seu_id_canal
    git clone https://github.com/pedrofernandss/campus_multiplataforma.git  
    ```  
 
+## Tecnologias Utilizadas
+
+### Front-end
+- **React Native** (Expo)
+- **JavaScript**
+- **TypeScript**
+
+### Back-end
+- **Google Firebase**
+- **TypeScript**
+
+
+
 2. **Instale as dependências:**  
    ```bash
    cd app && yarn install
@@ -101,6 +118,10 @@ EXPO_PUBLIC_CHANNEL_ID=seu_id_canal
 
 ---
 
+
 ## Licença  
 
 Este projeto está licenciado sob a licença **MIT**. Consulte o arquivo `LICENSE` para mais detalhes.  
+<p align="center">
+  <em>Desenvolvido por Ithalo Medeiros, Pedro Fernandes e Pedro Henrique - Universidade de Brasília</em>
+</p>
