@@ -10,17 +10,14 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/campusplash.png",
-      "resizeMode": "contain",
       "backgroundColor": "#6C0318"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/campus-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+      "icon": "./assets/icons/campus-icon.png",
+      "package": "com.pedrofernandss.campus_multiplataforma"
     },
     "web": {
       "bundler": "metro",
@@ -34,6 +31,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "429b6580-bf80-4611-a0b7-96403274a61a"
+      }
     }
   }
 }
