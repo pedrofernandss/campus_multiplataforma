@@ -90,7 +90,7 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({
         <TouchableOpacity
           onPress={() => {
             router.push({
-              pathname: "/newsEditor",
+              pathname: "/writeNewsPage",
               params: { newsData: JSON.stringify(news) },
             });
           }}
