@@ -1,53 +1,67 @@
-import { StyleSheet, SafeAreaView, View, Text } from "react-native";
+import { StyleSheet, SafeAreaView, View, Text, ActivityIndicator, Alert } from "react-native";
 import standard from "../theme";
 import CustomInput from "../components/CustomInputText";
 import { useState } from "react";
 import CustomButton from "../components/CustomButton";
 import CustomInputPassword from "../components/CustomInputPassword";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase.config";
 import { router } from "expo-router";
 
 export default function signInPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false);
+  
 
   const onForgotPasswordPressed = () => {
-    console.warn("Botão de Esqueci minha senha funcionando");
-  };
+    if (!email) {
+      Alert.alert('', 'Por favor, insira seu endereço de e-mail.');
+      return;
+    }
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        Alert.alert('', 'E-mail de redefinição de senha enviado. Verifique sua caixa de entrada.');
+      })
+  }
+  
 
   const signIn = async () => {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    router.push("/");
-    console.log("Login bem-sucedido", userCredential.user.email);
+    setIsLoading(false);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setIsLoading(true)
+      setEmail('');
+      setPassword('');
+      setTimeout(() => {
+        setIsLoading(false);
+        router.push('/');
+      }, 3000);
+
+    } catch (error) {
+      Alert.alert('', 'Ocorreu um erro ao efetuar login. Por favor, tente novamente.');
+    }
   };
+
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
-      <View style={styles.container}>
-        <View style={styles.externalCircle} />
-        <View style={styles.innerCircle} />
-        <Text style={styles.title}>Login</Text>
-        <Text style={styles.subtitle}>Bem vindo de volta!</Text>
-        <View style={styles.innerContainer}>
-          <CustomInput placeholder="Email" value={email} setValue={setEmail} />
-          <CustomInputPassword
-            placeholder="Senha"
-            value={password}
-            setValue={setPassword}
-          />
-          <CustomButton
-            text={"Esqueci minha senha"}
-            onPress={onForgotPasswordPressed}
-            type="tertiary"
-          />
-          <CustomButton text={"Acessar"} onPress={signIn} type="primary" />
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#6C0318" style={{ flex: 1 }} />
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.externalCircle} />
+          <View style={styles.innerCircle} />
+          <Text style={styles.title}>Login</Text>
+          <Text style={styles.subtitle}>Bem vindo de volta!</Text>
+          <View style={styles.innerContainer}>
+            <CustomInput placeholder="Email" value={email} setValue={setEmail} />
+            <CustomInputPassword placeholder="Senha" value={password} setValue={setPassword} />
+            <CustomButton text={"Esqueci minha senha"} onPress={onForgotPasswordPressed} type="tertiary" />
+            <CustomButton text={"Acessar"} onPress={signIn} type="primary" />
+          </View>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   );
 }
