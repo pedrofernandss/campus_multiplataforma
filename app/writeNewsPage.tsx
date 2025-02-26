@@ -209,8 +209,8 @@ export default function NewsForm() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes:
         type === "image"
-          ? ImagePicker.MediaTypeOptions.Images
-          : ImagePicker.MediaTypeOptions.Videos,
+          ? ImagePicker.MediaType.Images
+          : ImagePicker.MediaType.Videos,
       allowsEditing: true,
       quality: 1,
     });
@@ -241,7 +241,7 @@ export default function NewsForm() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaType.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
