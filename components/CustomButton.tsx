@@ -6,7 +6,11 @@ const CustomButton = ({ onPress, text, type }) => {
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.container, styles[`container_${type}`]]}
+      style={({ pressed }) => [
+        styles.container,
+        styles[`container_${type}`],
+        pressed && styles.container_pressed,
+      ]}
     >
       <Text style={[styles.textLabel, styles[`textLabel_${type}`]]}>
         {text}
@@ -30,6 +34,9 @@ const styles = StyleSheet.create({
   },
   container_tertiary: {
     alignSelf: "flex-end",
+  },
+  container_pressed: {
+    backgroundColor: "#a85d6c"
   },
   textLabel_primary: {
     fontFamily: standard.fonts.semiBold,
