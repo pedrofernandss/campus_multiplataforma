@@ -26,27 +26,3 @@ export async function registerForPushNotificationAsync() {
 
     return token
 }
-
-export async function sendNotification(newsTitle: string) {
-    try {
-        const tokensSnapshot = await getDocs(collection(db, "deviceTokens"))
-        const tokens: string[] = []
-
-        tokensSnapshot.forEach((doc) => {
-            const data = doc.data()
-            if(data.token) {
-                tokens.push(data.token)
-            }
-        })
-
-        const notificationPayload = {
-            registrationIds = tokens,
-            notification :{
-                title: "📰 Nova Notícia!",
-                body: newsTitle || "Confira agora no app!",
-                sound: "default",
-            }
-        }
-    }
-
-}
