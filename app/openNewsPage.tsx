@@ -222,12 +222,14 @@ const styles = StyleSheet.create({
   },
   blockContainer: {
     marginBottom: 16,
+    alignItems: "center"
   },
   image: {
-    width: "100%",
-    height: 200,
+    width: 340,
+    height:200,
     borderRadius: 8,
     marginBottom: 8,
+    resizeMode: "contain"
   },
   caption: {
     fontSize: 12,
