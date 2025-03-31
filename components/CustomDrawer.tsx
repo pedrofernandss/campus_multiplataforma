@@ -53,13 +53,12 @@ const CustomDrawer = (props: any) => {
     loadTags();
   }, []);
 
-  // Verifica o estado do usuário no Firebase Auth
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser: any) => {
-      setUserIsLogged(currentUser); // Atualiza o estado com o usuário logado ou null
+      setUserIsLogged(currentUser);
     });
 
-    return () => unsubscribe(); // Cleanup ao desmontar o componente
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -75,13 +74,12 @@ const CustomDrawer = (props: any) => {
     loadUserData();
   }, []);
 
-  // Obtenha a navegação do props;
   return (
     <DrawerContentScrollView
       {...props}
       contentContainerStyle={{ flex: 1, paddingTop: 0 }}
     >
-      {userIsLogged && currentUser ? (
+      {currentUser && userIsLogged ? (
         <View style={styles.topContainer}>
           <View style={styles.leftSection}>
             <Image
@@ -110,7 +108,6 @@ const CustomDrawer = (props: any) => {
       )}
 
       <View style={styles.contentContainer}>
-        {/* Hashtags */}
         {!userIsLogged && (
           <View style={styles.hashtagsContainer}>
             <View style={styles.grid}>
@@ -126,7 +123,7 @@ const CustomDrawer = (props: any) => {
           </View>
         )}
 
-        {userIsLogged && currentUser ? (
+        {currentUser && userIsLogged ? (
           <>
             <CustomDrawerButton
               text={"Home"}
