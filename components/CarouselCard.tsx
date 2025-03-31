@@ -1,21 +1,23 @@
-import { Linking, StyleSheet, Image, View, Dimensions, Text, TouchableOpacity } from 'react-native'
+import { Linking, StyleSheet, Image, View, Dimensions, Text, TouchableOpacity, Platform } from 'react-native'
+import * as IntentLauncher from "expo-intent-launcher";
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 
 const {width} = Dimensions.get('window')
 
 const CarouselCard = ({ item }) => {
-  const videoLink = `https://www.youtube.com/watch?v=${item.id.videoId}`
+  const videoLink = `vnd.youtube://${item.id.videoId}`
 
   const goToVideo = async () => {
-    if (videoLink) {
-      const supported = await Linking.canOpenURL(videoLink);
-      if (supported) {
-        await Linking.openURL(videoLink);
-      } else {
-        console.error(`Não é possível abrir o link: ${item.link}`);
-      }
-    }
+    if (Platform.OS === "android") {
+      IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
+        data: videoLink,
+    }).catch(() => {
+      Linking.openURL(`https://www.youtube.com/watch?v=${item.id.videoId}`)
+    });
+  } else {
+    Linking.openURL(`https://www.youtube.com/watch?v=${item.id.videoId}`)
+  }
 };
 
   return (
