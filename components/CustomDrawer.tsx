@@ -30,7 +30,7 @@ import { fetchUser } from "../functions/userFunctions";
 
 const CustomDrawer = (props: any) => {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [userIsLogged, setUserIsLogged] = useState(null);
+  const [userIsLogged, setUserIsLogged] = useState<boolean | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isNewsSugestionModalOpen, setNewsSugestionModalOpen] = useState(false);
   const [newsSugestion, setNewsSugestion] = useState("");
@@ -55,7 +55,7 @@ const CustomDrawer = (props: any) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser: any) => {
-      setUserIsLogged(currentUser);
+      setUserIsLogged(!!currentUser);
     });
 
     return () => unsubscribe();
@@ -72,14 +72,14 @@ const CustomDrawer = (props: any) => {
     };
 
     loadUserData();
-  }, []);
+  }, [userIsLogged]);
 
   return (
     <DrawerContentScrollView
       {...props}
       contentContainerStyle={{ flex: 1, paddingTop: 0 }}
     >
-      {currentUser && userIsLogged ? (
+      {currentUser ? (
         <View style={styles.topContainer}>
           <View style={styles.leftSection}>
             <Image
