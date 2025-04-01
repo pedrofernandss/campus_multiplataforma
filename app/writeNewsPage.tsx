@@ -21,6 +21,7 @@ import standard from "../theme";
 import { db } from "../firebase.config";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { capitalizeWords } from "../functions/generalFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -414,7 +415,7 @@ export default function NewsForm() {
         <FixedInputs
           articleTitle={formData.articleTitle}
           setArticleTitle={(value) =>
-            setFormData((prev) => ({ ...prev, articleTitle: value }))
+            setFormData((prev) => ({ ...prev, articleTitle: capitalizeWords(value)}))
           }
           textDraft={formData.textDraft}
           setTextDraft={(value) =>
