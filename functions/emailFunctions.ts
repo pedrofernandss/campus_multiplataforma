@@ -12,11 +12,7 @@ export const sendSugestionNewsEmail = async (template: string, sugestion: string
     message: sugestion,  
   }
 
-  emailjs.send(serviceID, templateID, templateParams).then(
-    (response) => {
-      console.log('E-mail enviado com sucesso!', response.status, response.text);
-  })
-  .catch((error) => {
+  emailjs.send(serviceID, templateID, templateParams).catch((error) => {
     console.error('Erro ao enviar e-mail:', error);
   });
 };
@@ -31,11 +27,7 @@ export const sendBugInformEmail = async (template: string, sugestion: string) =>
     message: sugestion,  
   }
 
-  emailjs.send(serviceID, templateID, templateParams).then(
-    (response) => {
-      console.log('E-mail enviado com sucesso!', response.status, response.text);
-  })
-  .catch((error) => {
+  emailjs.send(serviceID, templateID, templateParams).catch((error) => {
     console.error('Erro ao enviar e-mail:', error);
   });
 };

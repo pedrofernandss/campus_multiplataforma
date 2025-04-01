@@ -41,7 +41,7 @@ export default function CardsSection() {
       const snapshot = await getDocs(q);
       setPendentes(snapshot.size);
     } catch (error) {
-      console.log("Erro ao contar artigos pendentes:", error);
+      console.error("Erro ao contar artigos pendentes:", error);
     }
   };
 

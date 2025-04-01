@@ -294,7 +294,6 @@ const CustomDrawer = (props: any) => {
                 .signOut()
                 .then(() => {
                   router.push("/");
-                  console.log("Sign Out realizado com sucesso");
                 })
                 .catch((error) => {
                   console.error("Erro ao sair: ", error);
