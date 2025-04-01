@@ -1,9 +1,13 @@
 export const capitalizeWords = (str) => {
-    return str
-      .split(' ')
-      .map(word => {
+  if (!str) return str; 
+
+  return str
+    .split(/\s+/) 
+    .map(word => {
+      if (word) {
         return word[0].toUpperCase() + word.substring(1).toLowerCase(); 
-      })
-      .join(' ');
-  };
-  
+      }
+      return ''; 
+    })
+    .join(' '); 
+};
