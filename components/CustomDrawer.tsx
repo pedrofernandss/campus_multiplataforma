@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   loggedArrowContainer: {
-    justifyContent: "center", // Ajusta para centralizar no eixo vertical
+    justifyContent: "center", 
     alignItems: "center",
   },
   unloggedArrowContainer: {

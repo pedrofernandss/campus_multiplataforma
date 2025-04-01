@@ -261,7 +261,7 @@ export default function NewsForm() {
     }
   };
 
-  // Geração do JSON padronizado para pré-visualização
+
   const generatePreviewJSON = async () => {
     const thumbnail = await AsyncStorage.getItem("thumbnailUri");
 
@@ -295,7 +295,6 @@ export default function NewsForm() {
     return data;
   };
 
-  // Geração do JSON padronizado para publicação
   const generateJSON = () => {
     const data = {
       authors: formData.reporters,
@@ -320,7 +319,6 @@ export default function NewsForm() {
     return data;
   };
 
-  // Funções para pré-visualização e envio
   const handlePreview = async () => {
     const jsonData = await generatePreviewJSON();
     router.push({

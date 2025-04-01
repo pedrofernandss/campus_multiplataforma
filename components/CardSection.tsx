@@ -33,7 +33,7 @@ export default function CardsSection() {
     }
   };
 
-  // Simulação de "Pendentes"
+
   const contarPendentes = async () => {
     try {
       const newsCollection = collection(db, "news");

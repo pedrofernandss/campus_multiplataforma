@@ -26,7 +26,7 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
   const processedThumbnailUri = 
     news.thumbnail.includes("imgur.com") && 
     !news.thumbnail.endsWith(".jpg") && 
-    !news.thumbnail.endsWith(".png")  // Verifica se não termina com .png
+    !news.thumbnail.endsWith(".png")  
       ? news.thumbnail + ".jpg"
       : news.thumbnail;
 
