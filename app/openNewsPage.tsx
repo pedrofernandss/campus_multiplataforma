@@ -222,7 +222,6 @@ const styles = StyleSheet.create({
   },
   blockContainer: {
     marginBottom: 16,
-    alignItems: "center"
   },
   image: {
     width: 340,
