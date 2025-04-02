@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   video: {
-    height: 200,
+    height: 175,
     width: width,
     backgroundColor: "#000",
   },
