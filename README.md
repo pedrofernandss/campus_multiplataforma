@@ -15,97 +15,38 @@
 
 ---
 
-## Sobre o Projeto  
+## About the Project
 
-O **Campus Multiplataforma** é um aplicativo desenvolvido para o **Laboratório de Jornalismo** do **Departamento de Comunicação** da Universidade de Brasília. O projeto centraliza todas as publicações do jornal _Campus Multiplataforma_ em uma única plataforma, integrando conteúdos de diferentes canais de comunicação:  
+Campus Multiplataforma is an mobile app developed for the Journalism Laboratory of the Department of Communication at the University of Brasília. The project centralizes all publications of the Campus Multiplataforma newspaper on a single platform, integrating content from different communication channels:
 
-- **LinkedIn**  
-- **TikTok**  
-- **Instagram**  
-- **YouTube**  
+- Instagram
+- YouTube
+- TikTok
+- LinkedIn
 
 
-Com o objetivo de fortalecer a presença digital do jornal, o aplicativo oferece acesso centralizado ao conteúdo multimídia e uma experiência unificada para os usuários.  
+With the aim of strengthening the newspaper's digital presence, the application offers centralized access to multimedia content and a unified experience for users.
 
-Este projeto foi desenvolvido com **React Native** para front-end, utilizando o ambiente **Expo**, e **Google Firebase** para um back-end serverless. Ambas as aplicações utilizam **TypeScript** para garantir um código robusto e escalável. A infraestrutura é totalmente dockerizada para facilitar o desenvolvimento, a implantação e o escalonamento.
+This project was developed with React Native for the front-end, using the Expo environment, and Google Firebase for a serverless back-end. Both applications use TypeScript to ensure robust and scalable code. The infrastructure is fully dockerized to facilitate development, deployment, and scaling.
 
 ---
 
-## Equipe  
+## Developers Team  
 
 - **Pedro Fernandes**  
-  **Ciências da Computação**, Universidade de Brasília  
+  **Computer Science**, University of Brasília  
   [GitHub](https://github.com/pedrofernandss)  
 
 - **Pedro Henrique**  
-  **Engenharia de Software**, Universidade de Brasília  
+  **Software Egineer**, University of Brasília  
   [GitHub](https://github.com/pedronascimentos)  
 
 - **Ithalo Medeiros**  
-  **Ciências da Computação**, Universidade de Brasília  
+  **Computer Science**, University of Brasília  
   [GitHub](https://github.com/IthaloDekki)  
 
 ---
 
-## Configuração do Projeto  
+## License 
 
-### Requisitos  
-
-- **Node.js** >= 18.x  
-- **Yarn** ou **npm**  
-
-### Variáveis de Ambiente  
-
-Antes de executar o projeto, crie uma cópia do arquivo `.env.example` e configure as variáveis de ambiente. Para ter acesso aos valores, acesse o Infisical do projeto.  
-
-### Rodando o Projeto com Docker  
-
-1. **Clone o repositório:**  
-   ```bash
-   git clone https://github.com/pedrofernandss/campus_multiplataforma.git
-   ```  
-
-2. **Inicie o ambiente de desenvolvimento:**  
-   ```bash
-   docker-compose up
-   ```  
-
-### Rodando o Projeto sem Docker  
-
-1. **Clone o repositório:**  
-   ```bash
-   git clone https://github.com/pedrofernandss/campus_multiplataforma.git  
-   ```  
-
-## Tecnologias Utilizadas
-
-### Front-end
-- **React Native** (Expo)
-- **JavaScript**
-- **TypeScript**
-
-### Back-end
-- **Google Firebase**
-- **TypeScript**
-
-
-
-2. **Instale as dependências:**  
-   ```bash
-   npm install
-   ```  
-
-3. **Inicie o servidor Expo:**  
-   ```bash
-   npx expo start
-   ```  
-
----
-
-
-## Licença  
-
-Este projeto está licenciado sob a licença **MIT**. Consulte o arquivo `LICENSE` para mais detalhes.  
-<p align="center">
-  <em>Desenvolvido por Pedro Fernandes, Pedro Henrique e Ithalo Medeiros - Universidade de Brasília</em>
-</p>
+This project was developed under the tutelage of the Scientific Initiation Program of the University of Brasília by student Pedro Fernandes, with a research fellow affiliation to CNPq.
