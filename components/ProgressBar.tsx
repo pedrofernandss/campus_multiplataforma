@@ -21,7 +21,7 @@ const ProgressBar: React.FC<ProgressBox> = ({
   onClose,
   type,
 }) => {
-  const totalTime = 3; // Tempo total em segundos
+  const totalTime = 3; 
   const animatedProgress = useRef(new Animated.Value(0)).current;
   const [progress, setProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState(totalTime);
@@ -29,7 +29,6 @@ const ProgressBar: React.FC<ProgressBox> = ({
 
   useEffect(() => {
     if (isOpen) {
-      // Executa a ação (aprovar ou deletar) assim que o modal abre
       const executeAction = async () => {
         try {
           if (type === "approve") {
@@ -48,16 +47,13 @@ const ProgressBar: React.FC<ProgressBox> = ({
       };
       executeAction();
 
-      // Reseta o valor animado
       animatedProgress.setValue(0);
 
-      // Adiciona um listener para atualizar o texto de progresso e tempo restante
       const listenerId = animatedProgress.addListener(({ value }) => {
         setProgress(value);
         setTimeLeft(Math.round(totalTime - (value / 100) * totalTime));
       });
 
-      // Anima a barra de progresso de 0 a 100 de forma suave durante totalTime segundos
       Animated.timing(animatedProgress, {
         toValue: 100,
         duration: totalTime * 1000,
@@ -65,7 +61,7 @@ const ProgressBar: React.FC<ProgressBox> = ({
         useNativeDriver: false,
       }).start(() => {
         animatedProgress.removeListener(listenerId);
-        onClose && onClose(); // Fecha o modal após a animação completa
+        onClose && onClose();
       });
     }
   }, [isOpen]);

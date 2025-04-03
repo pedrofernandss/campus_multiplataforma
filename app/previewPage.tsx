@@ -110,7 +110,7 @@ export default function PreviewPage() {
 
   useEffect(() => {
     if (previewData) {
-      setNewsData(JSON.parse(previewData as string)); // Atualiza o newsData quando a previewData muda
+      setNewsData(JSON.parse(previewData as string)); 
     }
   }, [previewData]);
 

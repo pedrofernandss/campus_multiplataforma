@@ -19,7 +19,7 @@ import { deleteNews, updateNewsStatus } from "../functions/newsFunctions";
 
 interface NewsCardItemProps {
   news: News;
-  onActionComplete?: () => void; // Callback para atualizar a lista
+  onActionComplete?: () => void;
 }
 
 const ArticleCard: React.FC<NewsCardItemProps> = ({

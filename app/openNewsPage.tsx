@@ -224,10 +224,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   image: {
-    width: "100%",
-    height: 200,
+    width: 340,
+    height:200,
     borderRadius: 8,
     marginBottom: 8,
+    resizeMode: "contain"
   },
   caption: {
     fontSize: 12,
@@ -260,7 +261,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   video: {
-    height: 200,
+    height: 175,
     width: width,
     backgroundColor: "#000",
   },

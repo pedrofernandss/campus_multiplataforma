@@ -9,7 +9,7 @@ const CustomInputText = ({ value, setValue, placeholder }) => {
     <View
       style={[
         styles.container,
-        { borderColor: isFocused ? standard.colors.campusRed : "transparent" }, // Alterna a cor da borda
+        { borderColor: isFocused ? standard.colors.campusRed : "transparent" }, 
       ]}
     >
       <TextInput

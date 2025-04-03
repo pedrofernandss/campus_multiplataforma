@@ -32,7 +32,6 @@ export default MasonryCard
 const styles = StyleSheet.create({
     container: {
         marginTop: 16,
-        // marginBottom: 6,
         marginHorizontal: 8,
         borderRadius: 12,
         overflow: 'hidden',

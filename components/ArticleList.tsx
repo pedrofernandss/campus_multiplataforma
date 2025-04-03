@@ -21,7 +21,6 @@ const ArticleList = () => {
   const [publishedCount, setPublishedCount] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
 
-  // Função que busca os dados do Firestore
   const fetchArticles = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "news"));
@@ -29,13 +28,12 @@ const ArticleList = () => {
         id: doc.id,
         ...doc.data(),
       })) as News[];
-      // Ordena os artigos – por exemplo, pelos não publicados primeiro
+
       const sortedNews = allNews.sort(
         (a, b) => Number(a.published) - Number(b.published)
       );
       setNews(sortedNews);
 
-      // Atualiza as contagens
       const published = allNews.filter(
         (item) => item.published === true
       ).length;
@@ -47,7 +45,6 @@ const ArticleList = () => {
   };
 
   useEffect(() => {
-    // Criar um listener em tempo real para as mudanças
     const unsubscribe = onSnapshot(collection(db, "news"), (snapshot) => {
       try {
         const allNews = snapshot.docs.map((doc) => ({
@@ -55,13 +52,11 @@ const ArticleList = () => {
           ...doc.data(),
         })) as News[];
 
-        // Ordena os artigos – por exemplo, pelos não publicados primeiro
         const sortedNews = allNews.sort(
           (a, b) => Number(a.published) - Number(b.published)
         );
         setNews(sortedNews);
 
-        // Atualiza as contagens
         const published = allNews.filter(
           (item) => item.published === true
         ).length;
@@ -72,9 +67,8 @@ const ArticleList = () => {
       }
     });
 
-    // Cleanup function para remover o listener quando o componente for desmontado
     return () => unsubscribe();
-  }, []); // Array de dependências vazio para executar apenas uma vez
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -163,7 +157,6 @@ const styles = StyleSheet.create({
     color: standard.colors.black,
   },
   flatListContainer: {
-    // paddingTop: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

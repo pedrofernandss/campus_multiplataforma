@@ -12,6 +12,7 @@ import standard from "../theme";
 import { icons } from "../constants";
 import { News } from "../types/news";
 import { getRelativeTime } from "../functions/newsFunctions";
+import { capitalizeWords } from "../functions/generalFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -25,7 +26,7 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
   const processedThumbnailUri = 
     news.thumbnail.includes("imgur.com") && 
     !news.thumbnail.endsWith(".jpg") && 
-    !news.thumbnail.endsWith(".png")  // Verifica se não termina com .png
+    !news.thumbnail.endsWith(".png")  
       ? news.thumbnail + ".jpg"
       : news.thumbnail;
 
@@ -43,7 +44,7 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
 
       <View style={styles.contentContainer}>
         <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">
-          {news.mainTitle}
+          {capitalizeWords(news.mainTitle)}
         </Text>
         <Text
           style={styles.subtitleStyle}
