@@ -21,6 +21,7 @@ import standard from "../theme";
 import { db } from "../firebase.config";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { capitalizeWords } from "../functions/generalFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -260,7 +261,7 @@ export default function NewsForm() {
     }
   };
 
-  // Geração do JSON padronizado para pré-visualização
+
   const generatePreviewJSON = async () => {
     const thumbnail = await AsyncStorage.getItem("thumbnailUri");
 
@@ -294,7 +295,6 @@ export default function NewsForm() {
     return data;
   };
 
-  // Geração do JSON padronizado para publicação
   const generateJSON = () => {
     const data = {
       authors: formData.reporters,
@@ -319,7 +319,6 @@ export default function NewsForm() {
     return data;
   };
 
-  // Funções para pré-visualização e envio
   const handlePreview = async () => {
     const jsonData = await generatePreviewJSON();
     router.push({
@@ -414,7 +413,7 @@ export default function NewsForm() {
         <FixedInputs
           articleTitle={formData.articleTitle}
           setArticleTitle={(value) =>
-            setFormData((prev) => ({ ...prev, articleTitle: value }))
+            setFormData((prev) => ({ ...prev, articleTitle: capitalizeWords(value)}))
           }
           textDraft={formData.textDraft}
           setTextDraft={(value) =>

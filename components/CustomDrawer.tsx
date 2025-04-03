@@ -30,7 +30,7 @@ import { fetchUser } from "../functions/userFunctions";
 
 const CustomDrawer = (props: any) => {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [userIsLogged, setUserIsLogged] = useState(null);
+  const [userIsLogged, setUserIsLogged] = useState<boolean | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isNewsSugestionModalOpen, setNewsSugestionModalOpen] = useState(false);
   const [newsSugestion, setNewsSugestion] = useState("");
@@ -53,13 +53,12 @@ const CustomDrawer = (props: any) => {
     loadTags();
   }, []);
 
-  // Verifica o estado do usuário no Firebase Auth
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser: any) => {
-      setUserIsLogged(currentUser); // Atualiza o estado com o usuário logado ou null
+      setUserIsLogged(!!currentUser);
     });
 
-    return () => unsubscribe(); // Cleanup ao desmontar o componente
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -73,15 +72,14 @@ const CustomDrawer = (props: any) => {
     };
 
     loadUserData();
-  }, []);
+  }, [userIsLogged]);
 
-  // Obtenha a navegação do props;
   return (
     <DrawerContentScrollView
       {...props}
       contentContainerStyle={{ flex: 1, paddingTop: 0 }}
     >
-      {userIsLogged && currentUser ? (
+      {currentUser ? (
         <View style={styles.topContainer}>
           <View style={styles.leftSection}>
             <Image
@@ -110,7 +108,6 @@ const CustomDrawer = (props: any) => {
       )}
 
       <View style={styles.contentContainer}>
-        {/* Hashtags */}
         {!userIsLogged && (
           <View style={styles.hashtagsContainer}>
             <View style={styles.grid}>
@@ -126,7 +123,7 @@ const CustomDrawer = (props: any) => {
           </View>
         )}
 
-        {userIsLogged && currentUser ? (
+        {currentUser && userIsLogged ? (
           <>
             <CustomDrawerButton
               text={"Home"}
@@ -297,7 +294,6 @@ const CustomDrawer = (props: any) => {
                 .signOut()
                 .then(() => {
                   router.push("/");
-                  console.log("Sign Out realizado com sucesso");
                 })
                 .catch((error) => {
                   console.error("Erro ao sair: ", error);
@@ -348,7 +344,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   loggedArrowContainer: {
-    justifyContent: "center", // Ajusta para centralizar no eixo vertical
+    justifyContent: "center", 
     alignItems: "center",
   },
   unloggedArrowContainer: {

@@ -21,9 +21,9 @@ const CustomDrawerButton: React.FC<types.DrawerButtons> = ({
   return (
     <TouchableOpacity
       style={styles.container}
-      onPressIn={() => setIsPressed(true)} // Quando pressionado
-      onPressOut={() => setIsPressed(false)} // Quando liberado
-      onPress={onPress} // Ação principal ao clicar
+      onPressIn={() => setIsPressed(true)} 
+      onPressOut={() => setIsPressed(false)} 
+      onPress={onPress} 
     >
       <Image
         source={icons[icon as keyof typeof icons]}
@@ -33,7 +33,7 @@ const CustomDrawerButton: React.FC<types.DrawerButtons> = ({
             tintColor: isPressed
               ? standard.colors.campusRed
               : standard.colors.grey,
-          }, // Altera a cor do ícone
+          }, 
         ]}
       />
       <Text style={[styles.buttonText, isPressed && styles.pressedText]}>
@@ -70,6 +70,6 @@ const styles = StyleSheet.create({
     fontFamily: standard.fonts.bold,
   },
   pressedText: {
-    color: standard.colors.campusRed, // Cor ao pressionar
+    color: standard.colors.campusRed, 
   },
 });
