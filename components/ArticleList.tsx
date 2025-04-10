@@ -14,12 +14,12 @@ import standard from "../theme";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { icons } from "../constants";
-import { getAllNews } from "../functions/newsFunctions";
 
 const ArticleList = () => {
   const [news, setNews] = useState<News[]>([]);
   const [publishedCount, setPublishedCount] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
+  const [refreshing, setRefreshing] = useState(false)
 
   const fetchArticles = async () => {
     try {
@@ -70,6 +70,12 @@ const ArticleList = () => {
     return () => unsubscribe();
   }, []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchArticles();
+    setRefreshing(false);
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.statsContainer}>
@@ -97,8 +103,9 @@ const ArticleList = () => {
         data={news}
         keyExtractor={(news) => news.id.toString()}
         renderItem={({ item }) => (
-          <ArticleCard news={item} onActionComplete={fetchArticles} />
-        )}
+          <ArticleCard news={item} onActionComplete={fetchArticles} />)}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContainer}
       />
