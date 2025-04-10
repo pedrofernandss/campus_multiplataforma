@@ -8,19 +8,22 @@ const { width } = Dimensions.get("window");
 
 const NewsList = () => {
   const [news, setNews] = useState<News[]>([]);
+  const [refreshing, setRefreshing] = useState(false)
+
+  const loadNews = async () => {
+    try {
+      const fetchedNews = await fetchNews();
+      setNews(fetchedNews);
+    } catch (error) {
+      console.error("Erro ao buscar as notícias: ", error);
+    }
+  };
 
   useEffect(() => {
-    const loadNews = async () => {
-      try {
-        const fetchedNews = await fetchNews();
-        setNews(fetchedNews);
-      } catch (error) {
-        console.error("Erro ao buscar as notícias: ", error);
-      }
-    };
-
     loadNews();
-  }, []);
+  }, [])
+    
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
