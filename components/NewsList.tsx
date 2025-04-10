@@ -22,8 +22,12 @@ const NewsList = () => {
   useEffect(() => {
     loadNews();
   }, [])
-    
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadNews();
+    setRefreshing(false);
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -33,6 +37,8 @@ const NewsList = () => {
         renderItem={({ item }) => <NewsCard news={item} />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContainer}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </SafeAreaView>
   );
