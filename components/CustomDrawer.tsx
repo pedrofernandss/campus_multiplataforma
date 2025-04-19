@@ -217,6 +217,12 @@ const CustomDrawer = (props: any) => {
             />
 
             <CustomDrawerButton
+              text={"Acessar Vídeos"}
+              icon={"videosIcon"}
+              onPress={() => router.push('/videosPage')}
+              type={"primary"}
+            />
+            <CustomDrawerButton
               text={"Reportar Bug"}
               icon={"bugIcon"}
               onPress={() => setBugInformModalOpen(true)}
