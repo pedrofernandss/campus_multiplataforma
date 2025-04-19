@@ -337,6 +337,14 @@ export default function NewsForm() {
           try {
             await addDoc(collection(db, "news"), jsonData);
             Alert.alert("Sucesso", "Artigo publicado com sucesso!");
+            setFormData({
+              articleTitle: "",
+              textDraft: "",
+              reporters: [],
+              articleTags: [],
+              dynamicInputs: [],
+              thumbnailUri: null,
+            });
             router.back();
           } catch {
             Alert.alert("Erro", "Não foi possível enviar o artigo.");
