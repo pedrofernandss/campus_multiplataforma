@@ -329,29 +329,20 @@ export default function NewsForm() {
 
   const handleSubmit = async () => {
     const jsonData = generateJSON();
-    Alert.alert("Confirmar Publicação", "Deseja enviar este artigo?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Enviar",
-        onPress: async () => {
-          try {
-            await addDoc(collection(db, "news"), jsonData);
-            Alert.alert("Sucesso", "Artigo publicado com sucesso!");
-            setFormData({
-              articleTitle: "",
-              textDraft: "",
-              reporters: [],
-              articleTags: [],
-              dynamicInputs: [],
-              thumbnailUri: null,
-            });
-            router.back();
-          } catch {
-            Alert.alert("Erro", "Não foi possível enviar o artigo.");
-          }
-        },
-      },
-    ]);
+    try {
+      await addDoc(collection(db, "news"), jsonData);
+      setFormData({
+        articleTitle: "",
+        textDraft: "",
+        reporters: [],
+        articleTags: [],
+        dynamicInputs: [],
+        thumbnailUri: null,
+      });
+      router.push("/confirmationPage");
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível enviar o artigo.");
+    }
   };
 
   const handleSaveOrSubmit = async () => {
