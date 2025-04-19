@@ -181,7 +181,7 @@ const CustomDrawer = (props: any) => {
               inputValue={bugInform}
               onInputChange={setBugInform}
               onConfirmButton={() => {
-                sendBugInformEmail("template_viuaym9", bugInform);
+                sendBugInformEmail("template_ad0y2av", bugInform);
                 setBugInform("");
                 setBugInformModalOpen(false);
               }}
@@ -209,7 +209,7 @@ const CustomDrawer = (props: any) => {
               inputValue={newsSugestion}
               onInputChange={setNewsSugestion}
               onConfirmButton={() => {
-                sendSugestionNewsEmail("template_qqdw65j", newsSugestion);
+                sendSugestionNewsEmail("template_f9foanu", newsSugestion);
                 setNewsSugestion("");
                 setNewsSugestionModalOpen(false);
               }}
@@ -241,7 +241,7 @@ const CustomDrawer = (props: any) => {
               inputValue={bugInform}
               onInputChange={setBugInform}
               onConfirmButton={() => {
-                sendBugInformEmail("template_viuaym9", bugInform);
+                sendBugInformEmail("template_ad0y2av", bugInform);
                 setBugInform("");
                 setBugInformModalOpen(false);
               }}
