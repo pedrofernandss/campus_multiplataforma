@@ -12,7 +12,7 @@ import standard from "../theme";
 import { icons } from "../constants";
 import { News } from "../types/news";
 import { getRelativeTime } from "../functions/newsFunctions";
-import { capitalizeWords } from "../functions/generalFunctions";
+import { capitalizeWords } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
