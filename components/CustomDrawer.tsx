@@ -79,7 +79,7 @@ const CustomDrawer = (props: any) => {
       {...props}
       contentContainerStyle={{ flex: 1, paddingTop: 0 }}
     >
-      {currentUser ? (
+      {currentUser && userIsLogged ? (
         <View style={styles.topContainer}>
           <View style={styles.leftSection}>
             <Image
