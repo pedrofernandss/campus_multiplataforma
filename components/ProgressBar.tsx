@@ -80,7 +80,7 @@ const ProgressBar: React.FC<ProgressBox> = ({
             <View style={styles.progressHeader}>
               <Text style={styles.percentage}>{Math.round(progress)}%</Text>
               <Text style={styles.label}>{label}</Text>
-              <Text style={styles.timeLeft}>{timeLeft}s left</Text>
+              <Text style={styles.timeLeft}>{timeLeft}seg. restante</Text>
             </View>
             <View style={styles.progressBarContainer}>
               <Animated.View
