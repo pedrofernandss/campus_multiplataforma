@@ -91,7 +91,7 @@ export default function NewsForm() {
         thumbnailUri: parsedNewsData.thumbnail,
       });
     }
-  }, []);
+  }, [parsedNewsData]);
 
   const handleInputChange = (id: string, value: string) => {
     setFormData((prev) => ({
