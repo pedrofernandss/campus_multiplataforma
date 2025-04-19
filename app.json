@@ -9,7 +9,7 @@
     "scheme": "campus",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/campusplash.png",
+      "image": "./assets/images/campus-logo.png",
       "backgroundColor": "#6C0318"
     },
     "ios": {
