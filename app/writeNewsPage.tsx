@@ -9,6 +9,7 @@ import {
   Dimensions,
   Alert,
   TextInput,
+  Linking,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -21,7 +22,7 @@ import standard from "../theme";
 import { db } from "../firebase.config";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { capitalizeWords } from "../functions/generalFunctions";
+import { capitalizeWords } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -533,7 +534,7 @@ export default function NewsForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: standard.colors.primaryWhite,
   },
   contentContainer: {
     padding: 16,
@@ -560,7 +561,7 @@ const styles = StyleSheet.create({
     backgroundColor: standard.colors.campusRed,
   },
   thumbnailButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
@@ -584,7 +585,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
-    width: width * 0.85,
+    width: "100%",
     fontSize: 16,
   },
   addInputButton: {
@@ -595,7 +596,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   addInputButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -623,7 +624,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   previewButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#DEDAD5",
     marginRight: 8,
   },
   submitButton: {
@@ -631,17 +632,17 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   previewText: {
-    color: "#000",
+    color: "#423B34",
     fontWeight: "bold",
     fontSize: 16,
   },
   submitText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontWeight: "bold",
     fontSize: 16,
   },
   mediaButton: {
-    width: width * 0.85,
+    width: "100%",
     backgroundColor: standard.colors.campusRed,
     padding: 12,
     borderRadius: 8,
@@ -650,7 +651,7 @@ const styles = StyleSheet.create({
     height: 110,
   },
   mediaButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
