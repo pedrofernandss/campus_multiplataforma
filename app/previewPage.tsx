@@ -18,6 +18,7 @@ import { useFonts } from "expo-font";
 import { useRouter } from "expo-router";
 import { icons, images } from "../constants";
 import standard from "../theme";
+import { renderTextWithMarkdown } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -73,7 +74,9 @@ const NewsContent = ({ newsData }: { newsData: any }) => {
               case "text":
                 return (
                   <View key={index} style={styles.blockContainer}>
-                    <Text style={styles.text}>{block.content}</Text>
+                        <Text style={styles.text}>
+                          {renderTextWithMarkdown(block.content, styles.text)}
+                        </Text>
                   </View>
                 );
               case "audio":
@@ -188,10 +191,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   image: {
-    width: "100%",
-    height: 200,
+    width: 340,
+    height:200,
     borderRadius: 8,
     marginBottom: 8,
+    resizeMode: "contain"
   },
   caption: {
     fontSize: 12,

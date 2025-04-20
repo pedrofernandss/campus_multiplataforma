@@ -9,6 +9,7 @@ import {
   Dimensions,
   Alert,
   TextInput,
+  Linking,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -21,7 +22,7 @@ import standard from "../theme";
 import { db } from "../firebase.config";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { capitalizeWords } from "../functions/generalFunctions";
+import { capitalizeWords } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -91,7 +92,7 @@ export default function NewsForm() {
         thumbnailUri: parsedNewsData.thumbnail,
       });
     }
-  }, []);
+  }, [parsedNewsData]);
 
   const handleInputChange = (id: string, value: string) => {
     setFormData((prev) => ({
@@ -329,21 +330,20 @@ export default function NewsForm() {
 
   const handleSubmit = async () => {
     const jsonData = generateJSON();
-    Alert.alert("Confirmar Publicação", "Deseja enviar este artigo?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Enviar",
-        onPress: async () => {
-          try {
-            await addDoc(collection(db, "news"), jsonData);
-            Alert.alert("Sucesso", "Artigo publicado com sucesso!");
-            router.back();
-          } catch {
-            Alert.alert("Erro", "Não foi possível enviar o artigo.");
-          }
-        },
-      },
-    ]);
+    try {
+      await addDoc(collection(db, "news"), jsonData);
+      setFormData({
+        articleTitle: "",
+        textDraft: "",
+        reporters: [],
+        articleTags: [],
+        dynamicInputs: [],
+        thumbnailUri: null,
+      });
+      router.push("/confirmationPage");
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível enviar o artigo.");
+    }
   };
 
   const handleSaveOrSubmit = async () => {
@@ -433,38 +433,46 @@ export default function NewsForm() {
         {formData.dynamicInputs.map((input) => (
           <View key={input.id} style={styles.dynamicInputContainer}>
             {input.type === "image" || input.type === "video" ? (
-              input.content ? (
-                <View style={{ flex: 1 }}>
-                  <Image
-                    source={{ uri: input.content }}
-                    style={styles.mediaPreview}
-                  />
+              <View style={styles.mediaContainer}>
+                {input.content ? (
+                  <>
+                    <Image
+                      source={{ uri: input.content }}
+                      style={styles.mediaPreview}
+                    />
+                    <View style={styles.mediaActions}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          pickMedia(input.id, input.type as "image" | "video")
+                        }
+                        style={styles.editMediaButton}
+                      >
+                        <Text style={styles.editMediaButtonText}>Alterar</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleRemoveInput(input.id)}
+                        style={styles.removeButton}
+                      >
+                        <Text style={styles.removeButtonText}>Remover</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                ) : (
                   <TouchableOpacity
                     onPress={() =>
                       pickMedia(input.id, input.type as "image" | "video")
                     }
-                    style={styles.editMediaButton}
+                    style={styles.mediaButton}
                   >
-                    <Text style={styles.editMediaButtonText}>
-                      Alterar mídia
-                    </Text>
+                    <View style={styles.uploadIconContainer}>
+                      <MaterialIcons name="cloud-upload" size={40} color="#fff" />
+                      <Text style={styles.mediaButtonText}>
+                        Upload {input.type === "image" ? "Imagem" : "Vídeo"}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
-                </View>
-              ) : (
-                <TouchableOpacity
-                  onPress={() =>
-                    pickMedia(input.id, input.type as "image" | "video")
-                  }
-                  style={styles.mediaButton}
-                >
-                  <View style={styles.uploadIconContainer}>
-                    <MaterialIcons name="cloud-upload" size={40} color="#fff" />
-                    <Text style={styles.mediaButtonText}>
-                      Upload {input.type === "image" ? "Imagem" : "Vídeo"}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )
+                )}
+              </View>
             ) : (
               <TextInput
                 style={styles.dynamicInput}
@@ -476,12 +484,6 @@ export default function NewsForm() {
                 multiline
               />
             )}
-            <TouchableOpacity
-              onPress={() => handleRemoveInput(input.id)}
-              style={styles.removeButton}
-            >
-              <Text style={styles.removeButtonText}>X</Text>
-            </TouchableOpacity>
           </View>
         ))}
 
@@ -532,7 +534,7 @@ export default function NewsForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: standard.colors.primaryWhite,
   },
   contentContainer: {
     padding: 16,
@@ -559,7 +561,7 @@ const styles = StyleSheet.create({
     backgroundColor: standard.colors.campusRed,
   },
   thumbnailButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
@@ -583,18 +585,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
-    width: width * 0.85,
-    fontSize: 16,
-  },
-  removeButton: {
-    backgroundColor: standard.colors.campusRed,
-    borderRadius: 4,
-    marginLeft: 8,
-    padding: 8,
-  },
-  removeButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    width: "100%",
     fontSize: 16,
   },
   addInputButton: {
@@ -605,7 +596,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   addInputButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -633,7 +624,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   previewButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#DEDAD5",
     marginRight: 8,
   },
   submitButton: {
@@ -641,17 +632,17 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   previewText: {
-    color: "#000",
+    color: "#423B34",
     fontWeight: "bold",
     fontSize: 16,
   },
   submitText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontWeight: "bold",
     fontSize: 16,
   },
   mediaButton: {
-    width: width * 0.85,
+    width: "100%",
     backgroundColor: standard.colors.campusRed,
     padding: 12,
     borderRadius: 8,
@@ -660,30 +651,50 @@ const styles = StyleSheet.create({
     height: 110,
   },
   mediaButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
   },
+  mediaContainer: {
+    marginBottom: 16,
+    width: "100%"
+  },
   mediaPreview: {
-    width: width * 0.85,
+    width: "100%",
     height: 160,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#ccc",
   },
+  mediaActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
+  },
   editMediaButton: {
     backgroundColor: standard.colors.campusRed,
     padding: 8,
     borderRadius: 4,
+    flex: 1,
+    marginRight: 8,
     alignItems: "center",
-    justifyContent: "center",
-    height: 40,
-    width: 100,
   },
   editMediaButtonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: standard.colors.primaryWhite,
+    fontSize: 14,
     fontWeight: "bold",
+  },
+  removeButton: {
+    backgroundColor: standard.colors.campusRed,
+    padding: 8,
+    borderRadius: 4,
+    flex: 1,
+    alignItems: "center",
+  },
+  removeButtonText: {
+    color: standard.colors.primaryWhite,
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });

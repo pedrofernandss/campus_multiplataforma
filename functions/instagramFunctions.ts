@@ -10,14 +10,44 @@ const getLastYearTimestamp = (): number => {
     return Math.floor(lastYearDate.getTime() / 1000);  
 };
 
+let instagramAccessToken = process.env.EXPO_PUBLIC_INSTAGRAM_ACCESS_TOKEN!;
+let tokenExpirationDate: Date | null = null;
+
+const refreshInstagramToken = async (): Promise<string> => {
+    try {
+
+        if (tokenExpirationDate && Date.now() < tokenExpirationDate.getTime()) {
+            return instagramAccessToken;
+        }
+
+        const response = await axios.get("https://graph.instagram.com/refresh_access_token", {
+            params: {
+                grant_type: "ig_refresh_token",
+                access_token: instagramAccessToken,
+            },
+        });
+
+        instagramAccessToken = response.data.access_token;
+        tokenExpirationDate = new Date();
+        tokenExpirationDate.setDate(tokenExpirationDate.getDate() + 60);
+        return instagramAccessToken;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 export const fetchInstagramMedia = async (): Promise<InstagramReels[]> => {
     try {
+
+        const accessToken = await refreshInstagramToken();
+
         const url =  `https://graph.instagram.com/${process.env.EXPO_PUBLIC_USER_ID}/media`
         const response = await axios.get(url,
             {
                 params: {
                     fields: 'id,media_type,media_url,thumbnail_url,permalink',
-                    access_token: process.env.EXPO_PUBLIC_INSTAGRAM_ACCESS_TOKEN,
+                    access_token: accessToken,
                     since: getLastYearTimestamp(),
                 }
             })

@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { StyleSheet, Text, View } from "react-native";
 import MasonryCard from "./MasonryCard";
-import { types } from "../constants";
+import { InstagramReels } from "../types/instagramReels";
 import { fetchInstagramMedia } from "../functions/instagramFunctions";
 
 const MasonryVideos = () => {
-  const [reels, setReels] = useState<types.InstagramReels[]>([]);
+  const [reels, setReels] = useState<InstagramReels[]>([]);
   useEffect(() => {
     const loadReels = async () => {
       try {
         const fetchedReels = await fetchInstagramMedia();
         setReels(fetchedReels);
       } catch (error) {
-        console.error("Erro ao buscar os reels: ", error);
+        console.error("Erro ao buscar os reels: ", error.response?.data || error.message);
       }
     };
 

@@ -79,7 +79,7 @@ const CustomDrawer = (props: any) => {
       {...props}
       contentContainerStyle={{ flex: 1, paddingTop: 0 }}
     >
-      {currentUser ? (
+      {currentUser && userIsLogged ? (
         <View style={styles.topContainer}>
           <View style={styles.leftSection}>
             <Image
@@ -181,7 +181,7 @@ const CustomDrawer = (props: any) => {
               inputValue={bugInform}
               onInputChange={setBugInform}
               onConfirmButton={() => {
-                sendBugInformEmail("template_viuaym9", bugInform);
+                sendBugInformEmail("template_ad0y2av", bugInform);
                 setBugInform("");
                 setBugInformModalOpen(false);
               }}
@@ -209,13 +209,19 @@ const CustomDrawer = (props: any) => {
               inputValue={newsSugestion}
               onInputChange={setNewsSugestion}
               onConfirmButton={() => {
-                sendSugestionNewsEmail("template_qqdw65j", newsSugestion);
+                sendSugestionNewsEmail("template_f9foanu", newsSugestion);
                 setNewsSugestion("");
                 setNewsSugestionModalOpen(false);
               }}
               confirmButtonText={"Enviar"}
             />
 
+            <CustomDrawerButton
+              text={"Acessar Vídeos"}
+              icon={"videosIcon"}
+              onPress={() => router.push('/videosPage')}
+              type={"primary"}
+            />
             <CustomDrawerButton
               text={"Reportar Bug"}
               icon={"bugIcon"}
@@ -235,7 +241,7 @@ const CustomDrawer = (props: any) => {
               inputValue={bugInform}
               onInputChange={setBugInform}
               onConfirmButton={() => {
-                sendBugInformEmail("template_viuaym9", bugInform);
+                sendBugInformEmail("template_ad0y2av", bugInform);
                 setBugInform("");
                 setBugInformModalOpen(false);
               }}

@@ -19,8 +19,10 @@ import redSugestNews from "../assets/icons/red-sugest-news-icon.png"
 import redBugIcon from "../assets/icons/red-bug-icon.png";
 import reportIcon from "../assets/icons/report-red-icon.png"
 import clockEditorPage from '../assets/icons/clock-editor-icon.png';
+import videosIcon from '../assets/icons/animated-videos-icon.png';
+import bigCheckIcon from '../assets/icons/check-icon-red.png';
 
 
 export default { menuIcon, trendingIcon, clockIcon, loginIcon, bugIcon, arrowFowardIcon, 
     calendarIcon, descriptionIcon, homeIcon, logoutIcon, rightClick, trashIcon, 
-    checkIcon, editIcon, taskIcon, timerIcon, sugestNews, redSugestNews, redBugIcon, reportIcon, clockEditorPage };
+    checkIcon, editIcon, taskIcon, timerIcon, sugestNews, redSugestNews, redBugIcon, reportIcon, clockEditorPage, videosIcon, bigCheckIcon };
