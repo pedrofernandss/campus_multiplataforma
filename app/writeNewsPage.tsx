@@ -342,7 +342,7 @@ export default function NewsForm() {
       });
       router.push("/confirmationPage");
     } catch (error) {
-      Alert.alert("Erro", "Não foi possível enviar o artigo.");
+      Alert.alert("Erro", "Não foi possível enviar o texto.");
     }
   };
 
@@ -387,7 +387,7 @@ export default function NewsForm() {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <CardsSection />
 
-        <Text style={styles.title}>Informações do artigo</Text>
+        <Text style={styles.title}>Informações do texto</Text>
         <View style={styles.thumbnailContainer}>
           <Text style={styles.label}>Thumbnail</Text>
           <TouchableOpacity

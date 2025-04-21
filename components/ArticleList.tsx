@@ -40,7 +40,7 @@ const ArticleList = () => {
       setPublishedCount(published);
       setPendingCount(allNews.length - published);
     } catch (error) {
-      console.error("Erro ao buscar artigos:", error);
+      console.error("Erro ao buscar textos:", error);
     }
   };
 
@@ -63,7 +63,7 @@ const ArticleList = () => {
         setPublishedCount(published);
         setPendingCount(allNews.length - published);
       } catch (error) {
-        console.error("Erro ao buscar artigos:", error);
+        console.error("Erro ao buscar textos:", error);
       }
     });
 
@@ -84,7 +84,7 @@ const ArticleList = () => {
             <Image source={icons.taskIcon} style={styles.icon} />
           </View>
           <View style={styles.statCardContainer}>
-            <Text style={styles.statTitle} numberOfLines={1} ellipsizeMode="tail">Artigos Postados</Text>
+            <Text style={styles.statTitle} numberOfLines={1} ellipsizeMode="tail">Textos Postados</Text>
             <Text style={styles.statValue}>{publishedCount}</Text>
           </View>
         </View>
@@ -98,7 +98,7 @@ const ArticleList = () => {
           </View>
         </View>
       </View>
-      <Text style={styles.titleStyle}>Lista de artigos pendentes</Text>
+      <Text style={styles.titleStyle}>Lista de textos pendentes</Text>
       <FlatList
         data={news}
         keyExtractor={(news) => news.id.toString()}

@@ -32,7 +32,7 @@ const FixedInputs: React.FC<FixedInputsProps> = ({
 }) => {
   return (
     <>
-      <Text style={styles.label}>Título do artigo</Text>
+      <Text style={styles.label}>Título do Texto</Text>
       <TextInput
         style={styles.input}
         placeholder="Digite o título"
@@ -69,7 +69,7 @@ const FixedInputs: React.FC<FixedInputsProps> = ({
         multiline
       />
 
-      <Text style={styles.label}>Tags do Artigo</Text>
+      <Text style={styles.label}>Tags do Texto</Text>
       <View style={styles.tagContainer}>
         {articleTags.map((tag, index) => (
           <View key={index} style={styles.tag}>
