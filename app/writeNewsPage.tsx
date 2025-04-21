@@ -30,6 +30,7 @@ interface Block {
   id: string;
   type: string;
   content: string;
+  caption?: string;
   order: number;
 }
 
@@ -71,7 +72,9 @@ export default function NewsForm() {
   const [articleTag, setArticleTag] = useState("");
   const [reporterName, setReporterName] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
+  const [videoPopupVisible, setVideoPopupVisible] = useState(false);
+  const [currentVideoInputId, setCurrentVideoInputId] = useState<string | null>(null);
+  
   const typeMapping = {
     Tópico: "subheading",
     Texto: "text",
@@ -94,11 +97,13 @@ export default function NewsForm() {
     }
   }, [parsedNewsData]);
 
-  const handleInputChange = (id: string, value: string) => {
+  const handleInputChange = (id: string, value: string, caption?: string) => {
     setFormData((prev) => ({
       ...prev,
       dynamicInputs: prev.dynamicInputs.map((input) =>
-        input.id === id ? { ...input, content: value } : input
+        input.id === id
+          ? { ...input, content: value, ...(caption !== undefined && { caption }) }
+          : input
       ),
     }));
   };
@@ -272,6 +277,7 @@ export default function NewsForm() {
         return {
           type: input.type,
           content: mediaUri || input.content,
+          caption: input.caption || '',
           order: index + 1,
         };
       })
@@ -302,6 +308,7 @@ export default function NewsForm() {
       blocks: formData.dynamicInputs.map((input, index) => ({
         type: input.type,
         content: input.content,
+        caption: input.caption || '',
         order: index + 1,
       })),
       createdAt: new Date().toISOString(),
@@ -413,7 +420,7 @@ export default function NewsForm() {
         <FixedInputs
           articleTitle={formData.articleTitle}
           setArticleTitle={(value) =>
-            setFormData((prev) => ({ ...prev, articleTitle: capitalizeWords(value)}))
+            setFormData((prev) => ({ ...prev, articleTitle: capitalizeWords(value) }))
           }
           textDraft={formData.textDraft}
           setTextDraft={(value) =>
@@ -440,11 +447,18 @@ export default function NewsForm() {
                       source={{ uri: input.content }}
                       style={styles.mediaPreview}
                     />
+                    {/* Adicionando o campo de caption aqui */}
+                    {input.type === "image" && (
+                      <TextInput
+                        style={styles.captionInput}
+                        placeholder="Legenda da imagem (opcional)"
+                        value={input.caption || ''}
+                        onChangeText={(text) => handleInputChange(input.id, input.content, text)}
+                      />
+                    )}
                     <View style={styles.mediaActions}>
                       <TouchableOpacity
-                        onPress={() =>
-                          pickMedia(input.id, input.type as "image" | "video")
-                        }
+                        onPress={() => pickMedia(input.id, input.type as "image" | "video")}
                         style={styles.editMediaButton}
                       >
                         <Text style={styles.editMediaButtonText}>Alterar</Text>
@@ -459,9 +473,7 @@ export default function NewsForm() {
                   </>
                 ) : (
                   <TouchableOpacity
-                    onPress={() =>
-                      pickMedia(input.id, input.type as "image" | "video")
-                    }
+                    onPress={() => pickMedia(input.id, input.type as "image" | "video")}
                     style={styles.mediaButton}
                   >
                     <View style={styles.uploadIconContainer}>
@@ -476,9 +488,7 @@ export default function NewsForm() {
             ) : (
               <TextInput
                 style={styles.dynamicInput}
-                placeholder={`Digite o ${
-                  input.type === "text" ? "texto" : "tópico"
-                }`}
+                placeholder={`Digite o ${input.type === "text" ? "texto" : "tópico"}`}
                 value={input.content}
                 onChangeText={(text) => handleInputChange(input.id, text)}
                 multiline
@@ -696,5 +706,13 @@ const styles = StyleSheet.create({
     color: standard.colors.primaryWhite,
     fontWeight: "bold",
     fontSize: 14,
+  },
+  captionInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 8,
+    fontSize: 16,
   },
 });
