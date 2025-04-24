@@ -21,15 +21,14 @@ export const renderTextWithMarkdown = (
   baseStyle: TextStyle = {}
 ): JSX.Element => {
   const elements: JSX.Element[] = [];
-  const regex =
-    /(\[([^\]]+)\]\((https?:\/\/[^\s)]+)\))|(\*\*\*(.*?)\*\*\*)|(\*\*(.*?)\*\*)|(\*(.*?)\*)/g;
+  const regex = /(\[([^\]]+)\]\((https?:\/\/[^\s)]+)\))|(\*([^*\n]+)\*)|(_([^_\n]+)_)/g;
 
   let lastIndex = 0;
   let match;
   let partIndex = 0;
 
   while ((match = regex.exec(input)) !== null) {
-    const [fullMatch] = match;
+    const fullMatch = match[0];
     const index = match.index;
 
     if (index > lastIndex) {
@@ -53,22 +52,20 @@ export const renderTextWithMarkdown = (
           {linkText}
         </Text>
       );
+
     } else if (match[4]) {
-      elements.push(
-        <Text key={`bolditalic-${partIndex++}`} style={[baseStyle, styles.bold, styles.italic]}>
-          {match[5]}
-        </Text>
-      );
-    } else if (match[6]) {
+      const content = match[5];
       elements.push(
         <Text key={`bold-${partIndex++}`} style={[baseStyle, styles.bold]}>
-          {match[7]}
+          {content}
         </Text>
       );
-    } else if (match[8]) {
+
+    } else if (match[6]) {
+      const content = match[7];
       elements.push(
         <Text key={`italic-${partIndex++}`} style={[baseStyle, styles.italic]}>
-          {match[9]}
+          {content}
         </Text>
       );
     }
