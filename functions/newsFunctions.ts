@@ -1,7 +1,7 @@
 import { collection, getDocs, query, orderBy, where, updateDoc, doc, deleteDoc  } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { News } from "../types/news";
-import * as Analytics from "expo-firebase-analytics";
+import analytics from '@react-native-firebase/analytics';
 
 export const fetchNews = async (): Promise<News[]> => {
     try {
@@ -82,7 +82,7 @@ export const getRelativeTime = (dateString: string): string => {
 
 export const getAnalyticsMetrics = async (news: News) => {
     try {
-      await Analytics.logEvent("news_access", {
+      await analytics().logEvent("news_access", {
         news_id: news.id,
         news_title: news.mainTitle,
         news_authors: news.authors.join(", "),

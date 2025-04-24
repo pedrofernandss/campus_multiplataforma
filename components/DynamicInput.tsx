@@ -5,10 +5,11 @@ interface DynamicInputProps {
   id: number;
   type: string;
   value: string;
-  onChange: (id: number, value: string) => void;
+  caption?: string;
+  onChange: (id: number, value: string, caption?: string) => void;
 }
 
-export default function DynamicInput({ id, type, value, onChange }: DynamicInputProps) {
+export default function DynamicInput({ id, type, value, caption, onChange }: DynamicInputProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>
@@ -31,9 +32,17 @@ export default function DynamicInput({ id, type, value, onChange }: DynamicInput
           multiline={type === "text"}
         />
       ) : type === "image" ? (
-        <TouchableOpacity style={styles.imageUploadButton}>
-          <Text style={styles.imageUploadText}>Carregar imagem</Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={styles.imageUploadButton}>
+            <Text style={styles.imageUploadText}>Carregar imagem</Text>
+          </TouchableOpacity>
+          <TextInput
+            style={[styles.input, styles.captionInput]}
+            placeholder="Legenda da imagem"
+            value={caption}
+            onChangeText={(text) => onChange(id, value, text)}
+          />
+        </View>
       ) : (
         <TextInput
           style={styles.input}
@@ -62,6 +71,10 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
+    marginBottom: 8,
   },
   imageUploadText: { fontSize: 16 },
+  captionInput: {
+    marginTop: 8,
+  },
 });
