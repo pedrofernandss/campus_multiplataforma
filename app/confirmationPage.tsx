@@ -9,7 +9,7 @@ export default function ConfirmationPage() {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>
-        Seu artigo foi submetido para aprovação do editor responsável
+        Seu texto foi submetido para aprovação do editor responsável
       </Text>
       <View style={styles.iconContainer}>
         <Image
@@ -21,7 +21,7 @@ export default function ConfirmationPage() {
         style={styles.button}
         onPress={() => router.push("/writeNewsPage")}
       >
-        <Text style={styles.buttonText}>Submeter novo artigo</Text>
+        <Text style={styles.buttonText}>Submeter novo texto</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, styles.secondaryButton]}

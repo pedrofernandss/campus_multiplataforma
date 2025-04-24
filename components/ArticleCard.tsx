@@ -132,7 +132,7 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({
         </TouchableOpacity>
         <ModalComponent
           label={
-            "Tem certeza que deseja excluir esse artigo? Essa ação não poderá ser revertida."
+            "Tem certeza que deseja excluir este texto? Essa ação não poderá ser revertida."
           }
           isOpen={isDeleteModalOpen}
           icon={"reportIcon"}

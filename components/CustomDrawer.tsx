@@ -132,7 +132,7 @@ const CustomDrawer = (props: any) => {
               type={"primary"}
             />
             <CustomDrawerButton
-              text={"Escrever Artigo"}
+              text={"Escrever Texto"}
               icon={"descriptionIcon"}
               onPress={() => router.push('/writeNewsPage')}
               type={"primary"}
@@ -141,7 +141,7 @@ const CustomDrawer = (props: any) => {
             <View style={styles.separatorLogged}></View>
 
             <CustomDrawerButton
-              text={"Painel de Artigos"}
+              text={"Painel do Editor"}
               icon={"calendarIcon"}
               onPress={() =>
                 currentUser.role === "Editor"
@@ -153,7 +153,7 @@ const CustomDrawer = (props: any) => {
             <ModalComponent
               title={"Acesso negado"}
               label={
-                "Você não possui permissão para acessar essa página. Acesse com contas de editor para visualizar o painel de artigos."
+                "Você não possui permissão para acessar essa página. Acesse com contas de editor para visualizar esta página."
               }
               isOpen={isDeniedAccessModalOpen}
               hasInput={false}

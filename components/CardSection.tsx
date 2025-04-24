@@ -20,14 +20,14 @@ type CardProps = {
 };
 
 export default function CardsSection() {
-  const [artigosPostados, setArtigosPostados] = useState<number>(0);
+  const [textosPostados, settextosPostados] = useState<number>(0);
   const [pendentes, setPendentes] = useState<number>(0);
 
   const contarDocumentos = async () => {
     try {
       const newsCollection = collection(db, "news");
       const snapshot = await getDocs(newsCollection);
-      setArtigosPostados(snapshot.size);
+      settextosPostados(snapshot.size);
     } catch (error) {
       console.error("Erro ao contar documentos:", error);
     }
@@ -58,8 +58,8 @@ export default function CardsSection() {
             <Image source={icons.taskIcon} style={styles.icon} />
           </View>
           <View style={styles.statCardContainer}>
-            <Text style={styles.statTitle} numberOfLines={1} ellipsizeMode="tail">Artigos Postados</Text>
-            <Text style={styles.statValue}>{artigosPostados}</Text>
+            <Text style={styles.statTitle} numberOfLines={1} ellipsizeMode="tail">Textos Postados</Text>
+            <Text style={styles.statValue}>{textosPostados}</Text>
           </View>
         </View>
           <View style={styles.statCard}>
