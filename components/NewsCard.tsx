@@ -31,7 +31,7 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
       : news.thumbnail;
  
   const readNews = async () => {
-    await getAnalyticsMetrics(news);
+    // await getAnalyticsMetrics(news);
     router.push(`./openNewsPage?id=${news.id}`);
   };
 
