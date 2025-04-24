@@ -674,12 +674,12 @@ const styles = StyleSheet.create({
   previewText: {
     color: "#423B34",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 15,
   },
   submitText: {
     color: standard.colors.primaryWhite,
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 15,
   },
   mediaButton: {
     width: "100%",
