@@ -29,7 +29,7 @@ export default function signInPage() {
   const signIn = async () => {
     setIsLoading(false);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
       setIsLoading(true)
       setEmail('');
       setPassword('');

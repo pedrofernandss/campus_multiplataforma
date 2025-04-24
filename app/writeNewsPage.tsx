@@ -9,6 +9,7 @@ import {
   Dimensions,
   Alert,
   TextInput,
+  Linking,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -21,7 +22,7 @@ import standard from "../theme";
 import { db } from "../firebase.config";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { capitalizeWords } from "../functions/generalFunctions";
+import { capitalizeWords } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -29,6 +30,7 @@ interface Block {
   id: string;
   type: string;
   content: string;
+  caption?: string;
   order: number;
 }
 
@@ -70,7 +72,9 @@ export default function NewsForm() {
   const [articleTag, setArticleTag] = useState("");
   const [reporterName, setReporterName] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
+  const [videoPopupVisible, setVideoPopupVisible] = useState(false);
+  const [currentVideoInputId, setCurrentVideoInputId] = useState<string | null>(null);
+  
   const typeMapping = {
     Tópico: "subheading",
     Texto: "text",
@@ -91,13 +95,15 @@ export default function NewsForm() {
         thumbnailUri: parsedNewsData.thumbnail,
       });
     }
-  }, []);
+  }, [parsedNewsData]);
 
-  const handleInputChange = (id: string, value: string) => {
+  const handleInputChange = (id: string, value: string, caption?: string) => {
     setFormData((prev) => ({
       ...prev,
       dynamicInputs: prev.dynamicInputs.map((input) =>
-        input.id === id ? { ...input, content: value } : input
+        input.id === id
+          ? { ...input, content: value, ...(caption !== undefined && { caption }) }
+          : input
       ),
     }));
   };
@@ -197,36 +203,28 @@ export default function NewsForm() {
     }
   };
 
-  const pickMedia = async (id: string, type: "image" | "video") => {
+  const pickImage = async (id: string) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert(
         "Permissão necessária",
-        "Precisamos da permissão para acessar sua galeria de mídias."
+        "Precisamos da permissão para acessar sua galeria de imagens."
       );
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes:
-        type === "image"
-          ? ImagePicker.MediaType.Images
-          : ImagePicker.MediaType.Videos,
+      mediaTypes: ["images"],
       allowsEditing: true,
       quality: 1,
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const uri = result.assets[0].uri;
-      if (type === "image") {
-        const imgurUrl = await uploadImageToImgur(uri);
-        if (imgurUrl) {
-          handleInputChange(id, imgurUrl);
-          await AsyncStorage.setItem(`media_${id}`, imgurUrl);
-        }
-      } else if (type === "video") {
-        handleInputChange(id, uri);
-        await AsyncStorage.setItem(`media_${id}`, uri);
+      const imgurUrl = await uploadImageToImgur(uri);
+      if (imgurUrl) {
+        handleInputChange(id, imgurUrl);
+        await AsyncStorage.setItem(`media_${id}`, imgurUrl);
       }
     }
   };
@@ -242,7 +240,7 @@ export default function NewsForm() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -271,6 +269,7 @@ export default function NewsForm() {
         return {
           type: input.type,
           content: mediaUri || input.content,
+          caption: input.caption || '',
           order: index + 1,
         };
       })
@@ -301,6 +300,7 @@ export default function NewsForm() {
       blocks: formData.dynamicInputs.map((input, index) => ({
         type: input.type,
         content: input.content,
+        caption: input.caption || '',
         order: index + 1,
       })),
       createdAt: new Date().toISOString(),
@@ -329,21 +329,20 @@ export default function NewsForm() {
 
   const handleSubmit = async () => {
     const jsonData = generateJSON();
-    Alert.alert("Confirmar Publicação", "Deseja enviar este artigo?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Enviar",
-        onPress: async () => {
-          try {
-            await addDoc(collection(db, "news"), jsonData);
-            Alert.alert("Sucesso", "Artigo publicado com sucesso!");
-            router.back();
-          } catch {
-            Alert.alert("Erro", "Não foi possível enviar o artigo.");
-          }
-        },
-      },
-    ]);
+    try {
+      await addDoc(collection(db, "news"), jsonData);
+      setFormData({
+        articleTitle: "",
+        textDraft: "",
+        reporters: [],
+        articleTags: [],
+        dynamicInputs: [],
+        thumbnailUri: null,
+      });
+      router.push("/confirmationPage");
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível enviar o texto.");
+    }
   };
 
   const handleSaveOrSubmit = async () => {
@@ -387,7 +386,7 @@ export default function NewsForm() {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <CardsSection />
 
-        <Text style={styles.title}>Informações do artigo</Text>
+        <Text style={styles.title}>Informações do texto</Text>
         <View style={styles.thumbnailContainer}>
           <Text style={styles.label}>Thumbnail</Text>
           <TouchableOpacity
@@ -413,7 +412,7 @@ export default function NewsForm() {
         <FixedInputs
           articleTitle={formData.articleTitle}
           setArticleTitle={(value) =>
-            setFormData((prev) => ({ ...prev, articleTitle: capitalizeWords(value)}))
+            setFormData((prev) => ({ ...prev, articleTitle: capitalizeWords(value) }))
           }
           textDraft={formData.textDraft}
           setTextDraft={(value) =>
@@ -432,56 +431,81 @@ export default function NewsForm() {
         {/* Inputs dinâmicos */}
         {formData.dynamicInputs.map((input) => (
           <View key={input.id} style={styles.dynamicInputContainer}>
-            {input.type === "image" || input.type === "video" ? (
-              input.content ? (
-                <View style={{ flex: 1 }}>
-                  <Image
-                    source={{ uri: input.content }}
-                    style={styles.mediaPreview}
-                  />
+            {input.type === "image" ? (
+              <View style={styles.mediaContainer}>
+                {input.content ? (
+                  <>
+                    <Image
+                      source={{ uri: input.content }}
+                      style={styles.mediaPreview}
+                    />
+                    <TextInput
+                      style={styles.captionInput}
+                      placeholder="Legenda da imagem (opcional)"
+                      value={input.caption || ''}
+                      onChangeText={(text) => handleInputChange(input.id, input.content, text)}
+                    />
+                    <View style={styles.mediaActions}>
+                      <TouchableOpacity
+                        onPress={() => pickImage(input.id)}
+                        style={styles.editMediaButton}
+                      >
+                        <Text style={styles.editMediaButtonText}>Alterar</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleRemoveInput(input.id)}
+                        style={styles.removeButton}
+                      >
+                        <Text style={styles.removeButtonText}>Remover</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                ) : (
                   <TouchableOpacity
-                    onPress={() =>
-                      pickMedia(input.id, input.type as "image" | "video")
-                    }
-                    style={styles.editMediaButton}
+                    onPress={() => pickImage(input.id)}
+                    style={styles.mediaButton}
                   >
-                    <Text style={styles.editMediaButtonText}>
-                      Alterar mídia
-                    </Text>
+                    <View style={styles.uploadIconContainer}>
+                      <MaterialIcons name="cloud-upload" size={40} color="#fff" />
+                      <Text style={styles.mediaButtonText}>
+                        Upload de Imagem
+                      </Text>
+                    </View>
                   </TouchableOpacity>
-                </View>
-              ) : (
+                )}
+              </View>
+            ) : input.type === "video" ? (
+              <View style={styles.videoLinkContainer}>
+                <TextInput
+                  style={styles.videoLinkInput}
+                  placeholder="Cole o link do vídeo (YouTube, Vimeo, etc.)"
+                  value={input.content}
+                  onChangeText={(text) => handleInputChange(input.id, text)}
+                />
+                {input.content && (
+                  <TouchableOpacity
+                    onPress={() => Linking.openURL(input.content)}
+                    style={styles.previewLinkButton}
+                  >
+                    <Text style={styles.previewLinkText}>Visualizar vídeo</Text>
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity
-                  onPress={() =>
-                    pickMedia(input.id, input.type as "image" | "video")
-                  }
-                  style={styles.mediaButton}
+                  onPress={() => handleRemoveInput(input.id)}
+                  style={styles.removeButton}
                 >
-                  <View style={styles.uploadIconContainer}>
-                    <MaterialIcons name="cloud-upload" size={40} color="#fff" />
-                    <Text style={styles.mediaButtonText}>
-                      Upload {input.type === "image" ? "Imagem" : "Vídeo"}
-                    </Text>
-                  </View>
+                  <Text style={styles.removeButtonText}>Remover vídeo</Text>
                 </TouchableOpacity>
-              )
+              </View>
             ) : (
               <TextInput
                 style={styles.dynamicInput}
-                placeholder={`Digite o ${
-                  input.type === "text" ? "texto" : "tópico"
-                }`}
+                placeholder={`Digite o ${input.type === "text" ? "texto" : "tópico"}`}
                 value={input.content}
                 onChangeText={(text) => handleInputChange(input.id, text)}
                 multiline
               />
             )}
-            <TouchableOpacity
-              onPress={() => handleRemoveInput(input.id)}
-              style={styles.removeButton}
-            >
-              <Text style={styles.removeButtonText}>X</Text>
-            </TouchableOpacity>
           </View>
         ))}
 
@@ -532,7 +556,7 @@ export default function NewsForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: standard.colors.primaryWhite,
   },
   contentContainer: {
     padding: 16,
@@ -559,7 +583,7 @@ const styles = StyleSheet.create({
     backgroundColor: standard.colors.campusRed,
   },
   thumbnailButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
@@ -583,18 +607,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
-    width: width * 0.85,
-    fontSize: 16,
-  },
-  removeButton: {
-    backgroundColor: standard.colors.campusRed,
-    borderRadius: 4,
-    marginLeft: 8,
-    padding: 8,
-  },
-  removeButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    width: "100%",
     fontSize: 16,
   },
   addInputButton: {
@@ -605,7 +618,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   addInputButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -633,7 +646,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   previewButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#DEDAD5",
     marginRight: 8,
   },
   submitButton: {
@@ -641,17 +654,17 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   previewText: {
-    color: "#000",
+    color: "#423B34",
     fontWeight: "bold",
     fontSize: 16,
   },
   submitText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontWeight: "bold",
     fontSize: 16,
   },
   mediaButton: {
-    width: width * 0.85,
+    width: "100%",
     backgroundColor: standard.colors.campusRed,
     padding: 12,
     borderRadius: 8,
@@ -660,30 +673,81 @@ const styles = StyleSheet.create({
     height: 110,
   },
   mediaButtonText: {
-    color: "#fff",
+    color: standard.colors.primaryWhite,
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
   },
+  mediaContainer: {
+    marginBottom: 16,
+    width: "100%"
+  },
   mediaPreview: {
-    width: width * 0.85,
+    width: "100%",
     height: 160,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#ccc",
   },
+  mediaActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
+  },
   editMediaButton: {
     backgroundColor: standard.colors.campusRed,
     padding: 8,
     borderRadius: 4,
+    flex: 1,
+    marginRight: 8,
     alignItems: "center",
-    justifyContent: "center",
-    height: 40,
-    width: 100,
   },
   editMediaButtonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: standard.colors.primaryWhite,
+    fontSize: 14,
     fontWeight: "bold",
+  },
+  removeButton: {
+    backgroundColor: standard.colors.campusRed,
+    padding: 8,
+    borderRadius: 4,
+    flex: 1,
+    alignItems: "center",
+  },
+  removeButtonText: {
+    color: standard.colors.primaryWhite,
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  captionInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 8,
+    fontSize: 16,
+  },
+  videoLinkContainer: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  videoLinkInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  previewLinkButton: {
+    backgroundColor: standard.colors.campusRed,
+    padding: 8,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  previewLinkText: {
+    color: standard.colors.primaryWhite,
+    fontWeight: 'bold',
   },
 });

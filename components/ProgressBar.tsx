@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { deleteNews, updateNewsStatus } from "../functions/newsFunctions";
 import standard from "../theme";
-import { News } from "../types";
 import { ProgressBox } from "../types/progressBar";
 import { useRouter } from "expo-router";
 
@@ -25,7 +24,6 @@ const ProgressBar: React.FC<ProgressBox> = ({
   const animatedProgress = useRef(new Animated.Value(0)).current;
   const [progress, setProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState(totalTime);
-  const router = useRouter();
 
   useEffect(() => {
     if (isOpen) {
@@ -80,7 +78,7 @@ const ProgressBar: React.FC<ProgressBox> = ({
             <View style={styles.progressHeader}>
               <Text style={styles.percentage}>{Math.round(progress)}%</Text>
               <Text style={styles.label}>{label}</Text>
-              <Text style={styles.timeLeft}>{timeLeft}s left</Text>
+              <Text style={styles.timeLeft}>{timeLeft}seg. restante(s)</Text>
             </View>
             <View style={styles.progressBarContainer}>
               <Animated.View

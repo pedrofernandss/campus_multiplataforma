@@ -8,19 +8,26 @@ const { width } = Dimensions.get("window");
 
 const NewsList = () => {
   const [news, setNews] = useState<News[]>([]);
+  const [refreshing, setRefreshing] = useState(false)
+
+  const loadNews = async () => {
+    try {
+      const fetchedNews = await fetchNews();
+      setNews(fetchedNews);
+    } catch (error) {
+      console.error("Erro ao buscar as notícias: ", error);
+    }
+  };
 
   useEffect(() => {
-    const loadNews = async () => {
-      try {
-        const fetchedNews = await fetchNews();
-        setNews(fetchedNews);
-      } catch (error) {
-        console.error("Erro ao buscar as notícias: ", error);
-      }
-    };
-
     loadNews();
-  }, []);
+  }, [])
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadNews();
+    setRefreshing(false);
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -30,6 +37,8 @@ const NewsList = () => {
         renderItem={({ item }) => <NewsCard news={item} />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContainer}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </SafeAreaView>
   );

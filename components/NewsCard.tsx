@@ -11,8 +11,8 @@ import React from "react";
 import standard from "../theme";
 import { icons } from "../constants";
 import { News } from "../types/news";
-import { getRelativeTime } from "../functions/newsFunctions";
-import { capitalizeWords } from "../functions/generalFunctions";
+import { getAnalyticsMetrics, getRelativeTime } from "../functions/newsFunctions";
+import { capitalizeWords } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -29,10 +29,15 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
     !news.thumbnail.endsWith(".png")  
       ? news.thumbnail + ".jpg"
       : news.thumbnail;
+ 
+  const readNews = async () => {
+    await getAnalyticsMetrics(news);
+    router.push(`./openNewsPage?id=${news.id}`);
+  };
 
   return (
     <TouchableOpacity
-      onPress={() => router.push(`./openNewsPage?id=${news.id}`)}
+      onPress={readNews}
       style={styles.container}
     >
       <View style={styles.imageContainer}>

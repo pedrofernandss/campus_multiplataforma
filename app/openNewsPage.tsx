@@ -19,6 +19,7 @@ import { WebView } from "react-native-webview";
 import { images, icons } from "../constants";
 import standard from "../theme";
 import { useFonts } from "expo-font";
+import { renderTextWithMarkdown } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -133,7 +134,9 @@ export default function NewsPage() {
               case "text":
                 return (
                   <View key={index} style={styles.blockContainer}>
-                    <Text style={styles.text}>{block.content}</Text>
+                    <Text style={styles.text}>
+                      {renderTextWithMarkdown(block.content, styles.text)}
+                    </Text>
                   </View>
                 );
               case "audio":

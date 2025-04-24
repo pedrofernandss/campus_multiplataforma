@@ -38,7 +38,7 @@ const Trendings: React.FC = () => {
             if (totalWidth > 0) {
                 Animated.timing(translateX, {
                     toValue: -totalWidth,
-                    duration: 20000,
+                    duration: 60000,
                     useNativeDriver: true,
                 }).start(() => {
                     translateX.setValue(0);
