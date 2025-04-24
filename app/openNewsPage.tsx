@@ -19,7 +19,7 @@ import { WebView } from "react-native-webview";
 import { images, icons } from "../constants";
 import standard from "../theme";
 import { useFonts } from "expo-font";
-import { renderTextWithMarkdown } from "../functions/textFunctions";
+import { capitalizeWords, renderTextWithMarkdown } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -103,7 +103,7 @@ export default function NewsPage() {
         </View>
       </SafeAreaView>
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.mainTitle}>{newsData.mainTitle}</Text>
+        <Text style={styles.mainTitle}>{capitalizeWords(newsData.mainTitle)}</Text>
         <Text style={styles.authors}>
           <Text style={styles.boldText}>Por: </Text>
           {newsData.authors.join(", ")} {"\n"}

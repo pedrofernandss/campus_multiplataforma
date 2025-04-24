@@ -430,7 +430,7 @@ export default function NewsForm() {
         <FixedInputs
           articleTitle={formData.articleTitle}
           setArticleTitle={(value) =>
-            setFormData((prev) => ({ ...prev, articleTitle: capitalizeWords(value) }))
+            setFormData((prev) => ({ ...prev, articleTitle: value }))
           }
           textDraft={formData.textDraft}
           setTextDraft={(value) =>

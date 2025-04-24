@@ -16,6 +16,7 @@ import { icons } from "../constants";
 import ModalComponent from "./ModalComponent";
 import ProgressBar from "./ProgressBar";
 import { deleteNews, updateNewsStatus } from "../functions/newsFunctions";
+import { capitalizeWords } from "../functions/textFunctions";
 
 interface NewsCardItemProps {
   news: News;
@@ -59,8 +60,8 @@ const ArticleCard: React.FC<NewsCardItemProps> = ({
       <View style={styles.contentContainer}>
         <Text style={styles.titleStyle} numberOfLines={2} ellipsizeMode="tail">
           {news.mainTitle.length > 50
-            ? news.mainTitle.substring(0, 40) + "..."
-            : news.mainTitle}
+            ? capitalizeWords(news.mainTitle.substring(0, 40) + "...")
+            : capitalizeWords(news.mainTitle)}
         </Text>
         <Text style={styles.authorStyle} numberOfLines={1}>
           Por: {news.authors.join(", ")}
