@@ -82,30 +82,38 @@ export default function NewsForm() {
 
   type FriendlyType = keyof typeof typeMapping;
 
+  const resetFormData = () => {
+    setFormData({
+      articleTitle: "",
+      textDraft: "",
+      reporters: [],
+      articleTags: [],
+      dynamicInputs: [],
+      thumbnailUri: null,
+    });
+  };
+
   useEffect(() => {
-    if (parsedNewsData) {
-      setFormData({
-        articleTitle: parsedNewsData.mainTitle,
-        textDraft: parsedNewsData.description,
-        reporters: parsedNewsData.authors,
-        articleTags: parsedNewsData.hashtags,
-        dynamicInputs: parsedNewsData.blocks,
-        thumbnailUri: parsedNewsData.thumbnail,
-      });
-  
-      return () => {
+    if (newsData) {
+      try {
+        const parsed = JSON.parse(String(newsData));
         setFormData({
-          articleTitle: "",
-          textDraft: "",
-          reporters: [],
-          articleTags: [],
-          dynamicInputs: [],
-          thumbnailUri: null,
+          articleTitle: parsed.mainTitle,
+          textDraft: parsed.description,
+          reporters: parsed.authors,
+          articleTags: parsed.hashtags,
+          dynamicInputs: parsed.blocks,
+          thumbnailUri: parsed.thumbnail,
         });
-      };
-    }
-  }, [parsedNewsData]);
   
+        return () => {
+          resetFormData();
+        };
+      } catch (error) {
+        console.warn("Erro ao fazer parse de newsData", error);
+      }
+    }
+  }, [newsData]);  
 
   const handleInputChange = (id: string, value: string, caption?: string) => {
     setFormData((prev) => ({
