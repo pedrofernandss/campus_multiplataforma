@@ -72,8 +72,6 @@ export default function NewsForm() {
   const [articleTag, setArticleTag] = useState("");
   const [reporterName, setReporterName] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [videoPopupVisible, setVideoPopupVisible] = useState(false);
-  const [currentVideoInputId, setCurrentVideoInputId] = useState<string | null>(null);
   
   const typeMapping = {
     Tópico: "subheading",
@@ -94,8 +92,20 @@ export default function NewsForm() {
         dynamicInputs: parsedNewsData.blocks,
         thumbnailUri: parsedNewsData.thumbnail,
       });
+  
+      return () => {
+        setFormData({
+          articleTitle: "",
+          textDraft: "",
+          reporters: [],
+          articleTags: [],
+          dynamicInputs: [],
+          thumbnailUri: null,
+        });
+      };
     }
   }, [parsedNewsData]);
+  
 
   const handleInputChange = (id: string, value: string, caption?: string) => {
     setFormData((prev) => ({
