@@ -11,7 +11,7 @@ import React from "react";
 import standard from "../theme";
 import { icons } from "../constants";
 import { News } from "../types/news";
-import { getAnalyticsMetrics, getRelativeTime } from "../functions/newsFunctions";
+import { getRelativeTime } from "../functions/newsFunctions";
 import { capitalizeWords } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
@@ -31,7 +31,6 @@ const NewsCard: React.FC<NewsCardItemProps> = ({ news }) => {
       : news.thumbnail;
  
   const readNews = async () => {
-    // await getAnalyticsMetrics(news);
     router.push(`./openNewsPage?id=${news.id}`);
   };
 
