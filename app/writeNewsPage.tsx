@@ -22,7 +22,7 @@ import standard from "../theme";
 import { db } from "../firebase.config";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { capitalizeWords } from "../functions/textFunctions";
+import * as FileSystem from 'expo-file-system';
 
 const { width } = Dimensions.get("window");
 
@@ -195,28 +195,38 @@ export default function NewsForm() {
     }
   };
 
-  const uploadImageToImgur = async (imageUri: string) => {
+  const uploadImageToImgur = async ({
+    base64,
+    type,
+    fileName,
+  }: {
+    base64: string;
+    type: string;
+    fileName: string;
+  }) => {
+
     const formData = new FormData();
-    formData.append("image", {
-      uri: imageUri,
-      type: "image/jpeg",
-      name: "photo.jpg",
-    });
+    formData.append("image", base64);
 
     try {
-      const response = await axios.post(
-        "https://api.imgur.com/3/image",
-        formData,
-        {
-          headers: {
-            Authorization: `Client-ID ${process.env.EXPO_PUBLIC_IMGUR_CLIENT_ID}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      return response.data.data.link;
+      const response = await fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: {
+          Authorization: `Client-ID ${process.env.EXPO_PUBLIC_IMGUR_CLIENT_ID}`,
+        },
+        body: formData,
+      });
+      
+      const data = await response.json();
+      console.log("Resposta do Imgur:", data);
+
+      if (data.success) {
+        return data.data.link;
+      } else {
+        console.warn("Upload falhou:", data);
+        return null;
+      }
     } catch (error) {
-      console.error("Erro ao fazer upload da imagem:", error);
       return null;
     }
   };
@@ -224,22 +234,28 @@ export default function NewsForm() {
   const pickImage = async (id: string) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert(
-        "Permissão necessária",
-        "Precisamos da permissão para acessar sua galeria de imagens."
-      );
+      Alert.alert("Permissão necessária", "Precisamos da permissão para acessar sua galeria de imagens.");
       return;
     }
-
+  
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
       quality: 1,
     });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      const uri = result.assets[0].uri;
-      const imgurUrl = await uploadImageToImgur(uri);
+  
+    if (!result.canceled) {
+      const asset = result.assets[0];
+      const base64Image = await FileSystem.readAsStringAsync(asset.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      const imgurUrl = await uploadImageToImgur({
+        base64: base64Image,
+        type: asset.mimeType ?? "image/jpeg",
+        fileName: asset.fileName ?? "upload.jpg",
+      });
+  
       if (imgurUrl) {
         handleInputChange(id, imgurUrl);
         await AsyncStorage.setItem(`media_${id}`, imgurUrl);
@@ -256,17 +272,27 @@ export default function NewsForm() {
       );
       return;
     }
-
+  
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-
+  
+  
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      const uri = result.assets[0].uri;
-      const imgurUrl = await uploadImageToImgur(uri);
+      const asset = result.assets[0];
+      const base64Image = await FileSystem.readAsStringAsync(asset.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      const imgurUrl = await uploadImageToImgur({
+        base64: base64Image,
+        type: asset.mimeType ?? "image/jpeg",
+        fileName: asset.fileName ?? "upload.jpg",
+      });
+      
       if (imgurUrl) {
         setFormData((prev) => ({
           ...prev,
@@ -276,7 +302,6 @@ export default function NewsForm() {
       }
     }
   };
-
 
   const generatePreviewJSON = async () => {
     const thumbnail = await AsyncStorage.getItem("thumbnailUri");
