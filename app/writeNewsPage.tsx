@@ -10,6 +10,7 @@ import {
   Alert,
   TextInput,
   Linking,
+  ActivityIndicator
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -23,8 +24,25 @@ import { db } from "../firebase.config";
 import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as FileSystem from 'expo-file-system';
+import { launchImageLibrary } from 'react-native-image-picker';
+import RNFetchBlob from 'react-native-blob-util';
 
 const { width } = Dimensions.get("window");
+
+
+interface UploadResult {
+  success: boolean;
+  url?: string;
+  serviceUsed: 'imgur' | 'imgbb';
+  error?: any;
+}
+
+interface ImageAsset {
+  uri: string;
+  type?: string;
+  fileName?: string;
+}
+
 
 interface Block {
   id: string;
@@ -69,6 +87,9 @@ export default function NewsForm() {
     thumbnailUri: null,
   });
 
+  const [temporaryImages, setTemporaryImages] = useState<Record<string, ImageAsset>>({}); // Imagens armazenadas em "cache" sem precisar utilizar o base64
+  const [temporaryThumbnail, setTemporaryThumbnail] = useState<ImageAsset | null>(null); // thumb
+  const [isLoading, setIsLoading] = useState(false);
   const [articleTag, setArticleTag] = useState("");
   const [reporterName, setReporterName] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -195,113 +216,191 @@ export default function NewsForm() {
     }
   };
 
-  const uploadImageToImgur = async ({
-    base64,
-    type,
-    fileName,
-  }: {
-    base64: string;
-    type: string;
-    fileName: string;
-  }) => {
+const uploadImagesToImgur = async () => {
+  const uploadedUrls: Record<string, {url: string, service: string}> = {};
+  let anyUploadFailed = false;
 
+  // Upload da thumbnail
+  if (temporaryThumbnail) {
+    const result = await uploadSingleImage(temporaryThumbnail);
+    if (result.success) {
+      uploadedUrls.thumbnail = {
+        url: result.url,
+        service: result.serviceUsed
+      };
+    } else {
+      anyUploadFailed = true;
+    }
+  }
+  
+  // Upload das imagens dos blocos
+  for (const [id, imageAsset] of Object.entries(temporaryImages)) {
+    const result = await uploadSingleImage(imageAsset);
+    if (result.success) {
+      uploadedUrls[id] = {
+        url: result.url,
+        service: result.serviceUsed
+      };
+    } else {
+      anyUploadFailed = true;
+    }
+  }
+  
+  return {
+    urls: uploadedUrls,
+    allSuccess: !anyUploadFailed
+  };
+};
+
+// const tryImgurUpload = async (imageAsset: ImageAsset): Promise<UploadResult> => {
+//   try {
+//     const formData = new FormData();
+//     formData.append('image', {
+//       uri: imageAsset.uri,
+//       type: imageAsset.type,
+//       name: imageAsset.fileName,
+//     });
+
+//     const response = await fetch('https://api.imgur.com/3/image', {
+//       method: 'POST',
+//       headers: {
+//         'Authorization': `Client-ID ${process.env.EXPO_PUBLIC_IMGUR_CLIENT_ID}`,
+//         'Content-Type': 'multipart/form-data',
+//       },
+//       body: formData,
+//     });
+
+//     const data = await response.json();
+    
+//     if (data.success) {
+//       return {
+//         success: true,
+//         url: data.data.link,
+//         serviceUsed: 'imgur'
+//       };
+//     } else {
+//       return {
+//         success: false,
+//         serviceUsed: 'imgur',
+//         error: data
+//       };
+//     }
+//   } catch (error) {
+//     return {
+//       success: false,
+//       serviceUsed: 'imgur',
+//       error: error
+//     };
+//   }
+// };
+
+const tryImgBBUpload = async (imageAsset: ImageAsset): Promise<UploadResult> => {
+  try {
     const formData = new FormData();
-    formData.append("image", base64);
-
-    try {
-      const response = await fetch("https://api.imgur.com/3/image", {
-        method: "POST",
-        headers: {
-          Authorization: `Client-ID ${process.env.EXPO_PUBLIC_IMGUR_CLIENT_ID}`,
-        },
-        body: formData,
-      });
-      
-      const data = await response.json();
-      console.log("Resposta do Imgur:", data);
-
-      if (data.success) {
-        return data.data.link;
-      } else {
-        console.warn("Upload falhou:", data);
-        return null;
-      }
-    } catch (error) {
-      return null;
-    }
-  };
-
-  const pickImage = async (id: string) => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permissão necessária", "Precisamos da permissão para acessar sua galeria de imagens.");
-      return;
-    }
-  
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      quality: 1,
+    formData.append('image', {
+      uri: imageAsset.uri,
+      type: imageAsset.type,
+      name: imageAsset.fileName,
     });
-  
-    if (!result.canceled) {
-      const asset = result.assets[0];
-      const base64Image = await FileSystem.readAsStringAsync(asset.uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-  
-      const imgurUrl = await uploadImageToImgur({
-        base64: base64Image,
-        type: asset.mimeType ?? "image/jpeg",
-        fileName: asset.fileName ?? "upload.jpg",
-      });
-  
-      if (imgurUrl) {
-        handleInputChange(id, imgurUrl);
-        await AsyncStorage.setItem(`media_${id}`, imgurUrl);
-      }
-    }
-  };
 
-  const pickThumbnail = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permissão necessária",
-        "Precisamos da permissão para acessar sua galeria de imagens."
-      );
-      return;
-    }
-  
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.EXPO_PUBLIC_IMGBB_API_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
     });
-  
-  
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      const asset = result.assets[0];
-      const base64Image = await FileSystem.readAsStringAsync(asset.uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-  
-      const imgurUrl = await uploadImageToImgur({
-        base64: base64Image,
-        type: asset.mimeType ?? "image/jpeg",
-        fileName: asset.fileName ?? "upload.jpg",
-      });
-      
-      if (imgurUrl) {
-        setFormData((prev) => ({
-          ...prev,
-          thumbnailUri: imgurUrl,
-        }));
-        await AsyncStorage.setItem("thumbnailUri", imgurUrl);
-      }
+
+    const data = await response.json();
+    
+    if (data.success) {
+      return {
+        success: true,
+        url: data.data.url,
+        serviceUsed: 'imgbb'
+      };
+    } else {
+      return {
+        success: false,
+        serviceUsed: 'imgbb',
+        error: data
+      };
     }
+  } catch (error) {
+    return {
+      success: false,
+      serviceUsed: 'imgbb',
+      error: error
+    };
+  }
+};
+
+const uploadSingleImage = async (imageAsset: ImageAsset): Promise<UploadResult> => {
+  // Primeiro tenta com Imgur
+  // const imgurResult = await tryImgurUpload(imageAsset);
+  // if (imgurResult.success) {
+  //   return imgurResult;
+  // }
+
+  // console.warn('Imgur failed, trying ImgBB...', imgurResult.error);
+  
+  // Se Imgur falhar, tenta com ImgBB
+  const imgbbResult = await tryImgBBUpload(imageAsset);
+  if (imgbbResult.success) {
+    return imgbbResult;
+  }
+
+  console.error('Both Imgur and ImgBB failed', imgbbResult.error);
+  return {
+    success: false,
+    serviceUsed: 'imgbb',
+    error: imgbbResult.error
   };
+};
+
+const pickImage = async (id: string) => {
+  const result = await launchImageLibrary({
+    mediaType: 'photo',
+    quality: 1,
+    selectionLimit: 1,
+  });
+
+  if (result.assets && result.assets.length > 0) {
+    const asset = result.assets[0];
+    if (asset.uri) {
+      const imageAsset = {
+        uri: asset.uri,
+        type: asset.type || 'image/jpeg',
+        fileName: asset.fileName || `image_${Date.now()}.jpg`,
+      };
+      
+      setTemporaryImages(prev => ({...prev, [id]: imageAsset}));
+      handleInputChange(id, asset.uri); // Mostra preview com URI local
+    }
+  }
+};
+
+const pickThumbnail = async () => {
+  const result = await launchImageLibrary({
+    mediaType: 'photo',
+    quality: 1,
+    selectionLimit: 1,
+  });
+
+  if (result.assets && result.assets.length > 0) {
+    const asset = result.assets[0];
+    if (asset.uri) {
+      const thumbnailAsset = {
+        uri: asset.uri,
+        type: asset.type || 'image/jpeg',
+        fileName: asset.fileName || `thumbnail_${Date.now()}.jpg`,
+      };
+      
+      setTemporaryThumbnail(thumbnailAsset);
+      setFormData(prev => ({...prev, thumbnailUri: asset.uri})); // Mostra preview com URI local
+    }
+  }
+};
 
   const generatePreviewJSON = async () => {
     const thumbnail = await AsyncStorage.getItem("thumbnailUri");
@@ -370,23 +469,64 @@ export default function NewsForm() {
     });
   };
 
-  const handleSubmit = async () => {
-    const jsonData = generateJSON();
-    try {
-      await addDoc(collection(db, "news"), jsonData);
-      setFormData({
-        articleTitle: "",
-        textDraft: "",
-        reporters: [],
-        articleTags: [],
-        dynamicInputs: [],
-        thumbnailUri: null,
-      });
-      router.push("/confirmationPage");
-    } catch (error) {
-      Alert.alert("Erro", "Não foi possível enviar o texto.");
+const handleSubmit = async () => {
+  setIsLoading(true);
+  
+  try {
+    // Fazer upload de todas as imagens
+    const { urls, allSuccess } = await uploadImagesToImgur();
+    
+    if (!allSuccess) {
+      Alert.alert(
+        'Aviso', 
+        'Algumas imagens não puderam ser enviadas para os servidores. A notícia será salva, mas algumas imagens podem não aparecer corretamente.',
+        [{ text: 'Entendi', onPress: () => {} }]
+      );
     }
-  };
+    
+    // Atualizar os URLs no formData
+    const updatedDynamicInputs = formData.dynamicInputs.map(input => {
+      if (input.type === 'image' && urls[input.id]) {
+        return {
+          ...input,
+          content: urls[input.id].url
+        };
+      }
+      return input;
+    });
+    
+    const finalThumbnailUri = urls.thumbnail?.url || formData.thumbnailUri;
+    
+    // Criar o objeto final para o Firebase
+    const jsonData = {
+      authors: formData.reporters,
+      blocks: updatedDynamicInputs,
+      createdAt: new Date().toISOString(),
+      description: formData.textDraft,
+      feedTitle: formData.articleTitle,
+      hashtags: formData.articleTags,
+      mainTitle: formData.articleTitle,
+      published: false,
+      thumbnail: finalThumbnailUri || "",
+    };
+
+    // Enviar para o Firebase
+    await addDoc(collection(db, "news"), jsonData);
+    
+    // Limpar o estado
+    resetFormData();
+    setTemporaryImages({});
+    setTemporaryThumbnail(null);
+    
+    // Navegar para a página de confirmação
+    router.push("/confirmationPage");
+  } catch (error) {
+    console.error("Submission error:", error);
+    Alert.alert("Erro", "Não foi possível enviar a notícia.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleSaveOrSubmit = async () => {
     if (parsedNewsData) {
@@ -428,6 +568,12 @@ export default function NewsForm() {
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <CardsSection />
+        {isLoading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={standard.colors.campusRed} />
+            <Text style={styles.loadingText}>Enviando notícia...</Text>
+          </View>
+        )}
 
         <Text style={styles.title}>Informações do texto</Text>
         <View style={styles.thumbnailContainer}>
@@ -792,5 +938,21 @@ const styles = StyleSheet.create({
   previewLinkText: {
     color: standard.colors.primaryWhite,
     fontWeight: 'bold',
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  loadingText: {
+    marginTop: 16,
+    color: standard.colors.campusRed,
+    fontSize: 16,
   },
 });
