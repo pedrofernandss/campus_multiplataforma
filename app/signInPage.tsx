@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, View, Text, ActivityIndicator, Alert } from "react-native";
+import { StyleSheet, SafeAreaView, View, Text, ActivityIndicator, Alert, TouchableOpacity } from "react-native";
 import standard from "../theme";
 import CustomInput from "../components/CustomInputText";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import CustomInputPassword from "../components/CustomInputPassword";
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase.config";
 import { router } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function signInPage() {
   const [email, setEmail] = useState('')
@@ -39,7 +40,21 @@ export default function signInPage() {
       }, 3000);
 
     } catch (error) {
-      Alert.alert('', 'Ocorreu um erro ao efetuar login. Por favor, tente novamente.');
+      switch (error.code) {
+        case 'auth/user-not-found':
+          Alert.alert('', 'Usuário não encontrado. Por favor registre-se, ou tente novamente.');
+          break;
+        case 'auth/invalid-credential':
+          Alert.alert('', 'Usuário ou senha inválidos. Por favor, tente novamente.');
+          break;
+        case 'auth/too-many-requests':
+          Alert.alert('', 'Muitas tentativas realizadas. Por favor, tente novamente mais tarde.');
+          break;
+        default:
+          Alert.alert('', 'Ocorreu um erro ao efetuar login. Por favor, tente novamente.');
+          break;
+      }
+      console.log(error);
     }
   };
 
@@ -50,6 +65,9 @@ export default function signInPage() {
         <ActivityIndicator size="large" color="#6C0318" style={{ flex: 1 }} />
       ) : (
         <View style={styles.container}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color={standard.colors.campusRed} />
+          </TouchableOpacity>
           <View style={styles.externalCircle} />
           <View style={styles.innerCircle} />
           <Text style={styles.title}>Login</Text>
@@ -109,5 +127,12 @@ const styles = StyleSheet.create({
     color: standard.colors.black,
     fontSize: 20,
     textAlign: "center",
+  },
+  backButton: {
+    position: 'absolute',
+    top: -30,
+    left: 0,
+    zIndex: 1,
+    padding: 10,
   },
 });
