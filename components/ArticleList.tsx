@@ -29,9 +29,13 @@ const ArticleList = () => {
         ...doc.data(),
       })) as News[];
 
-      const sortedNews = allNews.sort(
-        (a, b) => Number(a.published) - Number(b.published)
-      );
+      const sortedNews = allNews.sort((a, b) => {
+        if (a.published !== b.published) {
+          return Number(a.published) - Number(b.published);
+        }
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+      
       setNews(sortedNews);
 
       const published = allNews.filter(
@@ -52,9 +56,13 @@ const ArticleList = () => {
           ...doc.data(),
         })) as News[];
 
-        const sortedNews = allNews.sort(
-          (a, b) => Number(a.published) - Number(b.published)
-        );
+        const sortedNews = allNews.sort((a, b) => {
+          if (a.published !== b.published) {
+            return Number(a.published) - Number(b.published);
+          }
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+        
         setNews(sortedNews);
 
         const published = allNews.filter(
