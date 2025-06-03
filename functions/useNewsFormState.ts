@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Block } from "../types/blocks";
 import { ImageAsset } from '../types/imageTypes';
-import { uploadMultipleImages, uploadSingleImage } from './imageUpload';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import { Alert } from 'react-native';
@@ -35,6 +34,15 @@ interface UseNewsFormReturn {
   resetForm: () => void;
 }
 
+interface NewsData {
+  mainTitle: string;
+  description: string;
+  authors: string[];
+  hashtags: string[];
+  thumbnail: string;
+  blocks: Block[];
+}
+
 const initialFormState: NewsFormState = {
   articleTitle: "",
   textDraft: "",
@@ -44,10 +52,40 @@ const initialFormState: NewsFormState = {
   thumbnailUri: null,
 };
 
-export const useNewsForm = (): UseNewsFormReturn => {
-  const [formData, setFormData] = useState<NewsFormState>(initialFormState);
-  const [temporaryImages, setTemporaryImages] = useState<Record<string, ImageAsset>>({});
-  const [temporaryThumbnail, setTemporaryThumbnail] = useState<ImageAsset | null>(null);
+export const useNewsForm = (initialData?: NewsData): UseNewsFormReturn => {
+  // Estados básicos
+  const [formData, setFormData] = useState<NewsFormState>(
+    initialData ? {
+      articleTitle: initialData.mainTitle || '',
+      textDraft: initialData.description || '',
+      reporters: initialData.authors || [],
+      articleTags: initialData.hashtags || [],
+      dynamicInputs: initialData.blocks || [],
+      thumbnailUri: initialData.thumbnail || null,
+    } : initialFormState
+  );
+
+  const [temporaryImages, setTemporaryImages] = useState<Record<string, ImageAsset>>(
+    initialData ? initialData.blocks.reduce((acc, block) => {
+      if (block.type === 'image' && block.content) {
+        acc[block.id] = {
+          uri: block.content,
+          type: 'image/jpeg',
+          fileName: `image_${block.id}.jpg`
+        };
+      }
+      return acc;
+    }, {} as Record<string, ImageAsset>) : {}
+  );
+
+  const [temporaryThumbnail, setTemporaryThumbnail] = useState<ImageAsset | null>(
+    initialData?.thumbnail ? {
+      uri: initialData.thumbnail,
+      type: 'image/jpeg',
+      fileName: 'thumbnail.jpg'
+    } : null
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [articleTag, setArticleTag] = useState("");
   const [reporterName, setReporterName] = useState("");
@@ -65,47 +103,22 @@ export const useNewsForm = (): UseNewsFormReturn => {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      let finalThumbnailUri = formData.thumbnailUri;
-      let updatedDynamicInputs = [...formData.dynamicInputs];
-
-      // Upload da thumbnail se existir
-      if (temporaryThumbnail) {
-        const result = await uploadSingleImage(temporaryThumbnail);
-        if (result.success && result.url) {
-          finalThumbnailUri = result.url;
-        }
-      }
-
-      // Upload das imagens dos blocos
-      if (Object.keys(temporaryImages).length > 0) {
-        const { urls } = await uploadMultipleImages(temporaryImages);
-        updatedDynamicInputs = updatedDynamicInputs.map(input => {
-          if (input.type === 'image' && urls[input.id]) {
-            return { ...input, content: urls[input.id].url };
-          }
-          return input;
-        });
-      }
-
       const newsData = {
         authors: formData.reporters,
-        blocks: updatedDynamicInputs,
+        blocks: formData.dynamicInputs,
         createdAt: new Date().toISOString(),
         description: formData.textDraft,
         feedTitle: formData.articleTitle,
         hashtags: formData.articleTags,
         mainTitle: formData.articleTitle,
         published: false,
-        thumbnail: finalThumbnailUri || "",
+        thumbnail: formData.thumbnailUri || "",
       };
 
       await addDoc(collection(db, "news"), newsData);
-      resetForm();
-      return true;
     } catch (error) {
       console.error("Erro ao enviar notícia:", error);
       Alert.alert("Erro", "Não foi possível enviar a notícia.");
-      return false;
     } finally {
       setIsLoading(false);
     }
@@ -114,43 +127,21 @@ export const useNewsForm = (): UseNewsFormReturn => {
   const handleUpdate = async (newsId: string) => {
     setIsLoading(true);
     try {
-      let finalThumbnailUri = formData.thumbnailUri;
-      let updatedDynamicInputs = [...formData.dynamicInputs];
-
-      if (temporaryThumbnail) {
-        const result = await uploadSingleImage(temporaryThumbnail);
-        if (result.success && result.url) {
-          finalThumbnailUri = result.url;
-        }
-      }
-
-      if (Object.keys(temporaryImages).length > 0) {
-        const { urls } = await uploadMultipleImages(temporaryImages);
-        updatedDynamicInputs = updatedDynamicInputs.map(input => {
-          if (input.type === 'image' && urls[input.id]) {
-            return { ...input, content: urls[input.id].url };
-          }
-          return input;
-        });
-      }
-
       const updatedData = {
         authors: formData.reporters,
-        blocks: updatedDynamicInputs,
+        blocks: formData.dynamicInputs,
         description: formData.textDraft,
         feedTitle: formData.articleTitle,
         hashtags: formData.articleTags,
         mainTitle: formData.articleTitle,
-        thumbnail: finalThumbnailUri || "",
+        thumbnail: formData.thumbnailUri || "",
       };
 
       const newsRef = doc(db, "news", newsId);
       await updateDoc(newsRef, updatedData);
-      return true;
     } catch (error) {
       console.error("Erro ao atualizar notícia:", error);
       Alert.alert("Erro", "Não foi possível atualizar a notícia.");
-      return false;
     } finally {
       setIsLoading(false);
     }
