@@ -18,7 +18,7 @@ import { useFonts } from "expo-font";
 import { useRouter } from "expo-router";
 import { icons, images } from "../constants";
 import standard from "../theme";
-import { capitalizeWords, renderTextWithMarkdown } from "../functions/textFunctions";
+import { renderTextWithMarkdown } from "../functions/textFunctions";
 
 const { width } = Dimensions.get("window");
 
@@ -66,7 +66,7 @@ const NewsContent = ({ newsData }: { newsData: any }) => {
         </View>
       </SafeAreaView>
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.mainTitle}>{capitalizeWords(newsData.mainTitle)}</Text>
+        <Text style={styles.mainTitle}>{newsData.mainTitle}</Text>
         <Text style={styles.authors}>
           <Text style={styles.boldText}>Por: </Text>
           {newsData.authors.join(", ")} {"\n"}
