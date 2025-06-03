@@ -24,6 +24,24 @@ const { width } = Dimensions.get("window");
 
 const NewsContent = ({ newsData }: { newsData: any }) => {
   const router = useRouter();
+  const { editData } = useLocalSearchParams();
+
+  const handleBackToEdit = () => {
+    if (editData) {
+      const parsedEditData = JSON.parse(String(editData));
+      router.push({
+        pathname: "/writeNewsPage",
+        params: {
+          newsData: JSON.stringify(parsedEditData.newsData),
+          formState: JSON.stringify(parsedEditData.formState),
+          temporaryImages: JSON.stringify(parsedEditData.images),
+          temporaryThumbnail: JSON.stringify(parsedEditData.thumbnail)
+        }
+      });
+    } else {
+      router.push("/writeNewsPage");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -31,7 +49,7 @@ const NewsContent = ({ newsData }: { newsData: any }) => {
         style={{ backgroundColor: styles.headerStyle.backgroundColor }}
       >
         <View style={styles.headerStyle}>
-          <TouchableOpacity onPress={() => router.push("/writeNewsPage")}>
+          <TouchableOpacity onPress={handleBackToEdit}>
             <Image
               source={icons.arrowFowardIcon}
               style={styles.icon}
