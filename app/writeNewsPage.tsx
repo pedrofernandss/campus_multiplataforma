@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ import CardsSection from "../components/CardSection";
 import standard from "../theme";
 import { ImageAsset } from "../types/imageTypes";
 import { Block } from "../types/blocks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const typeMapping = {
   Tópico: "subheading",
@@ -33,8 +34,11 @@ type FriendlyType = keyof typeof typeMapping;
 
 export default function NewsForm() {
   const router = useRouter();
-  const { newsData } = useLocalSearchParams();
+  const { newsData, formState, temporaryImages: savedImages, temporaryThumbnail: savedThumbnail } = useLocalSearchParams();
   const parsedNewsData = newsData ? JSON.parse(String(newsData)) : null;
+  const parsedFormState = formState ? JSON.parse(String(formState)) : null;
+  const parsedImages = savedImages ? JSON.parse(String(savedImages)) : null;
+  const parsedThumbnail = savedThumbnail ? JSON.parse(String(savedThumbnail)) : null;
 
   const {
     formData,
@@ -52,7 +56,60 @@ export default function NewsForm() {
     setIsDropdownVisible,
     handleSubmit,
     handleUpdate,
-  } = useNewsForm();
+    resetForm
+  } = useNewsForm(parsedNewsData ? {
+    mainTitle: parsedNewsData.mainTitle,
+    description: parsedNewsData.description,
+    authors: parsedNewsData.authors,
+    hashtags: parsedNewsData.hashtags,
+    thumbnail: parsedNewsData.thumbnail,
+    blocks: parsedNewsData.blocks,
+  } : undefined);
+
+  useEffect(() => {
+    if (parsedFormState) {
+      setFormData(parsedFormState);
+    } else if (parsedNewsData) {
+      setFormData({
+        articleTitle: parsedNewsData.mainTitle || '',
+        textDraft: parsedNewsData.description || '',
+        reporters: parsedNewsData.authors || [],
+        articleTags: parsedNewsData.hashtags || [],
+        dynamicInputs: parsedNewsData.blocks || [],
+        thumbnailUri: parsedNewsData.thumbnail || null,
+      });
+    }
+
+    if (parsedImages) {
+      setTemporaryImages(parsedImages);
+    } else if (parsedNewsData) {
+      const newTempImages: Record<string, ImageAsset> = {};
+      parsedNewsData.blocks.forEach(block => {
+        if (block.type === 'image' && block.content) {
+          newTempImages[block.id] = {
+            uri: block.content,
+            type: 'image/jpeg',
+            fileName: `image_${block.id}.jpg`
+          };
+        }
+      });
+      setTemporaryImages(newTempImages);
+    }
+
+    if (parsedThumbnail) {
+      setTemporaryThumbnail(parsedThumbnail);
+    } else if (parsedNewsData?.thumbnail) {
+      setTemporaryThumbnail({
+        uri: parsedNewsData.thumbnail,
+        type: 'image/jpeg',
+        fileName: 'thumbnail.jpg'
+      });
+    }
+
+    return () => {
+      resetForm();
+    };
+  }, [newsData, formState, savedImages, savedThumbnail]);
 
   const handleInputChange = (id: string, value: string, caption?: string) => {
     setFormData((prev) => ({
@@ -94,11 +151,9 @@ export default function NewsForm() {
   };
 
   const handleImageSelected = (id: string, imageAsset: ImageAsset) => {
-    setTemporaryImages((prev: Record<string, ImageAsset>) => {
-      const newImages = { ...prev };
-      newImages[id] = imageAsset;
-      return newImages;
-    });
+    const newImages = { ...temporaryImages };
+    newImages[id] = imageAsset;
+    setTemporaryImages(newImages);
     handleInputChange(id, imageAsset.uri);
   };
 
@@ -110,7 +165,7 @@ export default function NewsForm() {
     }));
   };
 
-  const handlePreview = async () => {
+  const handlePreview = () => {
     const previewData = {
       mainTitle: formData.articleTitle,
       description: formData.textDraft,
@@ -124,18 +179,57 @@ export default function NewsForm() {
 
     router.push({
       pathname: "/previewPage",
-      params: { previewData: JSON.stringify(previewData), timestamp: Date.now() },
+      params: { 
+        previewData: JSON.stringify(previewData),
+        editData: JSON.stringify({
+          newsData: parsedNewsData || previewData,
+          formState: formData,
+          images: temporaryImages,
+          thumbnail: temporaryThumbnail
+        })
+      },
     });
   };
+
+  useEffect(() => {
+    const loadSavedState = async () => {
+      try {
+        const savedState = await AsyncStorage.getItem('newsFormState');
+        if (savedState && !parsedNewsData) {
+          const { formData: savedFormData, temporaryImages: savedImages, temporaryThumbnail: savedThumbnail } = JSON.parse(savedState);
+          setFormData(savedFormData);
+          setTemporaryImages(savedImages);
+          setTemporaryThumbnail(savedThumbnail);
+          await AsyncStorage.removeItem('newsFormState');
+        }
+      } catch (error) {
+        console.error("Erro ao recuperar estado:", error);
+      }
+    };
+
+    loadSavedState();
+  }, []);
 
   const handleSaveOrSubmit = async () => {
     try {
       if (parsedNewsData?.id) {
         await handleUpdate(parsedNewsData.id);
-        Alert.alert("Sucesso", "Notícia atualizada com sucesso!");
-        router.back();
+        Alert.alert(
+          "Sucesso", 
+          "Notícia atualizada com sucesso!",
+          [
+            { 
+              text: "OK", 
+              onPress: () => {
+                resetForm();
+                router.replace("/");
+              }
+            }
+          ]
+        );
       } else {
         await handleSubmit();
+        resetForm();
         router.push("/confirmationPage");
       }
     } catch (error) {
@@ -160,7 +254,6 @@ export default function NewsForm() {
         <Text style={styles.title}>Informações do texto</Text>
         
         <View style={styles.thumbnailContainer}>
-          <Text style={styles.label}>Thumb</Text>
           <ImageUploadField
             imageUri={formData.thumbnailUri}
             onImageSelected={handleThumbnailSelected}
