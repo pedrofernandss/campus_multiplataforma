@@ -15,8 +15,8 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo/vector-icons": "^14.0.2",
-    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@expo/vector-icons": "~14.0.4",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-seoul/masonry-list": "^1.4.2",
     "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.0",
@@ -26,15 +26,15 @@
     "emailjs-com": "^3.2.0",
     "expo": "~52.0.36",
     "expo-av": "~15.0.2",
+    "expo-build-properties": "~0.13.3",
     "expo-constants": "~17.0.3",
-    "expo-crypto": "^14.0.2",
+    "expo-crypto": "~14.0.2",
     "expo-dev-client": "~5.0.20",
     "expo-font": "~13.0.1",
     "expo-image-picker": "~16.0.4",
     "expo-intent-launcher": "~12.0.2",
     "expo-linear-gradient": "~14.0.2",
     "expo-linking": "~7.0.5",
-    "expo-modules-core": "^2.2.3",
     "expo-notifications": "~0.29.13",
     "expo-router": "~4.0.17",
     "expo-splash-screen": "~0.29.24",
@@ -50,7 +50,7 @@
     "multer": "^1.4.5-lts.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-native": "0.76.7",
+    "react-native": "0.76.9",
     "react-native-blob-util": "^0.21.2",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.20.2",
@@ -61,8 +61,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "typescript": "~5.3.3",
-    "uuid": "^11.1.0",
-    "expo-build-properties": "~0.13.3"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -77,5 +76,6 @@
     "react-test-renderer": "18.2.0",
     "typescript": "~5.3.3"
   },
-  "private": true
+  "private": true,
+  "packageManager": "yarn@4.4.1+sha512.f825273d0689cc9ead3259c14998037662f1dcd06912637b21a450e8da7cfeb4b1965bbee73d16927baa1201054126bc385c6f43ff4aa705c8631d26e12460f1"
 }
